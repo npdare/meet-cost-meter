@@ -4,6 +4,7 @@ import { Card } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { User, Users } from 'lucide-react';
+import { useCurrency } from '@/hooks/useCurrency';
 
 interface Attendee {
   id: string;
@@ -75,6 +76,7 @@ const regions = ['North America', 'Europe', 'Asia Pacific', 'Latin America'];
 export const AttendeeManager = ({ attendees, onAttendeesChange }: AttendeeManagerProps) => {
   const [selectedRole, setSelectedRole] = useState<string>('');
   const [selectedRegion, setSelectedRegion] = useState<string>('');
+  const { formatCurrency } = useCurrency();
 
   const addAttendee = () => {
     if (!selectedRole || !selectedRegion) return;
@@ -96,14 +98,6 @@ export const AttendeeManager = ({ attendees, onAttendeesChange }: AttendeeManage
     onAttendeesChange(attendees.filter(attendee => attendee.id !== id));
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(amount);
-  };
 
   return (
     <Card className="p-6">

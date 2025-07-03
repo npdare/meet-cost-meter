@@ -1,5 +1,6 @@
 import { Card } from '@/components/ui/card';
 import { DollarSign, TrendingUp, Users, Clock } from 'lucide-react';
+import { useCurrency } from '@/hooks/useCurrency';
 
 interface CostSummaryProps {
   totalCost: number;
@@ -9,14 +10,7 @@ interface CostSummaryProps {
 }
 
 export const CostSummary = ({ totalCost, attendeeCount, hourlyRate, duration }: CostSummaryProps) => {
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(amount);
-  };
+  const { formatCurrency } = useCurrency();
 
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Clock, Play, Pause, Square, DollarSign } from 'lucide-react';
+import { useCurrency } from '@/hooks/useCurrency';
 
 interface MeetingTimerProps {
   attendees: Array<{ role: string; region: string; hourlySalary: number }>;
@@ -12,6 +13,7 @@ export const MeetingTimer = ({ attendees, onCostUpdate }: MeetingTimerProps) => 
   const [isRunning, setIsRunning] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [totalCost, setTotalCost] = useState(0);
+  const { formatCurrency } = useCurrency();
 
   const totalHourlyRate = attendees.reduce((sum, attendee) => sum + attendee.hourlySalary, 0);
   const costPerSecond = totalHourlyRate / 3600;
@@ -39,14 +41,6 @@ export const MeetingTimer = ({ attendees, onCostUpdate }: MeetingTimerProps) => 
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(amount);
-  };
 
   const handleStart = () => setIsRunning(true);
   const handlePause = () => setIsRunning(false);
