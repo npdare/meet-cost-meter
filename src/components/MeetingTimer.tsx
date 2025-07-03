@@ -50,44 +50,51 @@ export const MeetingTimer = ({ attendees, onCostUpdate }: MeetingTimerProps) => 
     setTotalCost(0);
   };
 
+  const getCostColor = () => {
+    if (totalCost === 0) return 'text-slate-600';
+    if (totalCost < 50) return 'text-cost-low';
+    if (totalCost < 150) return 'text-cost-medium';
+    if (totalCost < 300) return 'text-cost-high';
+    return 'text-cost-critical';
+  };
+
   return (
-    <Card className="p-8 bg-gradient-primary text-white shadow-large">
-      <div className="text-center space-y-6">
+    <Card className="p-8 bg-blue-600 text-white shadow-elevated border-0">
+      <div className="text-center space-y-8">
         {/* Timer Display */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-center gap-2 text-white/80">
+        <div className="space-y-3">
+          <div className="flex items-center justify-center gap-2 text-blue-100">
             <Clock className="w-5 h-5" />
-            <span className="text-sm font-medium">Meeting Duration</span>
+            <span className="text-sm font-medium tracking-wider uppercase">Duration</span>
           </div>
-          <div className={`text-6xl font-bold font-mono ${isRunning ? 'animate-pulse-glow' : ''}`}>
+          <div className={`text-7xl font-bold font-mono tracking-tight ${isRunning ? 'animate-pulse-glow' : ''}`}>
             {formatTime(seconds)}
           </div>
         </div>
 
         {/* Cost Display */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-center gap-2 text-white/80">
+        <div className="space-y-3">
+          <div className="flex items-center justify-center gap-2 text-blue-100">
             <DollarSign className="w-5 h-5" />
-            <span className="text-sm font-medium">Total Cost</span>
+            <span className="text-sm font-medium tracking-wider uppercase">Live Cost</span>
           </div>
-          <div className={`text-4xl font-bold ${totalCost > 0 ? 'animate-count-up' : ''}`}>
+          <div className={`text-5xl font-bold tracking-tight ${getCostColor()} ${totalCost > 0 ? 'animate-count-up' : ''}`}>
             {formatCurrency(totalCost)}
           </div>
           {totalHourlyRate > 0 && (
-            <div className="text-white/70 text-sm">
-              Rate: {formatCurrency(totalHourlyRate)}/hour
+            <div className="text-blue-200 text-sm font-medium">
+              {formatCurrency(totalHourlyRate)}/hour • {attendees.length} attendees
             </div>
           )}
         </div>
 
         {/* Controls */}
-        <div className="flex justify-center gap-3 pt-4">
+        <div className="flex justify-center gap-4 pt-6">
           {!isRunning ? (
             <Button
               onClick={handleStart}
               size="lg"
-              variant="secondary"
-              className="bg-white/20 hover:bg-white/30 border-white/20 text-white"
+              className="bg-white text-blue-600 hover:bg-blue-50 border-0 font-semibold px-8"
             >
               <Play className="w-4 h-4 mr-2" />
               Start Meeting
@@ -96,8 +103,8 @@ export const MeetingTimer = ({ attendees, onCostUpdate }: MeetingTimerProps) => 
             <Button
               onClick={handlePause}
               size="lg"
-              variant="secondary"
-              className="bg-white/20 hover:bg-white/30 border-white/20 text-white"
+              variant="outline"
+              className="border-white text-white hover:bg-white hover:text-blue-600 font-semibold px-8"
             >
               <Pause className="w-4 h-4 mr-2" />
               Pause
@@ -106,8 +113,8 @@ export const MeetingTimer = ({ attendees, onCostUpdate }: MeetingTimerProps) => 
           <Button
             onClick={handleReset}
             size="lg"
-            variant="secondary"
-            className="bg-white/20 hover:bg-white/30 border-white/20 text-white"
+            variant="outline"
+            className="border-blue-300 text-blue-100 hover:bg-blue-500 hover:border-blue-500 font-semibold px-8"
           >
             <Square className="w-4 h-4 mr-2" />
             Reset

@@ -100,33 +100,35 @@ export const AttendeeManager = ({ attendees, onAttendeesChange }: AttendeeManage
 
 
   return (
-    <Card className="p-6">
-      <div className="space-y-6">
-        <div className="flex items-center gap-2">
-          <Users className="w-5 h-5 text-primary" />
-          <h3 className="text-lg font-semibold">Meeting Attendees</h3>
+    <Card className="p-8 shadow-elevated border border-slate-200">
+      <div className="space-y-8">
+        <div className="flex items-center gap-3">
+          <div className="p-2 bg-blue-600">
+            <Users className="w-5 h-5 text-white" />
+          </div>
+          <h3 className="text-xl font-bold text-slate-900 tracking-tight">Meeting Attendees</h3>
         </div>
 
         {/* Add Attendee Form */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <Select value={selectedRole} onValueChange={setSelectedRole}>
-            <SelectTrigger>
+            <SelectTrigger className="h-12 border-slate-300 font-medium">
               <SelectValue placeholder="Select role" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white border-slate-200">
               {roles.map(role => (
-                <SelectItem key={role} value={role}>{role}</SelectItem>
+                <SelectItem key={role} value={role} className="font-medium">{role}</SelectItem>
               ))}
             </SelectContent>
           </Select>
 
           <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-            <SelectTrigger>
+            <SelectTrigger className="h-12 border-slate-300 font-medium">
               <SelectValue placeholder="Select region" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white border-slate-200">
               {regions.map(region => (
-                <SelectItem key={region} value={region}>{region}</SelectItem>
+                <SelectItem key={region} value={region} className="font-medium">{region}</SelectItem>
               ))}
             </SelectContent>
           </Select>
@@ -134,7 +136,7 @@ export const AttendeeManager = ({ attendees, onAttendeesChange }: AttendeeManage
           <Button 
             onClick={addAttendee} 
             disabled={!selectedRole || !selectedRegion}
-            className="w-full"
+            className="w-full h-12 bg-blue-600 hover:bg-blue-700 font-semibold"
           >
             Add Attendee
           </Button>
@@ -142,35 +144,37 @@ export const AttendeeManager = ({ attendees, onAttendeesChange }: AttendeeManage
 
         {/* Current Attendees */}
         {attendees.length > 0 && (
-          <div className="space-y-3">
+          <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h4 className="font-medium">Current Attendees ({attendees.length})</h4>
-              <div className="text-sm text-muted-foreground">
+              <h4 className="font-bold text-slate-900">Current Attendees ({attendees.length})</h4>
+              <div className="text-sm text-slate-600 font-semibold">
                 Total: {formatCurrency(attendees.reduce((sum, a) => sum + a.hourlySalary, 0))}/hour
               </div>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {attendees.map(attendee => (
                 <div 
                   key={attendee.id} 
-                  className="flex items-center justify-between p-3 bg-neutral-gray rounded-lg"
+                  className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200"
                 >
-                  <div className="flex items-center gap-3">
-                    <User className="w-4 h-4 text-muted-foreground" />
+                  <div className="flex items-center gap-4">
+                    <div className="p-2 bg-slate-600">
+                      <User className="w-4 h-4 text-white" />
+                    </div>
                     <div>
-                      <div className="font-medium">{attendee.role}</div>
-                      <div className="text-sm text-muted-foreground">{attendee.region}</div>
+                      <div className="font-semibold text-slate-900">{attendee.role}</div>
+                      <div className="text-sm text-slate-600 font-medium">{attendee.region}</div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <Badge variant="secondary">
+                  <div className="flex items-center gap-4">
+                    <Badge variant="secondary" className="bg-blue-100 text-blue-800 font-semibold border-blue-200">
                       {formatCurrency(attendee.hourlySalary)}/hour
                     </Badge>
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => removeAttendee(attendee.id)}
-                      className="text-destructive hover:text-destructive"
+                      className="text-slate-600 hover:text-red-600 border-slate-300 font-medium"
                     >
                       Remove
                     </Button>
@@ -182,10 +186,10 @@ export const AttendeeManager = ({ attendees, onAttendeesChange }: AttendeeManage
         )}
 
         {attendees.length === 0 && (
-          <div className="text-center py-8 text-muted-foreground">
-            <Users className="w-12 h-12 mx-auto mb-3 opacity-50" />
-            <p>No attendees added yet</p>
-            <p className="text-sm">Add attendees to start calculating meeting costs</p>
+          <div className="text-center py-12 text-slate-500">
+            <Users className="w-16 h-16 mx-auto mb-4 text-slate-400" />
+            <p className="font-semibold text-slate-600">No attendees added yet</p>
+            <p className="text-sm mt-1">Add attendees to start calculating meeting costs</p>
           </div>
         )}
       </div>

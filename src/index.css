@@ -8,58 +8,79 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 215 25% 26.9%;
+    --background: 0 0% 100%;
+    --foreground: 220 9% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 215 25% 26.9%;
+    --card-foreground: 220 9% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 215 25% 26.9%;
+    --popover-foreground: 220 9% 15%;
 
-    --primary: 217 91% 59.8%;
+    --primary: 221 83% 53%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 215 25% 26.9%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 9% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 14% 96%;
+    --muted-foreground: 220 9% 46%;
 
-    --accent: 142 76% 36%;
+    --accent: 221 83% 53%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 217 91% 59.8%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 221 83% 53%;
 
-    /* Custom design tokens */
-    --corporate-blue: 217 91% 59.8%;
-    --money-green: 142 76% 36%;
-    --profit-green: 120 61% 50%;
-    --warning-orange: 38 92% 50%;
-    --neutral-gray: 210 40% 96.1%;
-    --text-primary: 215 25% 26.9%;
-    --text-secondary: 215.4 16.3% 46.9%;
+    /* Professional color system */
+    --slate-50: 210 40% 98%;
+    --slate-100: 210 40% 96%;
+    --slate-200: 214 32% 91%;
+    --slate-300: 213 27% 84%;
+    --slate-400: 215 20% 65%;
+    --slate-500: 215 16% 47%;
+    --slate-600: 215 19% 35%;
+    --slate-700: 215 25% 27%;
+    --slate-800: 217 33% 17%;
+    --slate-900: 222 47% 11%;
 
-    /* Gradients */
-    --gradient-primary: linear-gradient(135deg, hsl(217 91% 59.8%), hsl(217 91% 69.8%));
-    --gradient-success: linear-gradient(135deg, hsl(142 76% 36%), hsl(120 61% 50%));
-    --gradient-background: linear-gradient(180deg, hsl(210 20% 98%), hsl(210 40% 96.1%));
+    --blue-50: 214 100% 97%;
+    --blue-100: 214 95% 93%;
+    --blue-200: 213 97% 87%;
+    --blue-300: 212 96% 78%;
+    --blue-400: 213 94% 68%;
+    --blue-500: 217 91% 60%;
+    --blue-600: 221 83% 53%;
+    --blue-700: 224 76% 48%;
+    --blue-800: 226 71% 40%;
+    --blue-900: 224 64% 33%;
 
-    /* Shadows */
-    --shadow-soft: 0 1px 3px 0 hsl(215 25% 26.9% / 0.1), 0 1px 2px 0 hsl(215 25% 26.9% / 0.06);
-    --shadow-medium: 0 4px 6px -1px hsl(215 25% 26.9% / 0.1), 0 2px 4px -1px hsl(215 25% 26.9% / 0.06);
-    --shadow-large: 0 10px 15px -3px hsl(215 25% 26.9% / 0.1), 0 4px 6px -2px hsl(215 25% 26.9% / 0.05);
+    /* Status colors for cost thresholds */
+    --cost-low: 142 76% 36%;      /* Green */
+    --cost-medium: 45 93% 47%;    /* Amber */
+    --cost-high: 25 95% 53%;      /* Orange */
+    --cost-critical: 0 84% 60%;   /* Red */
 
-    /* Animations */
-    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    /* No gradients - flat design */
+    --surface-1: 0 0% 100%;       /* Pure white */
+    --surface-2: 220 14% 96%;     /* Light gray */
+    --surface-3: 220 13% 91%;     /* Medium gray */
 
-    --radius: 0.5rem;
+    /* Sharp shadows - more defined */
+    --shadow-sharp: 0 1px 3px 0 hsl(220 9% 15% / 0.15);
+    --shadow-elevated: 0 4px 12px 0 hsl(220 9% 15% / 0.15);
+    --shadow-overlay: 0 8px 25px 0 hsl(220 9% 15% / 0.15);
+
+    /* Crisp animations - no bounce */
+    --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-base: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+
+    /* Minimal radius */
+    --radius: 0.25rem;
 
     --sidebar-background: 0 0% 98%;
 
