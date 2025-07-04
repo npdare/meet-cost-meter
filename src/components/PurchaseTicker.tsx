@@ -35,8 +35,32 @@ export const PurchaseTicker = ({ totalCost }: PurchaseTickerProps) => {
 
   const affordableItems = getAffordableItems();
 
+  if (totalCost < 1) {
+    return (
+      <div className="bg-slate-900 text-white py-4 overflow-hidden border border-slate-700">
+        <div className="relative">
+          <div className="text-center">
+            <span className="text-slate-400 text-sm font-medium">
+              Start the timer to see what this meeting could buy instead...
+            </span>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (affordableItems.length === 0) {
-    return null;
+    return (
+      <div className="bg-slate-900 text-white py-4 overflow-hidden border border-slate-700">
+        <div className="relative">
+          <div className="text-center">
+            <span className="text-slate-400 text-sm font-medium">
+              {formatCurrency(totalCost)} - Keep the meeting running to see purchase comparisons...
+            </span>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
