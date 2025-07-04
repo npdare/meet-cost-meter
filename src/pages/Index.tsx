@@ -153,19 +153,30 @@ const Index = () => {
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Cost Display */}
-          <Card className="h-96 flex flex-col">
+          <Card className="min-h-96 flex flex-col">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <DollarSign className="w-5 h-5" />
                 Meeting Cost
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <div className="text-center space-y-2">
+            <CardContent className="flex-1 flex flex-col justify-center">
+              <div className="text-center space-y-4">
                 <div className="text-4xl font-bold text-green-600">${totalCost.toFixed(2)}</div>
                 <div className="text-sm text-gray-600">
                   {attendees.length} attendee{attendees.length !== 1 ? "s" : ""} • $
                   {attendees.reduce((sum, a) => sum + a.hourlyRate, 0).toFixed(2)}/hour total
+                </div>
+                <div className="pt-4 border-t border-gray-100">
+                  <div className="text-xs text-gray-500 mb-2">Live Cost Tracking</div>
+                  <div className="space-y-1">
+                    <div className="text-xs text-gray-600">
+                      Per minute: ${(totalCost / Math.max(time / 60, 1)).toFixed(2)}
+                    </div>
+                    <div className="text-xs text-gray-600">
+                      Per second: ${(totalCost / Math.max(time, 1)).toFixed(4)}
+                    </div>
+                  </div>
                 </div>
               </div>
             </CardContent>
