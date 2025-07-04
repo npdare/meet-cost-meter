@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Play, Pause, Square, Plus, X, Users, DollarSign, Clock } from "lucide-react"
 import { MilestoneTicker } from "@/components/MilestoneTicker"
 import { MeetingReportCard } from "@/components/MeetingReportCard"
+import { AdBanner } from "@/components/AdBanner"
 
 interface Attendee {
   id: string
@@ -120,6 +121,9 @@ const Index = () => {
           <h1 className="text-3xl font-bold text-gray-900 mb-2">Meeting Meter</h1>
           <p className="text-gray-600">Track meeting duration and calculate real-time costs</p>
         </div>
+
+        {/* Top Banner Ad */}
+        <AdBanner adSlot="1234567890" adFormat="horizontal" className="text-center" />
 
         {/* Timer Display */}
         <Card className="text-center">
@@ -330,7 +334,10 @@ const Index = () => {
           </Card>
         )}
         
-        <MilestoneTicker 
+        {/* Mid-page Ad */}
+        <AdBanner adSlot="0987654321" adFormat="rectangle" className="text-center" />
+        
+        <MilestoneTicker
           totalCost={totalCost} 
           resetTrigger={resetCounter}
           onMilestoneAchieved={(milestone) => setAchievedMilestones(prev => [milestone, ...prev])}
