@@ -70,24 +70,26 @@ export const MilestoneTicker = ({ totalCost }: MilestoneTickerProps) => {
       // Add to achieved list first
       setAchievedMilestones(prev => [milestone, ...prev])
       
-      // Then show the popup
+      // Show the popup
       setCurrentMilestone(milestone)
       setShowMilestone(true)
 
-      // Hide popup after 3 seconds
-      const timer = setTimeout(() => {
+      // Start fade out after 3 seconds
+      const fadeTimer = setTimeout(() => {
         setShowMilestone(false)
-        // Clear milestone after fade animation completes
-        const clearTimer = setTimeout(() => {
-          setCurrentMilestone(null)
-        }, 500)
-        
-        return () => clearTimeout(clearTimer)
       }, 3000)
 
-      return () => clearTimeout(timer)
+      // Clear milestone after fade animation
+      const clearTimer = setTimeout(() => {
+        setCurrentMilestone(null)
+      }, 3500) // 3000ms + 500ms for fade animation
+
+      return () => {
+        clearTimeout(fadeTimer)
+        clearTimeout(clearTimer)
+      }
     }
-  }, [totalCost, achievedMilestones])
+  }, [totalCost])
 
   return (
     <>
@@ -96,15 +98,16 @@ export const MilestoneTicker = ({ totalCost }: MilestoneTickerProps) => {
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
           <div
             className={`
-              bg-black text-white px-6 py-3 rounded-lg shadow-lg
-              flex items-center gap-3 transition-all duration-500 ease-in-out
+              bg-black text-white px-8 py-4 rounded-xl shadow-2xl
+              flex items-center gap-4 transition-all duration-500 ease-in-out
+              min-w-80 max-w-md
               ${showMilestone ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'}
             `}
           >
-            <div className="text-yellow-400">
+            <div className="text-yellow-400 text-lg">
               {currentMilestone.icon}
             </div>
-            <span className="font-medium text-sm">
+            <span className="font-medium text-base">
               {currentMilestone.message}
             </span>
           </div>
