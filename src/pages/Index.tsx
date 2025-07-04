@@ -142,7 +142,7 @@ const Index = () => {
         <AdBanner adSlot="1234567890" adFormat="horizontal" className="text-center" />
 
         {/* Timer Display */}
-        <Card className="meeting-card glass-card border-0 shadow-xl">
+        <Card className="meeting-card glass-card shadow-xl">
           <CardContent className="pt-8 pb-8">
             <div className="space-y-6">
               <div className="flex items-center justify-center gap-2 text-muted-foreground">
