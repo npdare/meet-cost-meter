@@ -82,8 +82,8 @@ export const MilestoneTicker = ({ totalCost }: MilestoneTickerProps) => {
       <div
         className={`
           bg-black text-white px-6 py-3 rounded-lg shadow-lg
-          flex items-center gap-3 transition-all duration-300
-          ${showMilestone ? 'animate-fade-in translate-y-0' : 'animate-fade-out translate-y-2'}
+          flex items-center gap-3 transition-all duration-500
+          ${showMilestone ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'}
         `}
       >
         <div className="text-yellow-400">
