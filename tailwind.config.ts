@@ -65,53 +65,53 @@ export default {
 					800: 'hsl(var(--slate-800))',
 					900: 'hsl(var(--slate-900))',
 				},
-				// Financial blue accent palette
-				financial: {
-					50: 'hsl(var(--financial-50))',
-					100: 'hsl(var(--financial-100))',
-					200: 'hsl(var(--financial-200))',
-					300: 'hsl(var(--financial-300))',
-					400: 'hsl(var(--financial-400))',
-					500: 'hsl(var(--financial-500))',
-					600: 'hsl(var(--financial-600))',
-					700: 'hsl(var(--financial-700))',
-					800: 'hsl(var(--financial-800))',
-					900: 'hsl(var(--financial-900))',
+				// Professional blue palette
+				blue: {
+					50: 'hsl(var(--blue-50))',
+					100: 'hsl(var(--blue-100))',
+					200: 'hsl(var(--blue-200))',
+					300: 'hsl(var(--blue-300))',
+					400: 'hsl(var(--blue-400))',
+					500: 'hsl(var(--blue-500))',
+					600: 'hsl(var(--blue-600))',
+					700: 'hsl(var(--blue-700))',
+					800: 'hsl(var(--blue-800))',
+					900: 'hsl(var(--blue-900))',
 				},
-				// Terminal green for gains
-				gain: {
-					50: 'hsl(var(--gain-50))',
-					100: 'hsl(var(--gain-100))',
-					200: 'hsl(var(--gain-200))',
-					300: 'hsl(var(--gain-300))',
-					400: 'hsl(var(--gain-400))',
-					500: 'hsl(var(--gain-500))',
-					600: 'hsl(var(--gain-600))',
-					700: 'hsl(var(--gain-700))',
-					800: 'hsl(var(--gain-800))',
-					900: 'hsl(var(--gain-900))',
+				// Status green
+				green: {
+					50: 'hsl(var(--green-50))',
+					100: 'hsl(var(--green-100))',
+					200: 'hsl(var(--green-200))',
+					300: 'hsl(var(--green-300))',
+					400: 'hsl(var(--green-400))',
+					500: 'hsl(var(--green-500))',
+					600: 'hsl(var(--green-600))',
+					700: 'hsl(var(--green-700))',
+					800: 'hsl(var(--green-800))',
+					900: 'hsl(var(--green-900))',
 				},
-				// Terminal red for losses
-				loss: {
-					50: 'hsl(var(--loss-50))',
-					100: 'hsl(var(--loss-100))',
-					200: 'hsl(var(--loss-200))',
-					300: 'hsl(var(--loss-300))',
-					400: 'hsl(var(--loss-400))',
-					500: 'hsl(var(--loss-500))',
-					600: 'hsl(var(--loss-600))',
-					700: 'hsl(var(--loss-700))',
-					800: 'hsl(var(--loss-800))',
-					900: 'hsl(var(--loss-900))',
+				// Warning amber
+				amber: {
+					50: 'hsl(var(--amber-50))',
+					100: 'hsl(var(--amber-100))',
+					200: 'hsl(var(--amber-200))',
+					300: 'hsl(var(--amber-300))',
+					400: 'hsl(var(--amber-400))',
+					500: 'hsl(var(--amber-500))',
+					600: 'hsl(var(--amber-600))',
+					700: 'hsl(var(--amber-700))',
+					800: 'hsl(var(--amber-800))',
+					900: 'hsl(var(--amber-900))',
 				},
 				// Cost status colors
 				cost: {
-					low: 'hsl(var(--cost-low))',
-					medium: 'hsl(var(--cost-medium))',
-					high: 'hsl(var(--cost-high))',
-					critical: 'hsl(var(--cost-critical))',
+					low: 'hsl(var(--green-600))',
+					medium: 'hsl(var(--amber-500))',
+					high: 'hsl(var(--amber-600))',
+					critical: 'hsl(var(--destructive))',
 				},
-				// Dark financial surfaces
+				// Clean surfaces
 				surface: {
 					1: 'hsl(var(--surface-1))',
 					2: 'hsl(var(--surface-2))',
@@ -134,13 +134,12 @@ export default {
 				sm: 'calc(var(--radius) - 4px)'
 			},
 			boxShadow: {
-				'sharp': 'var(--shadow-sharp)',
-				'elevated': 'var(--shadow-elevated)',
-				'overlay': 'var(--shadow-overlay)',
+				'sm': 'var(--shadow-sm)',
+				'base': 'var(--shadow-base)',
+				'lg': 'var(--shadow-lg)',
 			},
 			transitionTimingFunction: {
-				'fast': 'var(--transition-fast)',
-				'base': 'var(--transition-base)',
+				'smooth': 'var(--transition)',
 			},
 			keyframes: {
 				'accordion-down': {

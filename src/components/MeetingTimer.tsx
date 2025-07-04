@@ -59,40 +59,40 @@ export const MeetingTimer = ({ attendees, onCostUpdate }: MeetingTimerProps) => 
   };
 
   return (
-    <Card className="relative p-0 bg-surface-1 text-white shadow-elevated border border-financial-600 overflow-hidden">
-      {/* Financial Terminal Header */}
-      <div className="bg-financial-600 text-white px-6 py-3 font-bold text-lg tracking-wide text-center">
-        📊 CASHCLOCK • LIVE TRADING SESSION
+    <Card className="relative p-0 bg-white shadow-lg border border-slate-200 overflow-hidden">
+      {/* Header */}
+      <div className="bg-blue-600 text-white px-6 py-3 font-bold text-lg tracking-wide text-center">
+        CashClock Timer
       </div>
       
-      <div className="p-8 bg-surface-2">
+      <div className="p-8 bg-white">
         <div className="text-center space-y-8">
-          {/* Terminal Display */}
-          <div className="bg-surface-1 border border-surface-3 p-8 rounded-sm">
+          {/* Display Panel */}
+          <div className="bg-slate-50 border border-slate-200 p-8 rounded-lg">
             <div className="space-y-6">
               {/* Timer Display */}
               <div className="space-y-2">
-                <div className="text-financial-400 text-sm font-bold tracking-wider uppercase">
-                  SESSION TIME
+                <div className="text-blue-600 text-sm font-bold tracking-wider uppercase">
+                  Elapsed Time
                 </div>
-                <div className={`text-6xl font-mono font-bold tracking-wider text-white ${isRunning ? 'animate-pulse-glow' : ''}`}
+                <div className={`text-6xl font-mono font-bold tracking-wider text-slate-900 ${isRunning ? 'animate-pulse-glow' : ''}`}
                      style={{ fontFamily: 'Courier New, monospace' }}>
                   {formatTime(seconds)}
                 </div>
               </div>
 
               {/* Cost Display */}
-              <div className="border-t border-surface-3 pt-6">
-                <div className="text-financial-400 text-sm font-bold tracking-wider uppercase">
-                  BURN RATE
+              <div className="border-t border-slate-200 pt-6">
+                <div className="text-blue-600 text-sm font-bold tracking-wider uppercase">
+                  Current Cost
                 </div>
-                <div className={`text-5xl font-mono font-bold tracking-wider ${totalCost > 0 ? 'text-loss-400 animate-count-up' : 'text-slate-500'}`}
+                <div className={`text-5xl font-mono font-bold tracking-wider ${totalCost > 0 ? getCostColor() + ' animate-count-up' : 'text-slate-500'}`}
                      style={{ fontFamily: 'Courier New, monospace' }}>
                   {formatCurrency(totalCost)}
                 </div>
                 {totalHourlyRate > 0 && (
-                  <div className="text-slate-400 text-sm font-bold mt-2">
-                    RATE: {formatCurrency(totalHourlyRate)}/HR • {attendees.length} PARTICIPANTS
+                  <div className="text-slate-600 text-sm font-bold mt-2">
+                    Rate: {formatCurrency(totalHourlyRate)}/hour • {attendees.length} attendees
                   </div>
                 )}
               </div>
@@ -105,29 +105,29 @@ export const MeetingTimer = ({ attendees, onCostUpdate }: MeetingTimerProps) => 
               <Button
                 onClick={handleStart}
                 size="lg"
-                className="bg-gain-600 text-white hover:bg-gain-500 border-0 font-bold px-8 tracking-wide"
+                className="bg-green-600 text-white hover:bg-green-700 border-0 font-bold px-8 tracking-wide"
               >
                 <Play className="w-4 h-4 mr-2" />
-                START SESSION
+                Start Timer
               </Button>
             ) : (
               <Button
                 onClick={handlePause}
                 size="lg"
-                className="bg-surface-3 text-financial-400 hover:bg-surface-2 border border-financial-500 font-bold px-8 tracking-wide"
+                className="bg-amber-500 text-white hover:bg-amber-600 border-0 font-bold px-8 tracking-wide"
               >
                 <Pause className="w-4 h-4 mr-2" />
-                PAUSE
+                Pause
               </Button>
             )}
             <Button
               onClick={handleReset}
               size="lg"
               variant="outline"
-              className="border border-surface-3 text-slate-300 hover:bg-surface-3 hover:border-slate-500 font-bold px-8 tracking-wide"
+              className="border border-slate-300 text-slate-700 hover:bg-slate-50 hover:border-slate-400 font-bold px-8 tracking-wide"
             >
               <Square className="w-4 h-4 mr-2" />
-              RESET
+              Reset
             </Button>
           </div>
         </div>

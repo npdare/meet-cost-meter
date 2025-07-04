@@ -29,23 +29,23 @@ const Index = () => {
   }, [totalHourlyRate]);
 
   return (
-    <div className="min-h-screen bg-surface-1">
+    <div className="min-h-screen bg-slate-50">
       {/* Header */}
-      <div className="bg-surface-2 shadow-elevated border-b border-surface-3">
+      <div className="bg-white shadow-base border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">
-                <div className="p-3 bg-financial-600 border border-financial-500">
+                <div className="p-3 bg-blue-600 rounded-lg">
                   <DollarSign className="w-8 h-8 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-white tracking-tight">CashClock</h1>
-                  <p className="text-slate-300 font-medium">Real-time meeting cost tracker</p>
+                  <h1 className="text-3xl font-bold text-slate-900 tracking-tight">CashClock</h1>
+                  <p className="text-slate-600 font-medium">Real-time meeting cost tracking</p>
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-sm text-slate-400 font-medium uppercase tracking-wider">Financial Terminal</div>
-                <div className="text-xl font-bold text-financial-400 tracking-tight">Live Market Data</div>
+                <div className="text-sm text-slate-500 font-medium uppercase tracking-wider">Professional Tool</div>
+                <div className="text-xl font-bold text-blue-600 tracking-tight">Enterprise Ready</div>
               </div>
           </div>
         </div>
@@ -77,23 +77,23 @@ const Index = () => {
               onAttendeesChange={setAttendees}
             />
 
-            {/* Market Insights Card */}
-            <Card className="p-8 bg-surface-2 text-white shadow-elevated border border-surface-3">
+            {/* Insights Card */}
+            <Card className="p-8 bg-white shadow-lg border border-slate-200">
               <div className="space-y-6">
                 <div className="flex items-center gap-3">
-                  <div className="p-2 bg-financial-600">
+                  <div className="p-2 bg-blue-600 rounded-lg">
                     <Clock className="w-5 h-5 text-white" />
                   </div>
-                  <h3 className="font-bold text-xl tracking-tight text-financial-400">Market Insights</h3>
+                  <h3 className="font-bold text-xl tracking-tight text-slate-900">Meeting Insights</h3>
                 </div>
                 <div className="space-y-3 text-sm">
-                  <p className="font-medium text-slate-300">• Average meeting ROI: <span className="text-loss-400">-$338/hour</span></p>
-                  <p className="font-medium text-slate-300">• Meeting overhead: <span className="text-loss-400">67%</span> productivity loss</p>
-                  <p className="font-medium text-slate-300">• Efficiency gains: <span className="text-gain-400">+25%</span> cost reduction</p>
+                  <p className="font-medium text-slate-700">• Average meeting costs $338/hour with 6 attendees</p>
+                  <p className="font-medium text-slate-700">• 67% of employees report excessive meetings</p>
+                  <p className="font-medium text-slate-700">• Cost awareness improves efficiency by 25%</p>
                 </div>
-                <div className="pt-4 border-t border-surface-3">
-                  <p className="text-xs text-slate-400 font-medium">
-                    Real-time financial awareness drives meeting efficiency
+                <div className="pt-4 border-t border-slate-200">
+                  <p className="text-xs text-slate-500 font-medium">
+                    Track meeting costs to drive better decision making
                   </p>
                 </div>
               </div>
@@ -102,13 +102,13 @@ const Index = () => {
         </div>
 
         {/* Footer */}
-        <div className="mt-24 text-center text-slate-400">
-          <div className="border-t border-surface-3 pt-12">
-            <p className="font-semibold text-white">
-              Enterprise financial analytics for meeting optimization
+        <div className="mt-24 text-center text-slate-600">
+          <div className="border-t border-slate-200 pt-12">
+            <p className="font-semibold text-slate-900">
+              Professional meeting cost calculator for modern teams
             </p>
             <p className="text-sm mt-2 font-medium">
-              Contact sales for Bloomberg terminal integration and institutional pricing
+              Simple, effective tools for better meeting management
             </p>
           </div>
         </div>
