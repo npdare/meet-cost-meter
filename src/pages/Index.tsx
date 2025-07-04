@@ -10,6 +10,7 @@ import { AdBanner } from "@/components/AdBanner"
 import { ThemeToggle } from "@/components/ThemeToggle"
 import { PremiumGate } from "@/components/PremiumGate"
 import { MeetingHistory, saveMeeting } from "@/components/MeetingHistory"
+import { CalendarIntegration } from "@/components/CalendarIntegration"
 import { useAuth } from "@/hooks/useAuth"
 import { Link } from "react-router-dom"
 import { useToast } from "@/hooks/use-toast"
@@ -416,6 +417,10 @@ const Index = () => {
         )}
 
         {/* Premium Features */}
+        <PremiumGate feature="Calendar Integration" description="Connect your calendar to automatically detect meetings and track costs">
+          <CalendarIntegration />
+        </PremiumGate>
+
         <PremiumGate feature="Meeting History" description="Save and track your meeting history with detailed analytics">
           <MeetingHistory />
         </PremiumGate>

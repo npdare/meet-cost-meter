@@ -9,6 +9,116 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      calendar_connections: {
+        Row: {
+          access_token: string
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          provider: string
+          provider_account_id: string
+          provider_email: string
+          refresh_token: string | null
+          scope: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          access_token: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          provider: string
+          provider_account_id: string
+          provider_email: string
+          refresh_token?: string | null
+          scope?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          access_token?: string
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          provider?: string
+          provider_account_id?: string
+          provider_email?: string
+          refresh_token?: string | null
+          scope?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      calendar_events: {
+        Row: {
+          attendees: Json | null
+          calendar_connection_id: string
+          created_at: string
+          description: string | null
+          end_time: string
+          estimated_cost: number | null
+          id: string
+          is_meeting: boolean | null
+          location: string | null
+          meeting_url: string | null
+          provider_event_id: string
+          start_time: string
+          title: string
+          tracked_cost: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attendees?: Json | null
+          calendar_connection_id: string
+          created_at?: string
+          description?: string | null
+          end_time: string
+          estimated_cost?: number | null
+          id?: string
+          is_meeting?: boolean | null
+          location?: string | null
+          meeting_url?: string | null
+          provider_event_id: string
+          start_time: string
+          title: string
+          tracked_cost?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attendees?: Json | null
+          calendar_connection_id?: string
+          created_at?: string
+          description?: string | null
+          end_time?: string
+          estimated_cost?: number | null
+          id?: string
+          is_meeting?: boolean | null
+          location?: string | null
+          meeting_url?: string | null
+          provider_event_id?: string
+          start_time?: string
+          title?: string
+          tracked_cost?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_events_calendar_connection_id_fkey"
+            columns: ["calendar_connection_id"]
+            isOneToOne: false
+            referencedRelation: "calendar_connections"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       meetings: {
         Row: {
           attendee_count: number
