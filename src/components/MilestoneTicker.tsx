@@ -1,73 +1,78 @@
 import { useState, useEffect } from "react"
-import { TrendingUp, Coffee, Car, Home, Plane } from "lucide-react"
+import { TrendingUp, Coffee, Car, Home, Plane, CheckCircle } from "lucide-react"
 
 interface MilestoneTickerProps {
   totalCost: number
 }
 
 interface Milestone {
+  id: string
   cost: number
   icon: React.ReactNode
   message: string
-  achieved: boolean
+  timestamp: Date
 }
 
 export const MilestoneTicker = ({ totalCost }: MilestoneTickerProps) => {
+  const [achievedMilestones, setAchievedMilestones] = useState<Milestone[]>([])
   const [currentMilestone, setCurrentMilestone] = useState<Milestone | null>(null)
   const [showMilestone, setShowMilestone] = useState(false)
   
-  const milestones: Milestone[] = [
+  const milestoneTemplates = [
     {
       cost: 25,
-      icon: <Coffee className="w-5 h-5" />,
-      message: "Cost equals 5 coffee cups ☕",
-      achieved: false
+      icon: <Coffee className="w-4 h-4" />,
+      message: "Cost equals 5 coffee cups ☕"
     },
     {
       cost: 50,
-      icon: <TrendingUp className="w-5 h-5" />,
-      message: "Meeting cost hits $50! 📈",
-      achieved: false
+      icon: <TrendingUp className="w-4 h-4" />,
+      message: "Meeting cost hits $50! 📈"
     },
     {
       cost: 100,
-      icon: <Car className="w-5 h-5" />,
-      message: "Could buy a tank of gas! ⛽",
-      achieved: false
+      icon: <Car className="w-4 h-4" />,
+      message: "Could buy a tank of gas! ⛽"
     },
     {
       cost: 200,
-      icon: <TrendingUp className="w-5 h-5" />,
-      message: "That's $200 in meeting time! 💸",
-      achieved: false
+      icon: <TrendingUp className="w-4 h-4" />,
+      message: "That's $200 in meeting time! 💸"
     },
     {
       cost: 300,
-      icon: <Home className="w-5 h-5" />,
-      message: "Weekend hotel stay cost reached! 🏨",
-      achieved: false
+      icon: <Home className="w-4 h-4" />,
+      message: "Weekend hotel stay cost reached! 🏨"
     },
     {
       cost: 500,
-      icon: <Plane className="w-5 h-5" />,
-      message: "Flight ticket cost achieved! ✈️",
-      achieved: false
+      icon: <Plane className="w-4 h-4" />,
+      message: "Flight ticket cost achieved! ✈️"
     }
   ]
 
   useEffect(() => {
-    const achievedMilestone = milestones.find(
-      milestone => totalCost >= milestone.cost && !milestone.achieved
+    const achievedCosts = achievedMilestones.map(m => m.cost)
+    const newMilestone = milestoneTemplates.find(
+      template => totalCost >= template.cost && !achievedCosts.includes(template.cost)
     )
 
-    if (achievedMilestone) {
-      achievedMilestone.achieved = true
-      setCurrentMilestone(achievedMilestone)
+    if (newMilestone) {
+      const milestone: Milestone = {
+        id: Date.now().toString(),
+        cost: newMilestone.cost,
+        icon: newMilestone.icon,
+        message: newMilestone.message,
+        timestamp: new Date()
+      }
+
+      setCurrentMilestone(milestone)
       setShowMilestone(true)
 
-      // Hide after 3 seconds
+      // Add to achieved list and hide popup
       const timer = setTimeout(() => {
         setShowMilestone(false)
+        setAchievedMilestones(prev => [milestone, ...prev])
         setTimeout(() => setCurrentMilestone(null), 300)
       }, 3000)
 
@@ -75,24 +80,50 @@ export const MilestoneTicker = ({ totalCost }: MilestoneTickerProps) => {
     }
   }, [totalCost])
 
-  if (!currentMilestone) return null
-
   return (
-    <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
-      <div
-        className={`
-          bg-black text-white px-6 py-3 rounded-lg shadow-lg
-          flex items-center gap-3 transition-all duration-500
-          ${showMilestone ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'}
-        `}
-      >
-        <div className="text-yellow-400">
-          {currentMilestone.icon}
+    <>
+      {/* Popup Notification */}
+      {currentMilestone && (
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-50">
+          <div
+            className={`
+              bg-black text-white px-6 py-3 rounded-lg shadow-lg
+              flex items-center gap-3 transition-all duration-500
+              ${showMilestone ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'}
+            `}
+          >
+            <div className="text-yellow-400">
+              {currentMilestone.icon}
+            </div>
+            <span className="font-medium text-sm">
+              {currentMilestone.message}
+            </span>
+          </div>
         </div>
-        <span className="font-medium text-sm">
-          {currentMilestone.message}
-        </span>
-      </div>
-    </div>
+      )}
+
+      {/* Achievements List */}
+      {achievedMilestones.length > 0 && (
+        <div className="mt-6">
+          <div className="flex items-center gap-2 mb-3">
+            <CheckCircle className="w-4 h-4 text-green-600" />
+            <h3 className="font-semibold text-sm text-gray-700">Cost Milestones Achieved</h3>
+          </div>
+          <div className="space-y-2 max-h-32 overflow-y-auto bg-gray-50 rounded-lg p-3">
+            {achievedMilestones.map((milestone) => (
+              <div key={milestone.id} className="flex items-center gap-2 text-xs text-gray-600">
+                <div className="text-green-600">
+                  {milestone.icon}
+                </div>
+                <span className="flex-1">${milestone.cost} - {milestone.message}</span>
+                <span className="text-gray-400">
+                  {milestone.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </>
   )
 }

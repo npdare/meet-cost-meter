@@ -148,7 +148,7 @@ const Index = () => {
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Cost Display */}
-          <Card>
+          <Card className="h-96 flex flex-col">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <DollarSign className="w-5 h-5" />
@@ -167,14 +167,14 @@ const Index = () => {
           </Card>
 
           {/* Attendees Management */}
-          <Card>
+          <Card className="h-96 flex flex-col">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5" />
                 Attendees
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 flex-1 flex flex-col overflow-hidden">
               {/* Add Attendee Form */}
               <div className="space-y-3">
                 <div className="space-y-2">
@@ -229,31 +229,35 @@ const Index = () => {
               </div>
 
               {/* Attendees List */}
-              <div className="space-y-2 max-h-48 overflow-y-auto">
-                {attendees.length === 0 ? (
-                  <div className="text-center text-gray-500 py-4">
-                    <Users className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No attendees added yet</p>
-                  </div>
-                ) : (
-                  attendees.map((attendee) => (
-                    <div key={attendee.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                      <div>
-                        <div className="font-medium text-sm">{attendee.name}</div>
-                        <div className="text-xs text-gray-600">{attendee.role}</div>
-                        <div className="text-xs text-gray-500">${attendee.hourlyRate.toFixed(2)}/hour</div>
-                      </div>
-                      <Button
-                        onClick={() => removeAttendee(attendee.id)}
-                        size="sm"
-                        variant="ghost"
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-red-500"
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
+              <div className="flex-1 flex flex-col min-h-0">
+                <div className="space-y-2 flex-1 overflow-y-auto">
+                  {attendees.length === 0 ? (
+                    <div className="text-center text-gray-500 py-4">
+                      <Users className="w-8 h-8 mx-auto mb-2 opacity-50" />
+                      <p className="text-sm">No attendees added yet</p>
                     </div>
-                  ))
-                )}
+                  ) : (
+                    attendees.map((attendee) => (
+                      <div key={attendee.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
+                        <div>
+                          <div className="font-medium text-sm">{attendee.name}</div>
+                          <div className="text-xs text-gray-600">{attendee.role}</div>
+                          <div className="text-xs text-gray-500">${attendee.hourlyRate.toFixed(2)}/hour</div>
+                        </div>
+                        <Button
+                          onClick={() => removeAttendee(attendee.id)}
+                          size="sm"
+                          variant="ghost"
+                          className="h-8 w-8 p-0 text-gray-400 hover:text-red-500"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ))
+                  )}
+                </div>
+                
+                <MilestoneTicker totalCost={totalCost} />
               </div>
             </CardContent>
           </Card>
@@ -285,8 +289,6 @@ const Index = () => {
           </Card>
         )}
       </div>
-      
-      <MilestoneTicker totalCost={totalCost} />
     </div>
   )
 }
