@@ -173,28 +173,6 @@ export const MilestoneTicker = ({ totalCost, resetTrigger, onMilestoneAchieved }
         </div>
       )}
 
-      {/* Achievements List */}
-      {achievedMilestones.length > 0 && (
-        <div className="bg-white rounded-lg shadow-sm border p-4">
-          <div className="flex items-center gap-2 mb-3">
-            <CheckCircle className="w-4 h-4 text-green-600" />
-            <h3 className="font-semibold text-sm text-gray-700">Cost Milestones Achieved</h3>
-          </div>
-          <div className="space-y-2 max-h-32 overflow-y-auto">
-            {achievedMilestones.map((milestone) => (
-              <div key={milestone.id} className="flex items-center gap-2 text-xs text-gray-600 p-2 bg-gray-50 rounded">
-                <div className="text-green-600">
-                  {milestone.icon}
-                </div>
-                <span className="flex-1">${milestone.cost} - {milestone.message}</span>
-                <span className="text-gray-400">
-                  {milestone.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </>
   )
 }

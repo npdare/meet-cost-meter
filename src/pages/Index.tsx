@@ -160,25 +160,50 @@ const Index = () => {
                 Meeting Cost
               </CardTitle>
             </CardHeader>
-            <CardContent className="flex-1 flex flex-col justify-center">
-              <div className="text-center space-y-4">
+            <CardContent className="flex-1 flex flex-col">
+              <div className="text-center space-y-3 mb-4">
                 <div className="text-4xl font-bold text-green-600">${totalCost.toFixed(2)}</div>
                 <div className="text-sm text-gray-600">
                   {attendees.length} attendee{attendees.length !== 1 ? "s" : ""} • $
                   {attendees.reduce((sum, a) => sum + a.hourlyRate, 0).toFixed(2)}/hour total
                 </div>
-                <div className="pt-4 border-t border-gray-100">
-                  <div className="text-xs text-gray-500 mb-2">Live Cost Tracking</div>
-                  <div className="space-y-1">
-                    <div className="text-xs text-gray-600">
-                      Per minute: ${(totalCost / Math.max(time / 60, 1)).toFixed(2)}
+              </div>
+              
+              {/* Cost Breakdown */}
+              <div className="grid grid-cols-2 gap-3 mb-4">
+                <div className="bg-gray-50 p-2 rounded text-center">
+                  <div className="text-sm font-medium text-gray-900">${(totalCost / Math.max(time / 60, 1)).toFixed(2)}</div>
+                  <div className="text-xs text-gray-600">per minute</div>
+                </div>
+                <div className="bg-gray-50 p-2 rounded text-center">
+                  <div className="text-sm font-medium text-gray-900">${(totalCost / Math.max(time, 1)).toFixed(4)}</div>
+                  <div className="text-xs text-gray-600">per second</div>
+                </div>
+              </div>
+              
+              {/* Milestones Achieved */}
+              {achievedMilestones.length > 0 && (
+                <div className="flex-1 min-h-0">
+                  <div className="border-t pt-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                      <span className="text-xs font-medium text-gray-700">Cost Milestones</span>
                     </div>
-                    <div className="text-xs text-gray-600">
-                      Per second: ${(totalCost / Math.max(time, 1)).toFixed(4)}
+                    <div className="space-y-1 max-h-32 overflow-y-auto">
+                      {achievedMilestones.slice(0, 5).map((milestone, index) => (
+                        <div key={index} className="text-xs text-gray-600 bg-yellow-50 px-2 py-1 rounded border border-yellow-100">
+                          {milestone}
+                        </div>
+                      ))}
+                      {achievedMilestones.length > 5 && (
+                        <div className="text-xs text-gray-500 text-center">
+                          +{achievedMilestones.length - 5} more achievements
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
