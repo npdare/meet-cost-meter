@@ -167,17 +167,17 @@ const Index = () => {
           </Card>
 
           {/* Attendees Management */}
-          <Card>
-            <CardHeader>
+          <Card className="h-96">
+            <CardHeader className="pb-3">
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5" />
                 Attendees
               </CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="h-full pb-6 flex flex-col">
               {/* Add Attendee Form */}
-              <div className="space-y-3">
-                <div className="space-y-2">
+              <div className="space-y-3 mb-4">
+                <div className="grid grid-cols-1 gap-2">
                   <div>
                     <Label htmlFor="name" className="text-xs">
                       Name
@@ -188,6 +188,7 @@ const Index = () => {
                       value={newAttendeeName}
                       onChange={(e) => setNewAttendeeName(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && addAttendee()}
+                      className="h-8"
                     />
                   </div>
                   <div>
@@ -198,7 +199,7 @@ const Index = () => {
                       id="role"
                       value={newAttendeeRole}
                       onChange={(e) => handleRoleChange(e.target.value)}
-                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full h-8 px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="">Select role</option>
                       {Object.keys(roleRates).map((role) => (
@@ -210,53 +211,54 @@ const Index = () => {
                   </div>
                   <div>
                     <Label htmlFor="rate" className="text-xs">
-                      Hourly Rate ($) - Manual Override
+                      Rate ($)
                     </Label>
                     <Input
                       id="rate"
                       type="number"
-                      placeholder="Auto-populated from role"
+                      placeholder="Auto-filled"
                       value={newAttendeeRate}
                       onChange={(e) => setNewAttendeeRate(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && addAttendee()}
+                      className="h-8"
                     />
                   </div>
                 </div>
-                <Button onClick={addAttendee} className="w-full gap-2 bg-black text-white hover:bg-gray-800" size="sm">
+                <Button onClick={addAttendee} className="w-full gap-2 bg-black text-white hover:bg-gray-800 h-8" size="sm">
                   <Plus className="w-4 h-4" />
-                  Add Attendee
+                  Add
                 </Button>
               </div>
 
-              {/* Attendees List */}
-              <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-200 rounded-lg p-2">
-                {attendees.length === 0 ? (
-                  <div className="text-center text-gray-500 py-4">
-                    <Users className="w-8 h-8 mx-auto mb-2 opacity-50" />
-                    <p className="text-sm">No attendees added yet</p>
-                  </div>
-                ) : (
-                  attendees.map((attendee) => (
-                    <div key={attendee.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
-                      <div>
-                        <div className="font-medium text-sm">{attendee.name}</div>
-                        <div className="text-xs text-gray-600">{attendee.role}</div>
-                        <div className="text-xs text-gray-500">${attendee.hourlyRate.toFixed(2)}/hour</div>
-                      </div>
-                      <Button
-                        onClick={() => removeAttendee(attendee.id)}
-                        size="sm"
-                        variant="ghost"
-                        className="h-8 w-8 p-0 text-gray-400 hover:text-red-500"
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
+              {/* Attendees List - Fixed height with scrolling */}
+              <div className="flex-1 min-h-0">
+                <div className="h-full overflow-y-auto space-y-2 border border-gray-200 rounded-lg p-2">
+                  {attendees.length === 0 ? (
+                    <div className="text-center text-gray-500 py-4">
+                      <Users className="w-6 h-6 mx-auto mb-2 opacity-50" />
+                      <p className="text-xs">No attendees yet</p>
                     </div>
-                  ))
-                )}
+                  ) : (
+                    attendees.map((attendee) => (
+                      <div key={attendee.id} className="flex items-center justify-between p-2 bg-gray-50 rounded text-xs">
+                        <div className="flex-1 min-w-0">
+                          <div className="font-medium truncate">{attendee.name}</div>
+                          <div className="text-gray-600 truncate">{attendee.role}</div>
+                          <div className="text-gray-500">${attendee.hourlyRate}/hr</div>
+                        </div>
+                        <Button
+                          onClick={() => removeAttendee(attendee.id)}
+                          size="sm"
+                          variant="ghost"
+                          className="h-6 w-6 p-0 text-gray-400 hover:text-red-500 flex-shrink-0"
+                        >
+                          <X className="w-3 h-3" />
+                        </Button>
+                      </div>
+                    ))
+                  )}
+                </div>
               </div>
-              
-              <MilestoneTicker totalCost={totalCost} />
             </CardContent>
           </Card>
         </div>
@@ -286,6 +288,8 @@ const Index = () => {
             </CardContent>
           </Card>
         )}
+        
+        <MilestoneTicker totalCost={totalCost} />
       </div>
     </div>
   )
