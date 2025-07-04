@@ -172,7 +172,7 @@ const Index = () => {
           </Card>
 
           {/* Attendees Management */}
-          <Card className="h-96 flex flex-col">
+          <Card className="min-h-96 flex flex-col">
             <CardHeader className="flex-shrink-0 pb-3">
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5" />
@@ -239,9 +239,10 @@ const Index = () => {
               <div className="flex-1 min-h-0 overflow-hidden">
                 <div className="h-full overflow-y-auto space-y-2">
                   {attendees.length === 0 ? (
-                    <div className="text-center text-gray-500 py-4">
-                      <Users className="w-6 h-6 mx-auto mb-2 opacity-50" />
-                      <p className="text-xs">No attendees yet</p>
+                    <div className="text-center text-gray-500 py-8">
+                      <Users className="w-8 h-8 mx-auto mb-3 opacity-50" />
+                      <p className="text-sm font-medium mb-1">No attendees yet</p>
+                      <p className="text-xs">Add people to start tracking meeting costs</p>
                     </div>
                   ) : (
                     attendees.map((attendee) => (
