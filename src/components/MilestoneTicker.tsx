@@ -67,15 +67,22 @@ export const MilestoneTicker = ({ totalCost }: MilestoneTickerProps) => {
         timestamp: new Date()
       }
 
+      // Add to achieved list first
+      setAchievedMilestones(prev => [milestone, ...prev])
+      
+      // Then show the popup
       setCurrentMilestone(milestone)
       setShowMilestone(true)
 
-      // Add to achieved list immediately and fade out popup
-      setAchievedMilestones(prev => [milestone, ...prev])
-
+      // Hide popup after 3 seconds
       const timer = setTimeout(() => {
         setShowMilestone(false)
-        setTimeout(() => setCurrentMilestone(null), 500) // Wait for fade animation
+        // Clear milestone after fade animation completes
+        const clearTimer = setTimeout(() => {
+          setCurrentMilestone(null)
+        }, 500)
+        
+        return () => clearTimeout(clearTimer)
       }, 3000)
 
       return () => clearTimeout(timer)
