@@ -186,7 +186,7 @@ const Index = () => {
             </CardHeader>
             <CardContent className="flex-1 flex flex-col overflow-hidden">
               <div className="text-center space-y-3 mb-4">
-                <div className="cost-display bg-gradient-to-r from-success to-warning bg-clip-text text-transparent animate-count-up">
+                <div className="cost-display text-primary animate-count-up">
                   ${totalCost.toFixed(2)}
                 </div>
                 <div className="text-sm text-muted-foreground">
