@@ -59,40 +59,40 @@ export const MeetingTimer = ({ attendees, onCostUpdate }: MeetingTimerProps) => 
   };
 
   return (
-    <Card className="relative p-0 bg-slate-900 text-white shadow-elevated border-4 border-taxi-400 overflow-hidden">
-      {/* Taxi Meter Header Strip */}
-      <div className="bg-taxi-400 text-slate-900 px-6 py-3 font-bold text-lg tracking-wide text-center">
-        🚕 CASHCLOCK METER • IN SERVICE
+    <Card className="relative p-0 bg-surface-1 text-white shadow-elevated border border-financial-600 overflow-hidden">
+      {/* Financial Terminal Header */}
+      <div className="bg-financial-600 text-white px-6 py-3 font-bold text-lg tracking-wide text-center">
+        📊 CASHCLOCK • LIVE TRADING SESSION
       </div>
       
-      <div className="p-8 bg-slate-900">
+      <div className="p-8 bg-surface-2">
         <div className="text-center space-y-8">
-          {/* Digital LCD Display */}
-          <div className="bg-slate-800 border-4 border-slate-700 p-8 rounded-lg">
+          {/* Terminal Display */}
+          <div className="bg-surface-1 border border-surface-3 p-8 rounded-sm">
             <div className="space-y-6">
               {/* Timer Display */}
               <div className="space-y-2">
-                <div className="text-taxi-400 text-sm font-bold tracking-wider uppercase">
-                  ELAPSED TIME
+                <div className="text-financial-400 text-sm font-bold tracking-wider uppercase">
+                  SESSION TIME
                 </div>
-                <div className={`text-6xl font-mono font-bold tracking-wider text-lcd-400 ${isRunning ? 'animate-pulse-glow' : ''}`}
-                     style={{ fontFamily: 'Courier New, monospace', textShadow: '0 0 10px currentColor' }}>
+                <div className={`text-6xl font-mono font-bold tracking-wider text-white ${isRunning ? 'animate-pulse-glow' : ''}`}
+                     style={{ fontFamily: 'Courier New, monospace' }}>
                   {formatTime(seconds)}
                 </div>
               </div>
 
               {/* Cost Display */}
-              <div className="border-t-2 border-slate-700 pt-6">
-                <div className="text-taxi-400 text-sm font-bold tracking-wider uppercase">
-                  FARE
+              <div className="border-t border-surface-3 pt-6">
+                <div className="text-financial-400 text-sm font-bold tracking-wider uppercase">
+                  BURN RATE
                 </div>
-                <div className={`text-5xl font-mono font-bold tracking-wider text-lcd-400 ${totalCost > 0 ? 'animate-count-up' : ''}`}
-                     style={{ fontFamily: 'Courier New, monospace', textShadow: '0 0 10px currentColor' }}>
+                <div className={`text-5xl font-mono font-bold tracking-wider ${totalCost > 0 ? 'text-loss-400 animate-count-up' : 'text-slate-500'}`}
+                     style={{ fontFamily: 'Courier New, monospace' }}>
                   {formatCurrency(totalCost)}
                 </div>
                 {totalHourlyRate > 0 && (
-                  <div className="text-taxi-300 text-sm font-bold mt-2">
-                    RATE: {formatCurrency(totalHourlyRate)}/HR • {attendees.length} PASSENGERS
+                  <div className="text-slate-400 text-sm font-bold mt-2">
+                    RATE: {formatCurrency(totalHourlyRate)}/HR • {attendees.length} PARTICIPANTS
                   </div>
                 )}
               </div>
@@ -105,16 +105,16 @@ export const MeetingTimer = ({ attendees, onCostUpdate }: MeetingTimerProps) => 
               <Button
                 onClick={handleStart}
                 size="lg"
-                className="bg-taxi-400 text-slate-900 hover:bg-taxi-300 border-0 font-bold px-8 tracking-wide"
+                className="bg-gain-600 text-white hover:bg-gain-500 border-0 font-bold px-8 tracking-wide"
               >
                 <Play className="w-4 h-4 mr-2" />
-                START METER
+                START SESSION
               </Button>
             ) : (
               <Button
                 onClick={handlePause}
                 size="lg"
-                className="bg-slate-700 text-taxi-400 hover:bg-slate-600 border-2 border-taxi-400 font-bold px-8 tracking-wide"
+                className="bg-surface-3 text-financial-400 hover:bg-surface-2 border border-financial-500 font-bold px-8 tracking-wide"
               >
                 <Pause className="w-4 h-4 mr-2" />
                 PAUSE
@@ -124,7 +124,7 @@ export const MeetingTimer = ({ attendees, onCostUpdate }: MeetingTimerProps) => 
               onClick={handleReset}
               size="lg"
               variant="outline"
-              className="border-2 border-slate-600 text-slate-300 hover:bg-slate-700 hover:border-slate-500 font-bold px-8 tracking-wide"
+              className="border border-surface-3 text-slate-300 hover:bg-surface-3 hover:border-slate-500 font-bold px-8 tracking-wide"
             >
               <Square className="w-4 h-4 mr-2" />
               RESET

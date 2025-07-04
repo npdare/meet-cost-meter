@@ -36,7 +36,7 @@ All colors MUST be HSL.
     --input: 220 13% 91%;
     --ring: 221 83% 53%;
 
-    /* Taxi meter color system */
+    /* Financial dark theme colors */
     --slate-50: 210 40% 98%;
     --slate-100: 210 40% 96%;
     --slate-200: 214 32% 91%;
@@ -48,47 +48,59 @@ All colors MUST be HSL.
     --slate-800: 217 33% 17%;
     --slate-900: 222 47% 11%;
 
-    /* Taxi yellow palette */
-    --taxi-50: 54 91% 95%;
-    --taxi-100: 55 100% 88%;
-    --taxi-200: 55 100% 75%;
-    --taxi-300: 51 100% 60%;
-    --taxi-400: 48 100% 54%;
-    --taxi-500: 45 93% 47%;
-    --taxi-600: 41 96% 40%;
-    --taxi-700: 35 91% 33%;
-    --taxi-800: 32 81% 29%;
-    --taxi-900: 28 73% 26%;
+    /* Financial blue accent palette */
+    --financial-50: 210 100% 98%;
+    --financial-100: 210 100% 96%;
+    --financial-200: 210 100% 90%;
+    --financial-300: 210 100% 80%;
+    --financial-400: 210 100% 70%;
+    --financial-500: 210 100% 60%;
+    --financial-600: 210 100% 50%;
+    --financial-700: 210 100% 40%;
+    --financial-800: 210 100% 30%;
+    --financial-900: 210 100% 20%;
 
-    /* LCD green for digital displays */
-    --lcd-50: 120 60% 95%;
-    --lcd-100: 120 61% 89%;
-    --lcd-200: 120 60% 78%;
-    --lcd-300: 120 61% 64%;
-    --lcd-400: 120 61% 50%;
-    --lcd-500: 120 61% 34%;
-    --lcd-600: 120 100% 25%;
-    --lcd-700: 120 100% 20%;
-    --lcd-800: 120 100% 15%;
-    --lcd-900: 120 100% 10%;
+    /* Terminal green for gains/positive values */
+    --gain-50: 142 76% 95%;
+    --gain-100: 142 76% 90%;
+    --gain-200: 142 76% 80%;
+    --gain-300: 142 76% 70%;
+    --gain-400: 142 76% 60%;
+    --gain-500: 142 76% 50%;
+    --gain-600: 142 76% 40%;
+    --gain-700: 142 76% 30%;
+    --gain-800: 142 76% 20%;
+    --gain-900: 142 76% 10%;
+
+    /* Terminal red for losses/negative values */
+    --loss-50: 0 84% 95%;
+    --loss-100: 0 84% 90%;
+    --loss-200: 0 84% 80%;
+    --loss-300: 0 84% 70%;
+    --loss-400: 0 84% 60%;
+    --loss-500: 0 84% 50%;
+    --loss-600: 0 84% 40%;
+    --loss-700: 0 84% 30%;
+    --loss-800: 0 84% 20%;
+    --loss-900: 0 84% 10%;
 
     /* Status colors for cost thresholds */
-    --cost-low: 142 76% 36%;      /* Green */
-    --cost-medium: 45 93% 47%;    /* Amber */
-    --cost-high: 25 95% 53%;      /* Orange */
-    --cost-critical: 0 84% 60%;   /* Red */
+    --cost-low: 142 76% 50%;      /* Terminal green */
+    --cost-medium: 45 93% 60%;    /* Amber warning */
+    --cost-high: 25 95% 65%;      /* Orange alert */
+    --cost-critical: 0 84% 60%;   /* Terminal red */
 
-    /* No gradients - flat design */
-    --surface-1: 0 0% 100%;       /* Pure white */
-    --surface-2: 220 14% 96%;     /* Light gray */
-    --surface-3: 220 13% 91%;     /* Medium gray */
+    /* Dark financial surfaces */
+    --surface-1: 220 13% 9%;      /* Deep charcoal */
+    --surface-2: 220 13% 12%;     /* Lighter charcoal */
+    --surface-3: 220 13% 15%;     /* Medium charcoal */
 
-    /* Sharp shadows - more defined */
-    --shadow-sharp: 0 1px 3px 0 hsl(220 9% 15% / 0.15);
-    --shadow-elevated: 0 4px 12px 0 hsl(220 9% 15% / 0.15);
-    --shadow-overlay: 0 8px 25px 0 hsl(220 9% 15% / 0.15);
+    /* Financial shadows - subtle on dark */
+    --shadow-sharp: 0 1px 3px 0 hsl(0 0% 0% / 0.3);
+    --shadow-elevated: 0 4px 12px 0 hsl(0 0% 0% / 0.4);
+    --shadow-overlay: 0 8px 25px 0 hsl(0 0% 0% / 0.5);
 
-    /* Crisp animations - no bounce */
+    /* Smooth financial animations */
     --transition-fast: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
     --transition-base: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 

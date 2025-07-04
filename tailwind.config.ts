@@ -65,31 +65,44 @@ export default {
 					800: 'hsl(var(--slate-800))',
 					900: 'hsl(var(--slate-900))',
 				},
-				// Taxi yellow palette
-				taxi: {
-					50: 'hsl(var(--taxi-50))',
-					100: 'hsl(var(--taxi-100))',
-					200: 'hsl(var(--taxi-200))',
-					300: 'hsl(var(--taxi-300))',
-					400: 'hsl(var(--taxi-400))',
-					500: 'hsl(var(--taxi-500))',
-					600: 'hsl(var(--taxi-600))',
-					700: 'hsl(var(--taxi-700))',
-					800: 'hsl(var(--taxi-800))',
-					900: 'hsl(var(--taxi-900))',
+				// Financial blue accent palette
+				financial: {
+					50: 'hsl(var(--financial-50))',
+					100: 'hsl(var(--financial-100))',
+					200: 'hsl(var(--financial-200))',
+					300: 'hsl(var(--financial-300))',
+					400: 'hsl(var(--financial-400))',
+					500: 'hsl(var(--financial-500))',
+					600: 'hsl(var(--financial-600))',
+					700: 'hsl(var(--financial-700))',
+					800: 'hsl(var(--financial-800))',
+					900: 'hsl(var(--financial-900))',
 				},
-				// LCD green for digital displays
-				lcd: {
-					50: 'hsl(var(--lcd-50))',
-					100: 'hsl(var(--lcd-100))',
-					200: 'hsl(var(--lcd-200))',
-					300: 'hsl(var(--lcd-300))',
-					400: 'hsl(var(--lcd-400))',
-					500: 'hsl(var(--lcd-500))',
-					600: 'hsl(var(--lcd-600))',
-					700: 'hsl(var(--lcd-700))',
-					800: 'hsl(var(--lcd-800))',
-					900: 'hsl(var(--lcd-900))',
+				// Terminal green for gains
+				gain: {
+					50: 'hsl(var(--gain-50))',
+					100: 'hsl(var(--gain-100))',
+					200: 'hsl(var(--gain-200))',
+					300: 'hsl(var(--gain-300))',
+					400: 'hsl(var(--gain-400))',
+					500: 'hsl(var(--gain-500))',
+					600: 'hsl(var(--gain-600))',
+					700: 'hsl(var(--gain-700))',
+					800: 'hsl(var(--gain-800))',
+					900: 'hsl(var(--gain-900))',
+				},
+				// Terminal red for losses
+				loss: {
+					50: 'hsl(var(--loss-50))',
+					100: 'hsl(var(--loss-100))',
+					200: 'hsl(var(--loss-200))',
+					300: 'hsl(var(--loss-300))',
+					400: 'hsl(var(--loss-400))',
+					500: 'hsl(var(--loss-500))',
+					600: 'hsl(var(--loss-600))',
+					700: 'hsl(var(--loss-700))',
+					800: 'hsl(var(--loss-800))',
+					900: 'hsl(var(--loss-900))',
 				},
 				// Cost status colors
 				cost: {
@@ -98,7 +111,7 @@ export default {
 					high: 'hsl(var(--cost-high))',
 					critical: 'hsl(var(--cost-critical))',
 				},
-				// Surface colors
+				// Dark financial surfaces
 				surface: {
 					1: 'hsl(var(--surface-1))',
 					2: 'hsl(var(--surface-2))',

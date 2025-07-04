@@ -37,11 +37,11 @@ export const PurchaseTicker = ({ totalCost }: PurchaseTickerProps) => {
 
   if (totalCost < 1) {
     return (
-      <div className="bg-slate-900 text-white py-4 overflow-hidden border border-slate-700">
+      <div className="bg-surface-1 text-white py-4 overflow-hidden border border-surface-3">
         <div className="relative">
           <div className="text-center">
             <span className="text-slate-400 text-sm font-medium">
-              Start the timer to see what this meeting could buy instead...
+              Start session to see opportunity cost analysis...
             </span>
           </div>
         </div>
@@ -51,11 +51,11 @@ export const PurchaseTicker = ({ totalCost }: PurchaseTickerProps) => {
 
   if (affordableItems.length === 0) {
     return (
-      <div className="bg-slate-900 text-white py-4 overflow-hidden border border-slate-700">
+      <div className="bg-surface-1 text-white py-4 overflow-hidden border border-surface-3">
         <div className="relative">
           <div className="text-center">
             <span className="text-slate-400 text-sm font-medium">
-              {formatCurrency(totalCost)} - Keep the meeting running to see purchase comparisons...
+              {formatCurrency(totalCost)} - Continue session for market comparisons...
             </span>
           </div>
         </div>
@@ -64,19 +64,19 @@ export const PurchaseTicker = ({ totalCost }: PurchaseTickerProps) => {
   }
 
   return (
-    <div className="bg-slate-900 text-white py-4 overflow-hidden border-4 border-taxi-400 border-t-0">
-      <div className="bg-taxi-400 text-slate-900 px-4 py-1 text-xs font-bold tracking-wider text-center">
-        METER COMPARISON • WHAT THIS MEETING COULD BUY INSTEAD
+    <div className="bg-surface-1 text-white py-4 overflow-hidden border border-financial-600">
+      <div className="bg-financial-600 text-white px-4 py-1 text-xs font-bold tracking-wider text-center">
+        📈 OPPORTUNITY COST TICKER • ALTERNATIVE INVESTMENTS
       </div>
       <div className="relative py-3">
         <div className="animate-scroll whitespace-nowrap">
           <span className="inline-flex items-center gap-8 text-sm font-medium">
-            <span className="text-taxi-400 font-bold tracking-wide">
-              🚕 FARE: {formatCurrency(totalCost)} =
+            <span className="text-loss-400 font-bold tracking-wide">
+              💸 BURN: {formatCurrency(totalCost)} =
             </span>
             {affordableItems.map((item, index) => (
               <span key={index} className="inline-flex items-center gap-2">
-                <span className="text-lcd-400 font-bold">{item.quantity}</span>
+                <span className="text-gain-400 font-bold">{item.quantity}</span>
                 <span className="text-slate-200">{item.item}</span>
                 <span className="text-slate-500">•</span>
               </span>
@@ -84,7 +84,7 @@ export const PurchaseTicker = ({ totalCost }: PurchaseTickerProps) => {
             {/* Duplicate for seamless loop */}
             {affordableItems.map((item, index) => (
               <span key={`dup-${index}`} className="inline-flex items-center gap-2">
-                <span className="text-lcd-400 font-bold">{item.quantity}</span>
+                <span className="text-gain-400 font-bold">{item.quantity}</span>
                 <span className="text-slate-200">{item.item}</span>
                 <span className="text-slate-500">•</span>
               </span>
