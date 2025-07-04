@@ -153,7 +153,7 @@ const Index = () => {
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Cost Display */}
-          <Card className="min-h-96 flex flex-col">
+          <Card className="h-96 flex flex-col">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <DollarSign className="w-5 h-5" />
@@ -184,22 +184,17 @@ const Index = () => {
               {/* Milestones Achieved */}
               {achievedMilestones.length > 0 && (
                 <div className="flex-1 min-h-0 overflow-hidden">
-                  <div className="border-t pt-3">
-                    <div className="flex items-center gap-2 mb-2">
+                  <div className="border-t pt-3 h-full flex flex-col">
+                    <div className="flex items-center gap-2 mb-2 flex-shrink-0">
                       <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
                       <span className="text-xs font-medium text-gray-700">Cost Milestones</span>
                     </div>
-                    <div className="space-y-1 max-h-28 overflow-y-auto">
-                      {achievedMilestones.slice(0, 8).map((milestone, index) => (
+                    <div className="flex-1 overflow-y-auto space-y-1">
+                      {achievedMilestones.map((milestone, index) => (
                         <div key={index} className="text-xs text-gray-600 bg-yellow-50 px-2 py-1 rounded border border-yellow-100">
                           {milestone}
                         </div>
                       ))}
-                      {achievedMilestones.length > 8 && (
-                        <div className="text-xs text-gray-500 text-center">
-                          +{achievedMilestones.length - 8} more achievements
-                        </div>
-                      )}
                     </div>
                   </div>
                 </div>
@@ -208,7 +203,7 @@ const Index = () => {
           </Card>
 
           {/* Attendees Management */}
-          <Card className="min-h-96 flex flex-col">
+          <Card className="h-96 flex flex-col">
             <CardHeader className="flex-shrink-0 pb-3">
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5" />
@@ -273,31 +268,35 @@ const Index = () => {
 
               {/* Attendees List - Flexible height with proper scrolling */}
               <div className="flex-1 min-h-0 overflow-hidden">
-                <div className="h-full overflow-y-auto space-y-2">
+                <div className="h-full flex flex-col">
                   {attendees.length === 0 ? (
-                    <div className="text-center text-gray-500 py-8">
-                      <Users className="w-8 h-8 mx-auto mb-3 opacity-50" />
-                      <p className="text-sm font-medium mb-1">No attendees yet</p>
-                      <p className="text-xs">Add people to start tracking meeting costs</p>
+                    <div className="flex-1 flex items-center justify-center text-gray-500">
+                      <div className="text-center">
+                        <Users className="w-8 h-8 mx-auto mb-3 opacity-50" />
+                        <p className="text-sm font-medium mb-1">No attendees yet</p>
+                        <p className="text-xs">Add people to start tracking meeting costs</p>
+                      </div>
                     </div>
                   ) : (
-                    attendees.map((attendee) => (
-                      <div key={attendee.id} className="flex items-center justify-between p-2 bg-gray-50 rounded text-xs">
-                        <div className="flex-1 min-w-0">
-                          <div className="font-medium truncate">{attendee.name}</div>
-                          <div className="text-gray-600 truncate">{attendee.role}</div>
-                          <div className="text-gray-500">${attendee.hourlyRate}/hr</div>
+                    <div className="flex-1 overflow-y-auto">
+                      {attendees.map((attendee) => (
+                        <div key={attendee.id} className="flex items-center justify-between p-2 border-b border-gray-100 last:border-b-0">
+                          <div className="flex-1 min-w-0">
+                            <div className="font-medium text-sm truncate">{attendee.name}</div>
+                            <div className="text-gray-600 text-xs truncate">{attendee.role}</div>
+                            <div className="text-gray-500 text-xs">${attendee.hourlyRate}/hr</div>
+                          </div>
+                          <Button
+                            onClick={() => removeAttendee(attendee.id)}
+                            size="sm"
+                            variant="ghost"
+                            className="h-6 w-6 p-0 text-gray-400 hover:text-red-500 flex-shrink-0"
+                          >
+                            <X className="w-3 h-3" />
+                          </Button>
                         </div>
-                        <Button
-                          onClick={() => removeAttendee(attendee.id)}
-                          size="sm"
-                          variant="ghost"
-                          className="h-6 w-6 p-0 text-gray-400 hover:text-red-500 flex-shrink-0"
-                        >
-                          <X className="w-3 h-3" />
-                        </Button>
-                      </div>
-                    ))
+                      ))}
+                    </div>
                   )}
                 </div>
               </div>
