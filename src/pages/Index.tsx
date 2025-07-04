@@ -334,7 +334,7 @@ const Index = () => {
         <MilestoneTicker 
           totalCost={totalCost} 
           resetTrigger={resetCounter}
-          onMilestoneAchieved={(milestone) => setAchievedMilestones(prev => [...prev, milestone])}
+          onMilestoneAchieved={(milestone) => setAchievedMilestones(prev => [milestone, ...prev])}
         />
         
         {time > 0 && (
