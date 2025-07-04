@@ -417,12 +417,11 @@ const Index = () => {
         )}
 
         {/* Premium Features */}
-        <PremiumGate feature="Calendar Integration" description="Connect your calendar to automatically detect meetings and track costs">
-          <CalendarIntegration />
-        </PremiumGate>
-
-        <PremiumGate feature="Meeting History" description="Save and track your meeting history with detailed analytics">
-          <MeetingHistory />
+        <PremiumGate feature="Premium Features" description="Unlock advanced analytics, calendar integration, and meeting history tracking">
+          <div className="space-y-6">
+            <CalendarIntegration />
+            <MeetingHistory />
+          </div>
         </PremiumGate>
       </div>
     </div>
