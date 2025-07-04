@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react"
 import { TrendingUp, Coffee, Car, Home, Plane, CheckCircle } from "lucide-react"
 
@@ -69,16 +70,17 @@ export const MilestoneTicker = ({ totalCost }: MilestoneTickerProps) => {
       setCurrentMilestone(milestone)
       setShowMilestone(true)
 
-      // Add to achieved list and hide popup
+      // Add to achieved list immediately and fade out popup
+      setAchievedMilestones(prev => [milestone, ...prev])
+
       const timer = setTimeout(() => {
         setShowMilestone(false)
-        setAchievedMilestones(prev => [milestone, ...prev])
-        setTimeout(() => setCurrentMilestone(null), 300)
+        setTimeout(() => setCurrentMilestone(null), 500) // Wait for fade animation
       }, 3000)
 
       return () => clearTimeout(timer)
     }
-  }, [totalCost])
+  }, [totalCost, achievedMilestones])
 
   return (
     <>
@@ -88,7 +90,7 @@ export const MilestoneTicker = ({ totalCost }: MilestoneTickerProps) => {
           <div
             className={`
               bg-black text-white px-6 py-3 rounded-lg shadow-lg
-              flex items-center gap-3 transition-all duration-500
+              flex items-center gap-3 transition-all duration-500 ease-in-out
               ${showMilestone ? 'opacity-100 translate-y-0 scale-100' : 'opacity-0 translate-y-4 scale-95'}
             `}
           >
@@ -104,14 +106,14 @@ export const MilestoneTicker = ({ totalCost }: MilestoneTickerProps) => {
 
       {/* Achievements List */}
       {achievedMilestones.length > 0 && (
-        <div className="mt-6">
+        <div className="bg-white rounded-lg shadow-sm border p-4">
           <div className="flex items-center gap-2 mb-3">
             <CheckCircle className="w-4 h-4 text-green-600" />
             <h3 className="font-semibold text-sm text-gray-700">Cost Milestones Achieved</h3>
           </div>
-          <div className="space-y-2 max-h-32 overflow-y-auto bg-gray-50 rounded-lg p-3">
+          <div className="space-y-2 max-h-32 overflow-y-auto">
             {achievedMilestones.map((milestone) => (
-              <div key={milestone.id} className="flex items-center gap-2 text-xs text-gray-600">
+              <div key={milestone.id} className="flex items-center gap-2 text-xs text-gray-600 p-2 bg-gray-50 rounded">
                 <div className="text-green-600">
                   {milestone.icon}
                 </div>
