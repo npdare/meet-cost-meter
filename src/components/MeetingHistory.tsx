@@ -81,7 +81,7 @@ export const MeetingHistory = ({ onSetSaveFunction }: MeetingHistoryProps) => {
 
   const totalWasted = meetings.reduce((sum, m) => sum + m.totalCost, 0)
   const totalTime = meetings.reduce((sum, m) => sum + m.duration, 0)
-  const mostExpensive = meetings.reduce((max, m) => m.totalCost > max.totalCost ? m : max, meetings[0])
+  const mostExpensive = meetings.length > 0 ? meetings.reduce((max, m) => m.totalCost > max.totalCost ? m : max, meetings[0]) : null
 
   if (meetings.length === 0) {
     return (
