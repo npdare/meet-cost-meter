@@ -191,19 +191,23 @@ const Index = () => {
                 </div>
                 <div className="text-sm text-muted-foreground">
                   {attendees.length} attendee{attendees.length !== 1 ? "s" : ""} • $
-                  {attendees.reduce((sum, a) => sum + a.hourlyRate, 0).toFixed(2)}/hour total
+                  {attendees.reduce((sum, a) => sum + a.hourlyRate, 0).toFixed(2)}/hour
                 </div>
               </div>
               
-              {/* Cost Breakdown */}
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="bg-secondary/50 p-3 rounded-lg text-center backdrop-blur-sm">
-                  <div className="text-sm font-medium text-foreground">${(totalCost / Math.max(time / 60, 1)).toFixed(2)}</div>
+              {/* Enhanced Cost Breakdown */}
+              <div className="grid grid-cols-3 gap-2 mb-4">
+                <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
+                  <div className="text-xs font-medium text-foreground">${attendees.reduce((sum, a) => sum + a.hourlyRate, 0).toFixed(0)}</div>
+                  <div className="text-xs text-muted-foreground">per hour</div>
+                </div>
+                <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
+                  <div className="text-xs font-medium text-foreground">${(totalCost / Math.max(time / 60, 1)).toFixed(2)}</div>
                   <div className="text-xs text-muted-foreground">per minute</div>
                 </div>
-                <div className="bg-secondary/50 p-3 rounded-lg text-center backdrop-blur-sm">
-                  <div className="text-sm font-medium text-foreground">${(totalCost / Math.max(time, 1)).toFixed(4)}</div>
-                  <div className="text-xs text-muted-foreground">per second</div>
+                <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
+                  <div className="text-xs font-medium text-foreground">{attendees.length}</div>
+                  <div className="text-xs text-muted-foreground">attendees</div>
                 </div>
               </div>
               
@@ -337,31 +341,6 @@ const Index = () => {
           </Card>
         </div>
 
-        {/* Summary Stats */}
-        {attendees.length > 0 && (
-          <Card className="meeting-card glass-card">
-            <CardContent className="pt-6">
-              <div className="grid grid-cols-3 gap-4 text-center">
-                <div className="p-4 rounded-lg bg-secondary/30">
-                  <div className="text-2xl font-bold text-primary">{attendees.length}</div>
-                  <div className="text-sm text-muted-foreground">Attendees</div>
-                </div>
-                <div className="p-4 rounded-lg bg-secondary/30">
-                  <div className="text-2xl font-bold text-foreground">
-                    ${attendees.reduce((sum, a) => sum + a.hourlyRate, 0).toFixed(2)}
-                  </div>
-                  <div className="text-sm text-muted-foreground">Cost per Hour</div>
-                </div>
-                <div className="p-4 rounded-lg bg-secondary/30">
-                  <div className="text-2xl font-bold text-accent">
-                    ${(totalCost / Math.max(time / 60, 1)).toFixed(2)}
-                  </div>
-                  <div className="text-sm text-muted-foreground">Cost per Minute</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
         
         {/* Mid-page Ad */}
         <AdBanner adSlot="0987654321" adFormat="rectangle" className="text-center" />
@@ -369,6 +348,7 @@ const Index = () => {
         <MilestoneTicker
           totalCost={totalCost} 
           resetTrigger={resetCounter}
+          attendees={attendees}
           onMilestoneAchieved={(milestone) => setAchievedMilestones(prev => [milestone, ...prev])}
         />
         
