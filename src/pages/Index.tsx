@@ -262,10 +262,17 @@ const Index = () => {
                       value={newAttendeeRole}
                       onChange={(e) => handleRoleChange(e.target.value)}
                       className="w-full h-8 px-3 py-1 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-foreground"
+                      style={{
+                        backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e")`,
+                        backgroundPosition: 'right 0.5rem center',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundSize: '1.5em 1.5em',
+                        paddingRight: '2.5rem'
+                      }}
                     >
-                      <option value="">Select role</option>
+                      <option value="" className="bg-background text-foreground">Select role</option>
                       {Object.keys(roleRates).map((role) => (
-                        <option key={role} value={role}>
+                        <option key={role} value={role} className="bg-background text-foreground">
                           {role} (${roleRates[role]}/hr)
                         </option>
                       ))}
