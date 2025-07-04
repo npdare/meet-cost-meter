@@ -153,7 +153,7 @@ const Index = () => {
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Cost Display */}
-          <Card className="h-96 flex flex-col">
+          <Card className="h-[600px] flex flex-col">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <DollarSign className="w-5 h-5" />
@@ -189,10 +189,12 @@ const Index = () => {
                       <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
                       <span className="text-xs font-medium text-gray-700">Cost Milestones</span>
                     </div>
-                    <div className="flex-1 overflow-y-auto space-y-1">
+                    <div className="flex-1 overflow-y-auto">
                       {achievedMilestones.map((milestone, index) => (
-                        <div key={index} className="text-xs text-gray-600 bg-yellow-50 px-2 py-1 rounded border border-yellow-100">
-                          {milestone}
+                        <div key={index} className="flex items-center p-2 border-b border-gray-100 last:border-b-0">
+                          <div className="flex-1">
+                            <div className="text-sm text-gray-700">{milestone}</div>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -203,7 +205,7 @@ const Index = () => {
           </Card>
 
           {/* Attendees Management */}
-          <Card className="h-96 flex flex-col">
+          <Card className="h-[600px] flex flex-col">
             <CardHeader className="flex-shrink-0 pb-3">
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5" />
