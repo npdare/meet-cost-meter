@@ -153,15 +153,15 @@ const Index = () => {
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Cost Display */}
-          <Card className="h-100 flex flex-col">
+          <Card className="h-[400px] flex flex-col">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <DollarSign className="w-5 h-5" />
                 Meeting Cost
               </CardTitle>
             </CardHeader>
-            <CardContent className="flex-1 flex flex-col">
-              <div className="text-center space-y-3 mb-4 flex-shrink-0">
+            <CardContent className="flex-1 flex flex-col overflow-hidden">
+              <div className="text-center space-y-3 mb-4">
                 <div className="text-4xl font-bold text-green-600">${totalCost.toFixed(2)}</div>
                 <div className="text-sm text-gray-600">
                   {attendees.length} attendee{attendees.length !== 1 ? "s" : ""} • $
@@ -170,7 +170,7 @@ const Index = () => {
               </div>
               
               {/* Cost Breakdown */}
-              <div className="grid grid-cols-2 gap-3 mb-4 flex-shrink-0">
+              <div className="grid grid-cols-2 gap-3 mb-4">
                 <div className="bg-gray-50 p-2 rounded text-center">
                   <div className="text-sm font-medium text-gray-900">${(totalCost / Math.max(time / 60, 1)).toFixed(2)}</div>
                   <div className="text-xs text-gray-600">per minute</div>
@@ -181,20 +181,18 @@ const Index = () => {
                 </div>
               </div>
               
-              {/* Milestones Achieved - SCROLLABLE LIST */}
+              {/* Milestones Achieved - SCROLLABLE */}
               {achievedMilestones.length > 0 && (
-                <div className="flex-1 min-h-0 overflow-hidden">
-                  <div className="border-t pt-3 h-full flex flex-col">
-                    <div className="flex items-center gap-2 mb-2 flex-shrink-0">
+                <div className="flex-1 overflow-hidden">
+                  <div className="border-t pt-3">
+                    <div className="flex items-center gap-2 mb-2">
                       <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
                       <span className="text-xs font-medium text-gray-700">Cost Milestones</span>
                     </div>
-                    <div className="flex-1 overflow-y-auto">
+                    <div className="max-h-24 overflow-y-auto">
                       {achievedMilestones.map((milestone, index) => (
-                        <div key={index} className="flex items-center p-2 border-b border-gray-100 last:border-b-0">
-                          <div className="flex-1">
-                            <div className="text-sm text-gray-700">{milestone}</div>
-                          </div>
+                        <div key={index} className="p-2 border-b border-gray-100 last:border-b-0">
+                          <div className="text-sm text-gray-700">{milestone}</div>
                         </div>
                       ))}
                     </div>
@@ -205,7 +203,7 @@ const Index = () => {
           </Card>
 
           {/* Attendees Management */}
-          <Card className="h-100 flex flex-col">
+          <Card className="h-[400px] flex flex-col">
             <CardHeader className="flex-shrink-0 pb-3">
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5" />
@@ -269,10 +267,10 @@ const Index = () => {
               </div>
 
               {/* Attendees List - Flexible height with proper scrolling */}
-              <div className="flex-1 min-h-0 overflow-hidden">
-                <div className="h-full flex flex-col">
+              <div className="flex-1 overflow-hidden">
+                <div className="h-full overflow-y-auto">
                   {attendees.length === 0 ? (
-                    <div className="flex-1 flex items-center justify-center text-gray-500">
+                    <div className="flex items-center justify-center h-32 text-gray-500">
                       <div className="text-center">
                         <Users className="w-8 h-8 mx-auto mb-3 opacity-50" />
                         <p className="text-sm font-medium mb-1">No attendees yet</p>
@@ -280,9 +278,9 @@ const Index = () => {
                       </div>
                     </div>
                   ) : (
-                    <div className="flex-1 overflow-y-auto">
-                      {attendees.map((attendee) => (
-                        <div key={attendee.id} className="flex items-center justify-between p-2 border-b border-gray-100 last:border-b-0">
+                    attendees.map((attendee) => (
+                      <div key={attendee.id} className="p-2 border-b border-gray-100 last:border-b-0">
+                        <div className="flex items-center justify-between">
                           <div className="flex-1 min-w-0">
                             <div className="font-medium text-sm truncate">{attendee.name}</div>
                             <div className="text-gray-600 text-xs truncate">{attendee.role}</div>
@@ -297,8 +295,8 @@ const Index = () => {
                             <X className="w-3 h-3" />
                           </Button>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))
                   )}
                 </div>
               </div>
