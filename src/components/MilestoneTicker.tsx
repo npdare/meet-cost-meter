@@ -107,25 +107,17 @@ export const MilestoneTicker = ({ totalCost, resetTrigger }: MilestoneTickerProp
       setShowMilestone(true)
       console.log('Milestone popup shown, setting timers')
 
-      // Start fade out after 3 seconds
-      const fadeTimer = setTimeout(() => {
+      // Use a ref or separate effect for timers to avoid cleanup
+      setTimeout(() => {
         console.log('Fading out milestone')
         setShowMilestone(false)
+        setTimeout(() => {
+          console.log('Clearing milestone')
+          setCurrentMilestone(null)
+        }, 500)
       }, 3000)
-
-      // Clear milestone after fade animation
-      const clearTimer = setTimeout(() => {
-        console.log('Clearing milestone')
-        setCurrentMilestone(null)
-      }, 3500) // 3000ms + 500ms for fade animation
-
-      return () => {
-        console.log('Cleaning up timers')
-        clearTimeout(fadeTimer)
-        clearTimeout(clearTimer)
-      }
     }
-  }, [totalCost])
+  }, [totalCost, achievedMilestones.length]) // Only depend on length, not the full array
 
   return (
     <>
