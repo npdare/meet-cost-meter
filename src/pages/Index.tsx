@@ -149,8 +149,10 @@ const Index = () => {
                 <Clock className="w-5 h-5" />
                 <span className="text-sm font-medium">Meeting Duration</span>
               </div>
-              <div className={`timer-display ${isRunning ? 'animate-pulse-glow' : ''}`}>
-                {formatTime(time)}
+              <div className="text-center">
+                <div className={`text-6xl font-mono font-bold tracking-wider text-foreground ${isRunning ? 'animate-pulse-glow' : ''}`}>
+                  {formatTime(time)}
+                </div>
               </div>
               <div className="flex justify-center gap-4">
                 {!isRunning ? (
