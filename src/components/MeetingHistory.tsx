@@ -6,16 +6,21 @@ import { History, Trophy, Trash2 } from "lucide-react"
 
 interface MeetingRecord {
   id: string
-  date: Date
+  date: string
   duration: number
   totalCost: number
   attendeeCount: number
   milestones: string[]
-  attendees: Array<{name: string; role: string; hourlyRate: number}>
 }
 
 interface MeetingHistoryProps {
-  onSetSaveFunction?: (saveFn: (meeting: Omit<MeetingRecord, 'id' | 'date'>) => void) => void
+  onSetSaveFunction?: (saveFn: (meeting: {
+    duration: number
+    totalCost: number
+    attendeeCount: number
+    milestones: string[]
+    attendees: Array<{name: string; role: string; hourlyRate: number}>
+  }) => void) => void
 }
 
 export const MeetingHistory = ({ onSetSaveFunction }: MeetingHistoryProps) => {
@@ -23,28 +28,43 @@ export const MeetingHistory = ({ onSetSaveFunction }: MeetingHistoryProps) => {
   const [isExpanded, setIsExpanded] = useState(false)
 
   useEffect(() => {
-    const saved = localStorage.getItem('meetingHistory')
-    if (saved) {
-      const parsed = JSON.parse(saved).map((m: any) => ({
-        ...m,
-        date: new Date(m.date)
-      }))
-      setMeetings(parsed)
+    try {
+      const saved = localStorage.getItem('meetingHistory')
+      if (saved) {
+        const parsed = JSON.parse(saved)
+        setMeetings(parsed || [])
+      }
+    } catch (error) {
+      console.error('Error loading meeting history:', error)
+      setMeetings([])
     }
   }, [])
 
   const saveMeetingsToStorage = (updatedMeetings: MeetingRecord[]) => {
-    localStorage.setItem('meetingHistory', JSON.stringify(updatedMeetings))
-    setMeetings(updatedMeetings)
+    try {
+      localStorage.setItem('meetingHistory', JSON.stringify(updatedMeetings))
+      setMeetings(updatedMeetings)
+    } catch (error) {
+      console.error('Error saving meeting history:', error)
+    }
   }
 
-  const addMeeting = (meetingData: Omit<MeetingRecord, 'id' | 'date'>) => {
+  const addMeeting = (meetingData: {
+    duration: number
+    totalCost: number
+    attendeeCount: number
+    milestones: string[]
+    attendees: Array<{name: string; role: string; hourlyRate: number}>
+  }) => {
     const newMeeting: MeetingRecord = {
-      ...meetingData,
       id: Date.now().toString(),
-      date: new Date()
+      date: new Date().toISOString(),
+      duration: meetingData.duration,
+      totalCost: meetingData.totalCost,
+      attendeeCount: meetingData.attendeeCount,
+      milestones: meetingData.milestones || []
     }
-    const updatedMeetings = [newMeeting, ...meetings].slice(0, 50) // Keep last 50 meetings
+    const updatedMeetings = [newMeeting, ...meetings].slice(0, 50)
     saveMeetingsToStorage(updatedMeetings)
   }
 
@@ -79,9 +99,8 @@ export const MeetingHistory = ({ onSetSaveFunction }: MeetingHistoryProps) => {
     }
   }, [onSetSaveFunction])
 
-  const totalWasted = meetings.reduce((sum, m) => sum + m.totalCost, 0)
-  const totalTime = meetings.reduce((sum, m) => sum + m.duration, 0)
-  const mostExpensive = meetings.length > 0 ? meetings.reduce((max, m) => m.totalCost > max.totalCost ? m : max, meetings[0]) : null
+  const totalWasted = meetings.reduce((sum, m) => sum + (m.totalCost || 0), 0)
+  const totalTime = meetings.reduce((sum, m) => sum + (m.duration || 0), 0)
 
   if (meetings.length === 0) {
     return (
@@ -142,13 +161,13 @@ export const MeetingHistory = ({ onSetSaveFunction }: MeetingHistoryProps) => {
       <CardContent>
         <div className="space-y-3 max-h-64 overflow-y-auto">
           {meetings.slice(0, isExpanded ? undefined : 5).map((meeting) => {
-            const badge = getBadgeForCost(meeting.totalCost)
+            const badge = getBadgeForCost(meeting.totalCost || 0)
             return (
               <div key={meeting.id} className="p-3 border rounded-lg bg-white">
                 <div className="flex items-center justify-between mb-2">
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium">
-                      {meeting.date.toLocaleDateString()}
+                      {new Date(meeting.date).toLocaleDateString()}
                     </span>
                     <Badge className={`text-xs text-white ${badge.color}`}>
                       {badge.label}
@@ -165,12 +184,12 @@ export const MeetingHistory = ({ onSetSaveFunction }: MeetingHistoryProps) => {
                 </div>
                 
                 <div className="grid grid-cols-3 gap-2 text-xs text-gray-600">
-                  <div>💰 ${meeting.totalCost.toFixed(2)}</div>
-                  <div>⏱️ {formatDuration(meeting.duration)}</div>
-                  <div>👥 {meeting.attendeeCount} people</div>
+                  <div>💰 ${(meeting.totalCost || 0).toFixed(2)}</div>
+                  <div>⏱️ {formatDuration(meeting.duration || 0)}</div>
+                  <div>👥 {meeting.attendeeCount || 0} people</div>
                 </div>
                 
-                {meeting.milestones.length > 0 && (
+                {meeting.milestones && meeting.milestones.length > 0 && (
                   <div className="mt-2 flex items-center gap-1">
                     <Trophy className="w-3 h-3 text-yellow-500" />
                     <span className="text-xs text-gray-600">
@@ -198,23 +217,4 @@ export const MeetingHistory = ({ onSetSaveFunction }: MeetingHistoryProps) => {
       </CardContent>
     </Card>
   )
-}
-
-// Export function to be used by parent component
-export const useMeetingHistory = () => {
-  const [saveMeetingFn, setSaveMeetingFn] = useState<((meeting: Omit<MeetingRecord, 'id' | 'date'>) => void) | null>(null)
-  
-  const saveMeeting = (meetingData: {
-    duration: number
-    totalCost: number
-    attendeeCount: number
-    milestones: string[]
-    attendees: Array<{name: string; role: string; hourlyRate: number}>
-  }) => {
-    if (saveMeetingFn) {
-      saveMeetingFn(meetingData)
-    }
-  }
-  
-  return { saveMeeting, setSaveMeetingFn }
 }
