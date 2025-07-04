@@ -8,6 +8,11 @@ import { MilestoneTicker } from "@/components/MilestoneTicker"
 import { MeetingReportCard } from "@/components/MeetingReportCard"
 import { AdBanner } from "@/components/AdBanner"
 import { ThemeToggle } from "@/components/ThemeToggle"
+import { PremiumGate } from "@/components/PremiumGate"
+import { MeetingHistory, saveMeeting } from "@/components/MeetingHistory"
+import { useAuth } from "@/hooks/useAuth"
+import { Link } from "react-router-dom"
+import { useToast } from "@/hooks/use-toast"
 
 interface Attendee {
   id: string
@@ -25,6 +30,8 @@ const Index = () => {
   const [newAttendeeRate, setNewAttendeeRate] = useState("")
   const [resetCounter, setResetCounter] = useState(0) // Add reset counter for milestones
   const [achievedMilestones, setAchievedMilestones] = useState<string[]>([])
+  const { user, isPremium } = useAuth()
+  const { toast } = useToast()
 
   // Role-based hourly rates
   const roleRates: Record<string, number> = {
@@ -85,6 +92,33 @@ const Index = () => {
     setAchievedMilestones([])
   }
 
+  const saveMeetingData = async () => {
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to save meeting data",
+        variant: "destructive",
+      })
+      return
+    }
+
+    const meetingTitle = `Meeting ${new Date().toLocaleDateString()}`
+    const result = await saveMeeting(meetingTitle, time, totalCost, attendees, achievedMilestones)
+    
+    if (result.success) {
+      toast({
+        title: "Meeting saved!",
+        description: "Your meeting data has been saved successfully",
+      })
+    } else {
+      toast({
+        title: "Error saving meeting",
+        description: result.error,
+        variant: "destructive",
+      })
+    }
+  }
+
   // Handle role change and auto-populate rate
   const handleRoleChange = (role: string) => {
     setNewAttendeeRole(role)
@@ -126,7 +160,21 @@ const Index = () => {
               <span className="font-poppins font-bold text-xl text-foreground">Meeting Meter</span>
             </div>
           </div>
-          <ThemeToggle />
+          <div className="flex items-center gap-3">
+            {user ? (
+              <div className="flex items-center gap-2">
+                <span className="text-sm text-muted-foreground">Welcome, {user.email}</span>
+                {isPremium && (
+                  <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full">Premium</span>
+                )}
+              </div>
+            ) : (
+              <Button asChild variant="outline" size="sm">
+                <Link to="/auth">Sign In</Link>
+              </Button>
+            )}
+            <ThemeToggle />
+          </div>
         </div>
       </header>
       
@@ -170,6 +218,11 @@ const Index = () => {
                   <Square className="w-4 h-4" />
                   Reset
                 </Button>
+                {time > 0 && isPremium && (
+                  <Button onClick={saveMeetingData} size="lg" variant="outline" className="gap-2 border-2 hover:bg-accent/50">
+                    Save Meeting
+                  </Button>
+                )}
               </div>
             </div>
           </CardContent>
@@ -361,6 +414,11 @@ const Index = () => {
             attendees={attendees}
           />
         )}
+
+        {/* Premium Features */}
+        <PremiumGate feature="Meeting History" description="Save and track your meeting history with detailed analytics">
+          <MeetingHistory />
+        </PremiumGate>
       </div>
     </div>
   )
