@@ -11,6 +11,7 @@ import { ThemeToggle } from "@/components/ThemeToggle"
 import { PremiumGate } from "@/components/PremiumGate"
 import { MeetingHistory, saveMeeting } from "@/components/MeetingHistory"
 import { CalendarIntegration } from "@/components/CalendarIntegration"
+import { FeedbackDialog } from "@/components/FeedbackDialog"
 import { useAuth } from "@/hooks/useAuth"
 import { Link } from "react-router-dom"
 import { useToast } from "@/hooks/use-toast"
@@ -174,6 +175,7 @@ const Index = () => {
                 <Link to="/auth">Sign In</Link>
               </Button>
             )}
+            <FeedbackDialog />
             <ThemeToggle />
           </div>
         </div>
