@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Play, Pause, Square, Plus, X, Users, DollarSign, Clock } from "lucide-react"
 import { MilestoneTicker } from "@/components/MilestoneTicker"
+import { MeetingReportCard } from "@/components/MeetingReportCard"
 
 interface Attendee {
   id: string
@@ -298,6 +299,16 @@ const Index = () => {
           resetTrigger={resetCounter}
           onMilestoneAchieved={(milestone) => setAchievedMilestones(prev => [...prev, milestone])}
         />
+        
+        {time > 0 && (
+          <MeetingReportCard 
+            totalCost={totalCost}
+            duration={time}
+            attendeeCount={attendees.length}
+            milestones={achievedMilestones}
+            attendees={attendees}
+          />
+        )}
       </div>
     </div>
   )
