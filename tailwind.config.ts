@@ -151,13 +151,22 @@ export default {
 					'100%': {
 						transform: 'scale(1)',
 					}
+				},
+				'scroll': {
+					'0%': {
+						transform: 'translateX(0)',
+					},
+					'100%': {
+						transform: 'translateX(-50%)',
+					}
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
-				'count-up': 'count-up 0.3s ease-out'
+				'count-up': 'count-up 0.3s ease-out',
+				'scroll': 'scroll 20s linear infinite'
 			}
 		}
 	},

@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { MeetingTimer } from '@/components/MeetingTimer';
 import { AttendeeManager } from '@/components/AttendeeManager';
 import { CostSummary } from '@/components/CostSummary';
+import { PurchaseTicker } from '@/components/PurchaseTicker';
 import { Card } from '@/components/ui/card';
 import { DollarSign, Clock } from 'lucide-react';
 
@@ -65,6 +66,8 @@ const Index = () => {
               hourlyRate={totalHourlyRate}
               duration={duration}
             />
+
+            <PurchaseTicker totalCost={currentCost} />
           </div>
 
           {/* Right Column - Attendee Management */}
