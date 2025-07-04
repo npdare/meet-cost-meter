@@ -158,7 +158,7 @@ const Index = () => {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <Timer className="w-6 h-6 text-primary" />
-              <span className="font-poppins font-bold text-xl text-foreground">Meeting Meter</span>
+              <span className="font-poppins font-bold text-xl text-foreground">Could Be An Email</span>
             </div>
           </div>
           <div className="flex items-center gap-3">
@@ -182,9 +182,9 @@ const Index = () => {
       <div className="max-w-4xl mx-auto p-4 space-y-8">
         <div className="text-center space-y-3 animate-fade-in pt-6">
           <h1 className="text-4xl font-poppins font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent leading-tight py-2">
-            Meeting Cost Calculator
+            Could Be An Email
           </h1>
-          <p className="text-muted-foreground text-lg">Track meeting duration and calculate real-time costs with precision</p>
+          <p className="text-muted-foreground text-lg">Track meeting costs and discover when your meeting could have been an email</p>
         </div>
 
         {/* Top Banner Ad */}
