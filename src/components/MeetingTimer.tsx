@@ -59,66 +59,77 @@ export const MeetingTimer = ({ attendees, onCostUpdate }: MeetingTimerProps) => 
   };
 
   return (
-    <Card className="p-8 bg-blue-600 text-white shadow-elevated border-0">
-      <div className="text-center space-y-8">
-        {/* Timer Display */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-center gap-2 text-blue-100">
-            <Clock className="w-5 h-5" />
-            <span className="text-sm font-medium tracking-wider uppercase">Duration</span>
-          </div>
-          <div className={`text-7xl font-bold font-mono tracking-tight ${isRunning ? 'animate-pulse-glow' : ''}`}>
-            {formatTime(seconds)}
-          </div>
-        </div>
+    <Card className="relative p-0 bg-slate-900 text-white shadow-elevated border-4 border-taxi-400 overflow-hidden">
+      {/* Taxi Meter Header Strip */}
+      <div className="bg-taxi-400 text-slate-900 px-6 py-3 font-bold text-lg tracking-wide text-center">
+        🚕 CASHCLOCK METER • IN SERVICE
+      </div>
+      
+      <div className="p-8 bg-slate-900">
+        <div className="text-center space-y-8">
+          {/* Digital LCD Display */}
+          <div className="bg-slate-800 border-4 border-slate-700 p-8 rounded-lg">
+            <div className="space-y-6">
+              {/* Timer Display */}
+              <div className="space-y-2">
+                <div className="text-taxi-400 text-sm font-bold tracking-wider uppercase">
+                  ELAPSED TIME
+                </div>
+                <div className={`text-6xl font-mono font-bold tracking-wider text-lcd-400 ${isRunning ? 'animate-pulse-glow' : ''}`}
+                     style={{ fontFamily: 'Courier New, monospace', textShadow: '0 0 10px currentColor' }}>
+                  {formatTime(seconds)}
+                </div>
+              </div>
 
-        {/* Cost Display */}
-        <div className="space-y-3">
-          <div className="flex items-center justify-center gap-2 text-blue-100">
-            <DollarSign className="w-5 h-5" />
-            <span className="text-sm font-medium tracking-wider uppercase">Live Cost</span>
-          </div>
-          <div className={`text-5xl font-bold tracking-tight ${getCostColor()} ${totalCost > 0 ? 'animate-count-up' : ''}`}>
-            {formatCurrency(totalCost)}
-          </div>
-          {totalHourlyRate > 0 && (
-            <div className="text-blue-200 text-sm font-medium">
-              {formatCurrency(totalHourlyRate)}/hour • {attendees.length} attendees
+              {/* Cost Display */}
+              <div className="border-t-2 border-slate-700 pt-6">
+                <div className="text-taxi-400 text-sm font-bold tracking-wider uppercase">
+                  FARE
+                </div>
+                <div className={`text-5xl font-mono font-bold tracking-wider text-lcd-400 ${totalCost > 0 ? 'animate-count-up' : ''}`}
+                     style={{ fontFamily: 'Courier New, monospace', textShadow: '0 0 10px currentColor' }}>
+                  {formatCurrency(totalCost)}
+                </div>
+                {totalHourlyRate > 0 && (
+                  <div className="text-taxi-300 text-sm font-bold mt-2">
+                    RATE: {formatCurrency(totalHourlyRate)}/HR • {attendees.length} PASSENGERS
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-        </div>
+          </div>
 
-        {/* Controls */}
-        <div className="flex justify-center gap-4 pt-6">
-          {!isRunning ? (
+          {/* Controls */}
+          <div className="flex justify-center gap-4 pt-4">
+            {!isRunning ? (
+              <Button
+                onClick={handleStart}
+                size="lg"
+                className="bg-taxi-400 text-slate-900 hover:bg-taxi-300 border-0 font-bold px-8 tracking-wide"
+              >
+                <Play className="w-4 h-4 mr-2" />
+                START METER
+              </Button>
+            ) : (
+              <Button
+                onClick={handlePause}
+                size="lg"
+                className="bg-slate-700 text-taxi-400 hover:bg-slate-600 border-2 border-taxi-400 font-bold px-8 tracking-wide"
+              >
+                <Pause className="w-4 h-4 mr-2" />
+                PAUSE
+              </Button>
+            )}
             <Button
-              onClick={handleStart}
-              size="lg"
-              className="bg-white text-blue-600 hover:bg-blue-50 border-0 font-semibold px-8"
-            >
-              <Play className="w-4 h-4 mr-2" />
-              Start Meeting
-            </Button>
-          ) : (
-            <Button
-              onClick={handlePause}
+              onClick={handleReset}
               size="lg"
               variant="outline"
-              className="border-white text-white hover:bg-white hover:text-blue-600 font-semibold px-8"
+              className="border-2 border-slate-600 text-slate-300 hover:bg-slate-700 hover:border-slate-500 font-bold px-8 tracking-wide"
             >
-              <Pause className="w-4 h-4 mr-2" />
-              Pause
+              <Square className="w-4 h-4 mr-2" />
+              RESET
             </Button>
-          )}
-          <Button
-            onClick={handleReset}
-            size="lg"
-            variant="outline"
-            className="border-blue-300 text-blue-100 hover:bg-blue-500 hover:border-blue-500 font-semibold px-8"
-          >
-            <Square className="w-4 h-4 mr-2" />
-            Reset
-          </Button>
+          </div>
         </div>
       </div>
     </Card>

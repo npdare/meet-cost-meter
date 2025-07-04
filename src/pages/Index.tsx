@@ -34,19 +34,19 @@ const Index = () => {
       <div className="bg-white shadow-elevated border-b border-slate-200">
         <div className="max-w-7xl mx-auto px-4 py-8">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-blue-600">
-                <DollarSign className="w-8 h-8 text-white" />
+              <div className="flex items-center gap-4">
+                <div className="p-3 bg-slate-900 border-2 border-taxi-400">
+                  <DollarSign className="w-8 h-8 text-taxi-400" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-slate-900 tracking-tight">CashClock</h1>
+                  <p className="text-slate-600 font-medium">Your meeting's taxi meter is running</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Meeting Cost Calculator</h1>
-                <p className="text-slate-600 font-medium">Track the true cost of your meetings in real-time</p>
+              <div className="text-right">
+                <div className="text-sm text-slate-500 font-medium uppercase tracking-wider">Professional Meter</div>
+                <div className="text-xl font-bold text-taxi-600 tracking-tight">Every Second Counts</div>
               </div>
-            </div>
-            <div className="text-right">
-              <div className="text-sm text-slate-500 font-medium uppercase tracking-wider">Enterprise Solution</div>
-              <div className="text-xl font-bold text-blue-600 tracking-tight">Time is Money</div>
-            </div>
           </div>
         </div>
       </div>

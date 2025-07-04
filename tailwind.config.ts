@@ -65,18 +65,31 @@ export default {
 					800: 'hsl(var(--slate-800))',
 					900: 'hsl(var(--slate-900))',
 				},
-				// Professional blue palette
-				blue: {
-					50: 'hsl(var(--blue-50))',
-					100: 'hsl(var(--blue-100))',
-					200: 'hsl(var(--blue-200))',
-					300: 'hsl(var(--blue-300))',
-					400: 'hsl(var(--blue-400))',
-					500: 'hsl(var(--blue-500))',
-					600: 'hsl(var(--blue-600))',
-					700: 'hsl(var(--blue-700))',
-					800: 'hsl(var(--blue-800))',
-					900: 'hsl(var(--blue-900))',
+				// Taxi yellow palette
+				taxi: {
+					50: 'hsl(var(--taxi-50))',
+					100: 'hsl(var(--taxi-100))',
+					200: 'hsl(var(--taxi-200))',
+					300: 'hsl(var(--taxi-300))',
+					400: 'hsl(var(--taxi-400))',
+					500: 'hsl(var(--taxi-500))',
+					600: 'hsl(var(--taxi-600))',
+					700: 'hsl(var(--taxi-700))',
+					800: 'hsl(var(--taxi-800))',
+					900: 'hsl(var(--taxi-900))',
+				},
+				// LCD green for digital displays
+				lcd: {
+					50: 'hsl(var(--lcd-50))',
+					100: 'hsl(var(--lcd-100))',
+					200: 'hsl(var(--lcd-200))',
+					300: 'hsl(var(--lcd-300))',
+					400: 'hsl(var(--lcd-400))',
+					500: 'hsl(var(--lcd-500))',
+					600: 'hsl(var(--lcd-600))',
+					700: 'hsl(var(--lcd-700))',
+					800: 'hsl(var(--lcd-800))',
+					900: 'hsl(var(--lcd-900))',
 				},
 				// Cost status colors
 				cost: {
