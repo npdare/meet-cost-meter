@@ -4,6 +4,7 @@ import { TrendingUp, Coffee, Car, Home, Plane, CheckCircle } from "lucide-react"
 
 interface MilestoneTickerProps {
   totalCost: number
+  resetTrigger: number // Add a reset trigger prop
 }
 
 interface Milestone {
@@ -14,10 +15,17 @@ interface Milestone {
   timestamp: Date
 }
 
-export const MilestoneTicker = ({ totalCost }: MilestoneTickerProps) => {
+export const MilestoneTicker = ({ totalCost, resetTrigger }: MilestoneTickerProps) => {
   const [achievedMilestones, setAchievedMilestones] = useState<Milestone[]>([])
   const [currentMilestone, setCurrentMilestone] = useState<Milestone | null>(null)
   const [showMilestone, setShowMilestone] = useState(false)
+  
+  // Reset milestones when resetTrigger changes
+  useEffect(() => {
+    setAchievedMilestones([])
+    setCurrentMilestone(null)
+    setShowMilestone(false)
+  }, [resetTrigger])
   
   const milestoneTemplates = [
     {

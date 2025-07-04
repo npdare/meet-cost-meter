@@ -20,6 +20,7 @@ const Index = () => {
   const [newAttendeeName, setNewAttendeeName] = useState("")
   const [newAttendeeRole, setNewAttendeeRole] = useState("")
   const [newAttendeeRate, setNewAttendeeRate] = useState("")
+  const [resetCounter, setResetCounter] = useState(0) // Add reset counter for milestones
 
   // Role-based hourly rates
   const roleRates: Record<string, number> = {
@@ -76,6 +77,7 @@ const Index = () => {
   const resetTimer = () => {
     setIsRunning(false)
     setTime(0)
+    setResetCounter(prev => prev + 1) // Trigger milestone reset
   }
 
   // Handle role change and auto-populate rate
@@ -289,7 +291,7 @@ const Index = () => {
           </Card>
         )}
         
-        <MilestoneTicker totalCost={totalCost} />
+        <MilestoneTicker totalCost={totalCost} resetTrigger={resetCounter} />
       </div>
     </div>
   )
