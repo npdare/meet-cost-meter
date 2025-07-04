@@ -153,7 +153,7 @@ const Index = () => {
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Cost Display */}
-          <Card className="h-96 flex flex-col">
+          <Card className="min-h-96 flex flex-col">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <DollarSign className="w-5 h-5" />
@@ -183,21 +183,21 @@ const Index = () => {
               
               {/* Milestones Achieved */}
               {achievedMilestones.length > 0 && (
-                <div className="flex-1 min-h-0">
+                <div className="flex-1 min-h-0 overflow-hidden">
                   <div className="border-t pt-3">
                     <div className="flex items-center gap-2 mb-2">
                       <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
                       <span className="text-xs font-medium text-gray-700">Cost Milestones</span>
                     </div>
-                    <div className="space-y-1 max-h-32 overflow-y-auto">
-                      {achievedMilestones.slice(0, 5).map((milestone, index) => (
+                    <div className="space-y-1 max-h-28 overflow-y-auto">
+                      {achievedMilestones.slice(0, 8).map((milestone, index) => (
                         <div key={index} className="text-xs text-gray-600 bg-yellow-50 px-2 py-1 rounded border border-yellow-100">
                           {milestone}
                         </div>
                       ))}
-                      {achievedMilestones.length > 5 && (
+                      {achievedMilestones.length > 8 && (
                         <div className="text-xs text-gray-500 text-center">
-                          +{achievedMilestones.length - 5} more achievements
+                          +{achievedMilestones.length - 8} more achievements
                         </div>
                       )}
                     </div>
@@ -208,7 +208,7 @@ const Index = () => {
           </Card>
 
           {/* Attendees Management */}
-          <Card className="h-96 flex flex-col">
+          <Card className="min-h-96 flex flex-col">
             <CardHeader className="flex-shrink-0 pb-3">
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5" />
