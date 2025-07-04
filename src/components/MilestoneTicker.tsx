@@ -53,12 +53,16 @@ export const MilestoneTicker = ({ totalCost }: MilestoneTickerProps) => {
   ]
 
   useEffect(() => {
+    console.log('useEffect triggered, totalCost:', totalCost, 'achievedMilestones:', achievedMilestones.length)
+    
     const achievedCosts = achievedMilestones.map(m => m.cost)
     const newMilestone = milestoneTemplates.find(
       template => totalCost >= template.cost && !achievedCosts.includes(template.cost)
     )
 
     if (newMilestone) {
+      console.log('New milestone found:', newMilestone)
+      
       const milestone: Milestone = {
         id: Date.now().toString(),
         cost: newMilestone.cost,
@@ -73,18 +77,22 @@ export const MilestoneTicker = ({ totalCost }: MilestoneTickerProps) => {
       // Show the popup
       setCurrentMilestone(milestone)
       setShowMilestone(true)
+      console.log('Milestone popup shown, setting timers')
 
       // Start fade out after 3 seconds
       const fadeTimer = setTimeout(() => {
+        console.log('Fading out milestone')
         setShowMilestone(false)
       }, 3000)
 
       // Clear milestone after fade animation
       const clearTimer = setTimeout(() => {
+        console.log('Clearing milestone')
         setCurrentMilestone(null)
       }, 3500) // 3000ms + 500ms for fade animation
 
       return () => {
+        console.log('Cleaning up timers')
         clearTimeout(fadeTimer)
         clearTimeout(clearTimer)
       }
