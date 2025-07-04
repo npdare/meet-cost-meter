@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Play, Pause, Square, Plus, X, Users, DollarSign, Clock } from "lucide-react"
+import { MilestoneTicker } from "@/components/MilestoneTicker"
 
 interface Attendee {
   id: string
@@ -76,7 +77,7 @@ const Index = () => {
     <div className="min-h-screen bg-gray-50 p-4">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">MeetingMeeter</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Meeting Meter</h1>
           <p className="text-gray-600">Track meeting duration and calculate real-time costs</p>
         </div>
 
@@ -91,17 +92,17 @@ const Index = () => {
               <div className="text-6xl font-mono font-bold text-gray-900 tracking-wider">{formatTime(time)}</div>
               <div className="flex justify-center gap-3">
                 {!isRunning ? (
-                  <Button onClick={startTimer} size="lg" className="gap-2">
+                  <Button onClick={startTimer} size="lg" className="gap-2 bg-black text-white hover:bg-gray-800">
                     <Play className="w-4 h-4" />
                     Start
                   </Button>
                 ) : (
-                  <Button onClick={pauseTimer} size="lg" variant="secondary" className="gap-2">
+                  <Button onClick={pauseTimer} size="lg" className="gap-2 bg-black text-white hover:bg-gray-800">
                     <Pause className="w-4 h-4" />
                     Pause
                   </Button>
                 )}
-                <Button onClick={resetTimer} size="lg" variant="outline" className="gap-2">
+                <Button onClick={resetTimer} size="lg" className="gap-2 bg-black text-white hover:bg-gray-800">
                   <Square className="w-4 h-4" />
                   Reset
                 </Button>
@@ -168,7 +169,7 @@ const Index = () => {
                     />
                   </div>
                 </div>
-                <Button onClick={addAttendee} className="w-full gap-2" size="sm">
+                <Button onClick={addAttendee} className="w-full gap-2 bg-black text-white hover:bg-gray-800" size="sm">
                   <Plus className="w-4 h-4" />
                   Add Attendee
                 </Button>
@@ -230,6 +231,8 @@ const Index = () => {
           </Card>
         )}
       </div>
+      
+      <MilestoneTicker totalCost={totalCost} />
     </div>
   )
 }
