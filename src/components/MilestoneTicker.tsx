@@ -49,6 +49,26 @@ export const MilestoneTicker = ({ totalCost }: MilestoneTickerProps) => {
       cost: 500,
       icon: <Plane className="w-4 h-4" />,
       message: "Flight ticket cost achieved! ✈️"
+    },
+    {
+      cost: 1000,
+      icon: <TrendingUp className="w-4 h-4" />,
+      message: "Holy guacamole - $1,000! 🤯"
+    },
+    {
+      cost: 2000,
+      icon: <Car className="w-4 h-4" />,
+      message: "Could buy a used car! 🚗"
+    },
+    {
+      cost: 3000,
+      icon: <Home className="w-4 h-4" />,
+      message: "Luxury vacation cost! 🏖️"
+    },
+    {
+      cost: 5000,
+      icon: <Plane className="w-4 h-4" />,
+      message: "First-class flight around the world! 🌍"
     }
   ]
 
