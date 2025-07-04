@@ -2,157 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
-
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 220 9% 15%;
-
+    /* Light mode colors */
+    --background: 220 15% 98%;
+    --foreground: 224 20% 12%;
     --card: 0 0% 100%;
-    --card-foreground: 220 9% 15%;
-
+    --card-foreground: 224 20% 12%;
     --popover: 0 0% 100%;
-    --popover-foreground: 220 9% 15%;
-
-    --primary: 221 83% 53%;
-    --primary-foreground: 0 0% 100%;
-
+    --popover-foreground: 224 20% 12%;
+    --primary: 262 88% 58%;
+    --primary-foreground: 210 40% 98%;
     --secondary: 220 14% 96%;
-    --secondary-foreground: 220 9% 15%;
-
+    --secondary-foreground: 220 9% 46%;
     --muted: 220 14% 96%;
     --muted-foreground: 220 9% 46%;
-
-    --accent: 221 83% 53%;
-    --accent-foreground: 0 0% 100%;
-
+    --accent: 270 95% 75%;
+    --accent-foreground: 224 20% 12%;
     --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
+    --destructive-foreground: 210 40% 98%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 221 83% 53%;
-
-    /* Clean professional color system */
-    --slate-50: 210 40% 98%;
-    --slate-100: 210 40% 96%;
-    --slate-200: 214 32% 91%;
-    --slate-300: 213 27% 84%;
-    --slate-400: 215 20% 65%;
-    --slate-500: 215 16% 47%;
-    --slate-600: 215 19% 35%;
-    --slate-700: 215 25% 27%;
-    --slate-800: 217 33% 17%;
-    --slate-900: 222 47% 11%;
-
-    /* Professional blue accent */
-    --blue-50: 214 100% 97%;
-    --blue-100: 214 95% 93%;
-    --blue-200: 213 97% 87%;
-    --blue-300: 212 96% 78%;
-    --blue-400: 213 94% 68%;
-    --blue-500: 217 91% 60%;
-    --blue-600: 221 83% 53%;
-    --blue-700: 224 76% 48%;
-    --blue-800: 226 71% 40%;
-    --blue-900: 224 64% 33%;
-
-    /* Status indicators */
-    --green-50: 138 76% 97%;
-    --green-100: 141 84% 93%;
-    --green-200: 141 79% 85%;
-    --green-300: 142 77% 73%;
-    --green-400: 142 69% 58%;
-    --green-500: 142 71% 45%;
-    --green-600: 142 76% 36%;
-    --green-700: 142 72% 29%;
-    --green-800: 142 64% 24%;
-    --green-900: 142 61% 20%;
-
-    /* Warning colors */
-    --amber-50: 48 100% 96%;
-    --amber-100: 48 96% 89%;
-    --amber-200: 48 97% 77%;
-    --amber-300: 46 97% 65%;
-    --amber-400: 43 96% 56%;
-    --amber-500: 38 92% 50%;
-    --amber-600: 32 95% 44%;
-    --amber-700: 26 90% 37%;
-    --amber-800: 23 83% 31%;
-    --amber-900: 22 78% 26%;
-
-    /* Clean surfaces */
-    --surface-1: 0 0% 100%;      /* Pure white */
-    --surface-2: 210 40% 98%;    /* Subtle gray */
-    --surface-3: 214 32% 91%;    /* Light border */
-
-    /* Subtle shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(0 0% 0% / 0.05);
-    --shadow-base: 0 1px 3px 0 hsl(0 0% 0% / 0.1), 0 1px 2px -1px hsl(0 0% 0% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(0 0% 0% / 0.1), 0 4px 6px -4px hsl(0 0% 0% / 0.1);
-
-    /* Smooth transitions */
-    --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-
-    /* Minimal radius */
-    --radius: 0.25rem;
-
-    --sidebar-background: 0 0% 98%;
-
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --ring: 262 88% 58%;
+    --radius: 0.75rem;
+    
+    /* Cost tier colors */
+    --cost-low: 142 76% 36%;
+    --cost-medium: 38 92% 50%;
+    --cost-high: 25 95% 53%;
+    --cost-critical: 0 84% 60%;
+    
+    /* Success states */
+    --success: 142 76% 36%;
+    --warning: 38 92% 50%;
+    --info: 217 91% 60%;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
+    --background: 224 20% 9%;
+    --foreground: 213 31% 91%;
+    --card: 224 20% 12%;
+    --card-foreground: 213 31% 91%;
+    --popover: 224 20% 12%;
+    --popover-foreground: 213 31% 91%;
+    --primary: 262 88% 58%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 215 28% 17%;
     --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
+    --muted: 215 28% 17%;
+    --muted-foreground: 217 10% 65%;
+    --accent: 270 95% 75%;
+    --accent-foreground: 224 20% 12%;
+    --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --border: 215 28% 17%;
+    --input: 215 28% 17%;
+    --ring: 262 88% 58%;
+    
+    /* Cost tier colors for dark mode */
+    --cost-low: 142 69% 58%;
+    --cost-medium: 38 92% 65%;
+    --cost-high: 25 95% 68%;
+    --cost-critical: 0 84% 75%;
   }
 }
 
@@ -160,8 +71,55 @@ All colors MUST be HSL.
   * {
     @apply border-border;
   }
-
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-inter antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-card/80 backdrop-blur-sm border shadow-lg;
+  }
+  
+  .gradient-bg {
+    @apply bg-gradient-to-br from-primary to-accent;
+  }
+  
+  .cost-glow {
+    @apply animate-pulse drop-shadow-lg;
+  }
+  
+  .meeting-card {
+    @apply transition-all duration-300 hover:shadow-lg hover:scale-[1.02] hover:-translate-y-1;
+  }
+  
+  .timer-display {
+    @apply text-6xl font-mono font-bold tracking-wider bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+  
+  .cost-display {
+    @apply text-4xl font-bold;
+  }
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2s linear infinite;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  background-size: 200px 100%;
 }

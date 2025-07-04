@@ -3,10 +3,11 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Play, Pause, Square, Plus, X, Users, DollarSign, Clock } from "lucide-react"
+import { Play, Pause, Square, Plus, X, Users, DollarSign, Clock, Timer, TrendingUp } from "lucide-react"
 import { MilestoneTicker } from "@/components/MilestoneTicker"
 import { MeetingReportCard } from "@/components/MeetingReportCard"
 import { AdBanner } from "@/components/AdBanner"
+import { ThemeToggle } from "@/components/ThemeToggle"
 
 interface Attendee {
   id: string
@@ -115,38 +116,55 @@ const Index = () => {
   const totalCost = calculateTotalCost()
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-4xl mx-auto space-y-6">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Meeting Meter</h1>
-          <p className="text-gray-600">Track meeting duration and calculate real-time costs</p>
+    <div className="min-h-screen bg-background transition-colors duration-300">
+      {/* Header */}
+      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <Timer className="w-6 h-6 text-primary" />
+              <span className="font-poppins font-bold text-xl text-foreground">Meeting Meter</span>
+            </div>
+          </div>
+          <ThemeToggle />
+        </div>
+      </header>
+      
+      <div className="max-w-4xl mx-auto p-4 space-y-8">
+        <div className="text-center space-y-3 animate-fade-in">
+          <h1 className="text-4xl font-poppins font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            Meeting Cost Calculator
+          </h1>
+          <p className="text-muted-foreground text-lg">Track meeting duration and calculate real-time costs with precision</p>
         </div>
 
         {/* Top Banner Ad */}
         <AdBanner adSlot="1234567890" adFormat="horizontal" className="text-center" />
 
         {/* Timer Display */}
-        <Card className="text-center">
-          <CardContent className="pt-6">
-            <div className="space-y-4">
-              <div className="flex items-center justify-center gap-2 text-gray-600">
+        <Card className="meeting-card glass-card border-0 shadow-xl">
+          <CardContent className="pt-8 pb-8">
+            <div className="space-y-6">
+              <div className="flex items-center justify-center gap-2 text-muted-foreground">
                 <Clock className="w-5 h-5" />
                 <span className="text-sm font-medium">Meeting Duration</span>
               </div>
-              <div className="text-6xl font-mono font-bold text-gray-900 tracking-wider">{formatTime(time)}</div>
-              <div className="flex justify-center gap-3">
+              <div className={`timer-display ${isRunning ? 'animate-pulse-glow' : ''}`}>
+                {formatTime(time)}
+              </div>
+              <div className="flex justify-center gap-4">
                 {!isRunning ? (
-                  <Button onClick={startTimer} size="lg" className="gap-2 bg-black text-white hover:bg-gray-800">
+                  <Button onClick={startTimer} size="lg" className="gap-2 gradient-bg hover:opacity-90 transition-all duration-300 shadow-lg">
                     <Play className="w-4 h-4" />
-                    Start
+                    Start Meeting
                   </Button>
                 ) : (
-                  <Button onClick={pauseTimer} size="lg" className="gap-2 bg-black text-white hover:bg-gray-800">
+                  <Button onClick={pauseTimer} size="lg" className="gap-2 bg-warning text-warning-foreground hover:bg-warning/90 transition-all duration-300">
                     <Pause className="w-4 h-4" />
                     Pause
                   </Button>
                 )}
-                <Button onClick={resetTimer} size="lg" className="gap-2 bg-black text-white hover:bg-gray-800">
+                <Button onClick={resetTimer} size="lg" variant="outline" className="gap-2 border-2 hover:bg-accent/50">
                   <Square className="w-4 h-4" />
                   Reset
                 </Button>
@@ -157,17 +175,19 @@ const Index = () => {
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Cost Display */}
-          <Card className="h-[400px] flex flex-col">
+          <Card className="h-[400px] flex flex-col meeting-card glass-card">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <DollarSign className="w-5 h-5" />
+              <CardTitle className="flex items-center gap-2 text-foreground">
+                <TrendingUp className="w-5 h-5 text-primary" />
                 Meeting Cost
               </CardTitle>
             </CardHeader>
             <CardContent className="flex-1 flex flex-col overflow-hidden">
               <div className="text-center space-y-3 mb-4">
-                <div className="text-4xl font-bold text-green-600">${totalCost.toFixed(2)}</div>
-                <div className="text-sm text-gray-600">
+                <div className="cost-display bg-gradient-to-r from-success to-warning bg-clip-text text-transparent animate-count-up">
+                  ${totalCost.toFixed(2)}
+                </div>
+                <div className="text-sm text-muted-foreground">
                   {attendees.length} attendee{attendees.length !== 1 ? "s" : ""} • $
                   {attendees.reduce((sum, a) => sum + a.hourlyRate, 0).toFixed(2)}/hour total
                 </div>
@@ -175,28 +195,28 @@ const Index = () => {
               
               {/* Cost Breakdown */}
               <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="bg-gray-50 p-2 rounded text-center">
-                  <div className="text-sm font-medium text-gray-900">${(totalCost / Math.max(time / 60, 1)).toFixed(2)}</div>
-                  <div className="text-xs text-gray-600">per minute</div>
+                <div className="bg-secondary/50 p-3 rounded-lg text-center backdrop-blur-sm">
+                  <div className="text-sm font-medium text-foreground">${(totalCost / Math.max(time / 60, 1)).toFixed(2)}</div>
+                  <div className="text-xs text-muted-foreground">per minute</div>
                 </div>
-                <div className="bg-gray-50 p-2 rounded text-center">
-                  <div className="text-sm font-medium text-gray-900">${(totalCost / Math.max(time, 1)).toFixed(4)}</div>
-                  <div className="text-xs text-gray-600">per second</div>
+                <div className="bg-secondary/50 p-3 rounded-lg text-center backdrop-blur-sm">
+                  <div className="text-sm font-medium text-foreground">${(totalCost / Math.max(time, 1)).toFixed(4)}</div>
+                  <div className="text-xs text-muted-foreground">per second</div>
                 </div>
               </div>
               
               {/* Milestones Achieved - SCROLLABLE */}
               {achievedMilestones.length > 0 && (
                 <div className="flex-1 overflow-hidden">
-                  <div className="border-t pt-3">
+                  <div className="border-t border-border pt-3">
                     <div className="flex items-center gap-2 mb-2">
-                      <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                      <span className="text-xs font-medium text-gray-700">Cost Milestones</span>
+                      <div className="w-2 h-2 bg-warning rounded-full animate-pulse"></div>
+                      <span className="text-xs font-medium text-foreground">Cost Milestones</span>
                     </div>
                     <div className="max-h-24 overflow-y-auto">
                       {achievedMilestones.map((milestone, index) => (
-                        <div key={index} className="p-2 border-b border-gray-100 last:border-b-0">
-                          <div className="text-sm text-gray-700">{milestone}</div>
+                        <div key={index} className="p-2 border-b border-border last:border-b-0">
+                          <div className="text-sm text-foreground">{milestone}</div>
                         </div>
                       ))}
                     </div>
@@ -207,10 +227,10 @@ const Index = () => {
           </Card>
 
           {/* Attendees Management */}
-          <Card className="h-[400px] flex flex-col">
+          <Card className="h-[400px] flex flex-col meeting-card glass-card">
             <CardHeader className="flex-shrink-0 pb-3">
-              <CardTitle className="flex items-center gap-2">
-                <Users className="w-5 h-5" />
+              <CardTitle className="flex items-center gap-2 text-foreground">
+                <Users className="w-5 h-5 text-primary" />
                 Attendees
               </CardTitle>
             </CardHeader>
@@ -239,7 +259,7 @@ const Index = () => {
                       id="role"
                       value={newAttendeeRole}
                       onChange={(e) => handleRoleChange(e.target.value)}
-                      className="w-full h-8 px-3 py-1 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full h-8 px-3 py-1 text-sm bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-foreground"
                     >
                       <option value="">Select role</option>
                       {Object.keys(roleRates).map((role) => (
@@ -264,9 +284,9 @@ const Index = () => {
                     />
                   </div>
                 </div>
-                <Button onClick={addAttendee} className="w-full gap-2 bg-black text-white hover:bg-gray-800 h-8" size="sm">
+                <Button onClick={addAttendee} className="w-full gap-2 gradient-bg hover:opacity-90 h-8" size="sm">
                   <Plus className="w-4 h-4" />
-                  Add
+                  Add Attendee
                 </Button>
               </div>
 
@@ -274,7 +294,7 @@ const Index = () => {
               <div className="flex-1 overflow-hidden">
                 <div className="h-full overflow-y-auto">
                   {attendees.length === 0 ? (
-                    <div className="flex items-center justify-center h-32 text-gray-500">
+                    <div className="flex items-center justify-center h-32 text-muted-foreground">
                       <div className="text-center">
                         <Users className="w-8 h-8 mx-auto mb-3 opacity-50" />
                         <p className="text-sm font-medium mb-1">No attendees yet</p>
@@ -283,18 +303,18 @@ const Index = () => {
                     </div>
                   ) : (
                     attendees.map((attendee) => (
-                      <div key={attendee.id} className="p-2 border-b border-gray-100 last:border-b-0">
+                      <div key={attendee.id} className="p-2 border-b border-border last:border-b-0 hover:bg-accent/20 transition-colors">
                         <div className="flex items-center justify-between">
                           <div className="flex-1 min-w-0">
-                            <div className="font-medium text-sm truncate">{attendee.name}</div>
-                            <div className="text-gray-600 text-xs truncate">{attendee.role}</div>
-                            <div className="text-gray-500 text-xs">${attendee.hourlyRate}/hr</div>
+                            <div className="font-medium text-sm truncate text-foreground">{attendee.name}</div>
+                            <div className="text-muted-foreground text-xs truncate">{attendee.role}</div>
+                            <div className="text-primary text-xs font-medium">${attendee.hourlyRate}/hr</div>
                           </div>
                           <Button
                             onClick={() => removeAttendee(attendee.id)}
                             size="sm"
                             variant="ghost"
-                            className="h-6 w-6 p-0 text-gray-400 hover:text-red-500 flex-shrink-0"
+                            className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive flex-shrink-0"
                           >
                             <X className="w-3 h-3" />
                           </Button>
@@ -310,24 +330,24 @@ const Index = () => {
 
         {/* Summary Stats */}
         {attendees.length > 0 && (
-          <Card>
+          <Card className="meeting-card glass-card">
             <CardContent className="pt-6">
               <div className="grid grid-cols-3 gap-4 text-center">
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">{attendees.length}</div>
-                  <div className="text-sm text-gray-600">Attendees</div>
+                <div className="p-4 rounded-lg bg-secondary/30">
+                  <div className="text-2xl font-bold text-primary">{attendees.length}</div>
+                  <div className="text-sm text-muted-foreground">Attendees</div>
                 </div>
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">
+                <div className="p-4 rounded-lg bg-secondary/30">
+                  <div className="text-2xl font-bold text-foreground">
                     ${attendees.reduce((sum, a) => sum + a.hourlyRate, 0).toFixed(2)}
                   </div>
-                  <div className="text-sm text-gray-600">Cost per Hour</div>
+                  <div className="text-sm text-muted-foreground">Cost per Hour</div>
                 </div>
-                <div>
-                  <div className="text-2xl font-bold text-gray-900">
+                <div className="p-4 rounded-lg bg-secondary/30">
+                  <div className="text-2xl font-bold text-accent">
                     ${(totalCost / Math.max(time / 60, 1)).toFixed(2)}
                   </div>
-                  <div className="text-sm text-gray-600">Cost per Minute</div>
+                  <div className="text-sm text-muted-foreground">Cost per Minute</div>
                 </div>
               </div>
             </CardContent>
