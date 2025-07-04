@@ -20,12 +20,14 @@ export const MilestoneTicker = ({ totalCost, resetTrigger, onMilestoneAchieved }
   const [achievedMilestones, setAchievedMilestones] = useState<Milestone[]>([])
   const [currentMilestone, setCurrentMilestone] = useState<Milestone | null>(null)
   const [showMilestone, setShowMilestone] = useState(false)
+  const [achievedCosts, setAchievedCosts] = useState<number[]>([])
   
   // Reset milestones when resetTrigger changes
   useEffect(() => {
     setAchievedMilestones([])
     setCurrentMilestone(null)
     setShowMilestone(false)
+    setAchievedCosts([])
   }, [resetTrigger])
   
   const milestoneTemplates = [
@@ -107,9 +109,8 @@ export const MilestoneTicker = ({ totalCost, resetTrigger, onMilestoneAchieved }
   ]
 
   useEffect(() => {
-    console.log('useEffect triggered, totalCost:', totalCost, 'achievedMilestones:', achievedMilestones.length)
+    console.log('useEffect triggered, totalCost:', totalCost, 'achievedCosts:', achievedCosts.length)
     
-    const achievedCosts = achievedMilestones.map(m => m.cost)
     const newMilestone = milestoneTemplates.find(
       template => totalCost >= template.cost && !achievedCosts.includes(template.cost)
     )
@@ -127,6 +128,7 @@ export const MilestoneTicker = ({ totalCost, resetTrigger, onMilestoneAchieved }
 
       // Add to achieved list first
       setAchievedMilestones(prev => [milestone, ...prev])
+      setAchievedCosts(prev => [...prev, milestone.cost])
       
       // Notify parent component
       if (onMilestoneAchieved) {
@@ -148,7 +150,7 @@ export const MilestoneTicker = ({ totalCost, resetTrigger, onMilestoneAchieved }
         }, 500)
       }, 3000)
     }
-  }, [totalCost, achievedMilestones.length]) // Only depend on length, not the full array
+  }, [totalCost, achievedCosts.length]) // Only depend on length, not the full array
 
   return (
     <>
