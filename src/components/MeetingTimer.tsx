@@ -62,7 +62,7 @@ export const MeetingTimer = ({ attendees, onCostUpdate }: MeetingTimerProps) => 
     <Card className="relative p-0 bg-white shadow-lg border border-slate-200 overflow-hidden">
       {/* Header */}
       <div className="bg-blue-600 text-white px-6 py-3 font-bold text-lg tracking-wide text-center">
-        CashClock Timer
+        MeetingMeeter Timer
       </div>
       
       <div className="p-8 bg-white">
