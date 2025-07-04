@@ -5,6 +5,7 @@ import { TrendingUp, Coffee, Car, Home, Plane, CheckCircle } from "lucide-react"
 interface MilestoneTickerProps {
   totalCost: number
   resetTrigger: number // Add a reset trigger prop
+  onMilestoneAchieved?: (milestone: string) => void
 }
 
 interface Milestone {
@@ -15,7 +16,7 @@ interface Milestone {
   timestamp: Date
 }
 
-export const MilestoneTicker = ({ totalCost, resetTrigger }: MilestoneTickerProps) => {
+export const MilestoneTicker = ({ totalCost, resetTrigger, onMilestoneAchieved }: MilestoneTickerProps) => {
   const [achievedMilestones, setAchievedMilestones] = useState<Milestone[]>([])
   const [currentMilestone, setCurrentMilestone] = useState<Milestone | null>(null)
   const [showMilestone, setShowMilestone] = useState(false)
@@ -29,54 +30,79 @@ export const MilestoneTicker = ({ totalCost, resetTrigger }: MilestoneTickerProp
   
   const milestoneTemplates = [
     {
+      cost: 15,
+      icon: <Coffee className="w-4 h-4" />,
+      message: "Expensive latte alert! ☕"
+    },
+    {
       cost: 25,
       icon: <Coffee className="w-4 h-4" />,
-      message: "Cost equals 5 coffee cups ☕"
+      message: "That's 5 Starbucks coffees! ☕"
     },
     {
       cost: 50,
       icon: <TrendingUp className="w-4 h-4" />,
-      message: "Meeting cost hits $50! 📈"
+      message: "Congratulations! You've wasted $50! 🎉"
     },
     {
       cost: 100,
       icon: <Car className="w-4 h-4" />,
-      message: "Could buy a tank of gas! ⛽"
+      message: "Could've bought groceries for a week! 🛒"
+    },
+    {
+      cost: 150,
+      icon: <Home className="w-4 h-4" />,
+      message: "Netflix subscription for a YEAR! 📺"
     },
     {
       cost: 200,
       icon: <TrendingUp className="w-4 h-4" />,
-      message: "That's $200 in meeting time! 💸"
+      message: "Dinner for two at a fancy restaurant! 🍽️"
     },
     {
       cost: 300,
-      icon: <Home className="w-4 h-4" />,
-      message: "Weekend hotel stay cost reached! 🏨"
+      icon: <Plane className="w-4 h-4" />,
+      message: "Weekend getaway flights! ✈️"
     },
     {
       cost: 500,
-      icon: <Plane className="w-4 h-4" />,
-      message: "Flight ticket cost achieved! ✈️"
+      icon: <Home className="w-4 h-4" />,
+      message: "Nice hotel for the weekend! 🏨"
+    },
+    {
+      cost: 750,
+      icon: <Car className="w-4 h-4" />,
+      message: "Monthly car payment territory! 🚗"
     },
     {
       cost: 1000,
       icon: <TrendingUp className="w-4 h-4" />,
-      message: "Holy guacamole - $1,000! 🤯"
+      message: "FOUR FIGURES?! Your boss needs to see this! 🤯"
+    },
+    {
+      cost: 1500,
+      icon: <Plane className="w-4 h-4" />,
+      message: "Round trip to Europe! 🌍"
     },
     {
       cost: 2000,
-      icon: <Car className="w-4 h-4" />,
-      message: "Could buy a used car! 🚗"
+      icon: <Home className="w-4 h-4" />,
+      message: "Someone's getting fired... 😬"
     },
     {
       cost: 3000,
-      icon: <Home className="w-4 h-4" />,
-      message: "Luxury vacation cost! 🏖️"
+      icon: <Car className="w-4 h-4" />,
+      message: "Used car down payment! 🚗"
     },
     {
       cost: 5000,
       icon: <Plane className="w-4 h-4" />,
-      message: "First-class flight around the world! 🌍"
+      message: "Business class around the world! 🌎"
+    },
+    {
+      cost: 10000,
+      icon: <Home className="w-4 h-4" />,
+      message: "LEGENDARY waste! Frame this screenshot! 🏆"
     }
   ]
 
@@ -101,6 +127,11 @@ export const MilestoneTicker = ({ totalCost, resetTrigger }: MilestoneTickerProp
 
       // Add to achieved list first
       setAchievedMilestones(prev => [milestone, ...prev])
+      
+      // Notify parent component
+      if (onMilestoneAchieved) {
+        onMilestoneAchieved(milestone.message)
+      }
       
       // Show the popup
       setCurrentMilestone(milestone)

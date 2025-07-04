@@ -5,6 +5,8 @@ import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Play, Pause, Square, Plus, X, Users, DollarSign, Clock } from "lucide-react"
 import { MilestoneTicker } from "@/components/MilestoneTicker"
+import { SocialShare } from "@/components/SocialShare"
+import { MeetingHistory } from "@/components/MeetingHistory"
 
 interface Attendee {
   id: string
@@ -21,6 +23,8 @@ const Index = () => {
   const [newAttendeeRole, setNewAttendeeRole] = useState("")
   const [newAttendeeRate, setNewAttendeeRate] = useState("")
   const [resetCounter, setResetCounter] = useState(0) // Add reset counter for milestones
+  const [saveMeetingFn, setSaveMeetingFn] = useState<((meeting: any) => void) | null>(null)
+  const [achievedMilestones, setAchievedMilestones] = useState<string[]>([])
 
   // Role-based hourly rates
   const roleRates: Record<string, number> = {
@@ -78,6 +82,19 @@ const Index = () => {
     setIsRunning(false)
     setTime(0)
     setResetCounter(prev => prev + 1) // Trigger milestone reset
+    setAchievedMilestones([])
+  }
+
+  const saveMeeting = () => {
+    if (saveMeetingFn && time > 0 && attendees.length > 0) {
+      saveMeetingFn({
+        duration: time,
+        totalCost: totalCost,
+        attendeeCount: attendees.length,
+        milestones: achievedMilestones,
+        attendees: attendees
+      })
+    }
   }
 
   // Handle role change and auto-populate rate
@@ -143,6 +160,11 @@ const Index = () => {
                   <Square className="w-4 h-4" />
                   Reset
                 </Button>
+                {time > 0 && attendees.length > 0 && (
+                  <Button onClick={saveMeeting} size="lg" className="gap-2 bg-green-600 hover:bg-green-700 text-white">
+                    Save Meeting
+                  </Button>
+                )}
               </div>
             </div>
           </CardContent>
@@ -291,7 +313,22 @@ const Index = () => {
           </Card>
         )}
         
-        <MilestoneTicker totalCost={totalCost} resetTrigger={resetCounter} />
+        <MilestoneTicker 
+          totalCost={totalCost} 
+          resetTrigger={resetCounter}
+          onMilestoneAchieved={(milestone) => setAchievedMilestones(prev => [...prev, milestone])}
+        />
+        
+        {totalCost > 0 && (
+          <SocialShare 
+            totalCost={totalCost}
+            duration={time}
+            attendeeCount={attendees.length}
+            milestones={achievedMilestones}
+          />
+        )}
+        
+        <MeetingHistory onSetSaveFunction={setSaveMeetingFn} />
       </div>
     </div>
   )
