@@ -153,7 +153,7 @@ const Index = () => {
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Cost Display */}
-          <Card className="h-96 flex flex-col">
+          <Card className="h-100 flex flex-col">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <DollarSign className="w-5 h-5" />
@@ -161,7 +161,7 @@ const Index = () => {
               </CardTitle>
             </CardHeader>
             <CardContent className="flex-1 flex flex-col">
-              <div className="text-center space-y-3 mb-4">
+              <div className="text-center space-y-3 mb-4 flex-shrink-0">
                 <div className="text-4xl font-bold text-green-600">${totalCost.toFixed(2)}</div>
                 <div className="text-sm text-gray-600">
                   {attendees.length} attendee{attendees.length !== 1 ? "s" : ""} • $
@@ -170,7 +170,7 @@ const Index = () => {
               </div>
               
               {/* Cost Breakdown */}
-              <div className="grid grid-cols-2 gap-3 mb-4">
+              <div className="grid grid-cols-2 gap-3 mb-4 flex-shrink-0">
                 <div className="bg-gray-50 p-2 rounded text-center">
                   <div className="text-sm font-medium text-gray-900">${(totalCost / Math.max(time / 60, 1)).toFixed(2)}</div>
                   <div className="text-xs text-gray-600">per minute</div>
@@ -181,7 +181,7 @@ const Index = () => {
                 </div>
               </div>
               
-              {/* Milestones Achieved */}
+              {/* Milestones Achieved - SCROLLABLE LIST */}
               {achievedMilestones.length > 0 && (
                 <div className="flex-1 min-h-0 overflow-hidden">
                   <div className="border-t pt-3 h-full flex flex-col">
@@ -205,7 +205,7 @@ const Index = () => {
           </Card>
 
           {/* Attendees Management */}
-          <Card className="h-96 flex flex-col">
+          <Card className="h-100 flex flex-col">
             <CardHeader className="flex-shrink-0 pb-3">
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5" />
