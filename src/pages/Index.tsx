@@ -9,6 +9,7 @@ import { MilestoneTicker } from "@/components/MilestoneTicker"
 interface Attendee {
   id: string
   name: string
+  role: string
   hourlyRate: number
 }
 
@@ -17,7 +18,31 @@ const Index = () => {
   const [isRunning, setIsRunning] = useState(false)
   const [attendees, setAttendees] = useState<Attendee[]>([])
   const [newAttendeeName, setNewAttendeeName] = useState("")
+  const [newAttendeeRole, setNewAttendeeRole] = useState("")
   const [newAttendeeRate, setNewAttendeeRate] = useState("")
+
+  // Role-based hourly rates
+  const roleRates: Record<string, number> = {
+    "CEO": 300,
+    "CTO": 250,
+    "VP": 200,
+    "Director": 150,
+    "Senior Manager": 120,
+    "Manager": 100,
+    "Senior Developer": 85,
+    "Developer": 65,
+    "Junior Developer": 45,
+    "Designer": 70,
+    "Product Manager": 90,
+    "Data Analyst": 75,
+    "Marketing": 60,
+    "Sales": 55,
+    "HR": 50,
+    "Admin": 35,
+    "Intern": 20,
+    "Consultant": 125,
+    "Contractor": 80
+  }
 
   // Timer effect
   useEffect(() => {
@@ -53,16 +78,26 @@ const Index = () => {
     setTime(0)
   }
 
+  // Handle role change and auto-populate rate
+  const handleRoleChange = (role: string) => {
+    setNewAttendeeRole(role)
+    if (roleRates[role]) {
+      setNewAttendeeRate(roleRates[role].toString())
+    }
+  }
+
   // Attendee management
   const addAttendee = () => {
-    if (newAttendeeName.trim() && newAttendeeRate.trim()) {
+    if (newAttendeeName.trim() && newAttendeeRole.trim() && newAttendeeRate.trim()) {
       const newAttendee: Attendee = {
         id: Date.now().toString(),
         name: newAttendeeName.trim(),
+        role: newAttendeeRole.trim(),
         hourlyRate: Number.parseFloat(newAttendeeRate),
       }
       setAttendees([...attendees, newAttendee])
       setNewAttendeeName("")
+      setNewAttendeeRole("")
       setNewAttendeeRate("")
     }
   }
@@ -142,7 +177,7 @@ const Index = () => {
             <CardContent className="space-y-4">
               {/* Add Attendee Form */}
               <div className="space-y-3">
-                <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-2">
                   <div>
                     <Label htmlFor="name" className="text-xs">
                       Name
@@ -156,13 +191,31 @@ const Index = () => {
                     />
                   </div>
                   <div>
+                    <Label htmlFor="role" className="text-xs">
+                      Role
+                    </Label>
+                    <select
+                      id="role"
+                      value={newAttendeeRole}
+                      onChange={(e) => handleRoleChange(e.target.value)}
+                      className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    >
+                      <option value="">Select role</option>
+                      {Object.keys(roleRates).map((role) => (
+                        <option key={role} value={role}>
+                          {role} (${roleRates[role]}/hr)
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
                     <Label htmlFor="rate" className="text-xs">
-                      Hourly Rate ($)
+                      Hourly Rate ($) - Manual Override
                     </Label>
                     <Input
                       id="rate"
                       type="number"
-                      placeholder="0.00"
+                      placeholder="Auto-populated from role"
                       value={newAttendeeRate}
                       onChange={(e) => setNewAttendeeRate(e.target.value)}
                       onKeyPress={(e) => e.key === "Enter" && addAttendee()}
@@ -187,7 +240,8 @@ const Index = () => {
                     <div key={attendee.id} className="flex items-center justify-between p-2 bg-gray-50 rounded-lg">
                       <div>
                         <div className="font-medium text-sm">{attendee.name}</div>
-                        <div className="text-xs text-gray-600">${attendee.hourlyRate.toFixed(2)}/hour</div>
+                        <div className="text-xs text-gray-600">{attendee.role}</div>
+                        <div className="text-xs text-gray-500">${attendee.hourlyRate.toFixed(2)}/hour</div>
                       </div>
                       <Button
                         onClick={() => removeAttendee(attendee.id)}
