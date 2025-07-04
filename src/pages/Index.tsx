@@ -153,7 +153,7 @@ const Index = () => {
 
         <div className="grid md:grid-cols-2 gap-6">
           {/* Cost Display */}
-          <Card className="min-h-96 flex flex-col">
+          <Card className="h-96 flex flex-col">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <DollarSign className="w-5 h-5" />
@@ -208,7 +208,7 @@ const Index = () => {
           </Card>
 
           {/* Attendees Management */}
-          <Card className="min-h-96 flex flex-col">
+          <Card className="h-96 flex flex-col">
             <CardHeader className="flex-shrink-0 pb-3">
               <CardTitle className="flex items-center gap-2">
                 <Users className="w-5 h-5" />
