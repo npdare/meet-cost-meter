@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Crown, Sparkles } from "lucide-react"
 import { useAuth } from "@/hooks/useAuth"
+import { UpgradeDialog } from "./UpgradeDialog"
 
 interface PremiumGateProps {
   children: ReactNode
@@ -60,9 +61,11 @@ export const PremiumGate = ({
           
           <div className="flex gap-2 justify-center">
             {user ? (
-              <Button className="gradient-bg" size="sm">
-                Upgrade to Premium
-              </Button>
+              <UpgradeDialog>
+                <Button className="gradient-bg" size="sm">
+                  Upgrade to Premium
+                </Button>
+              </UpgradeDialog>
             ) : (
               <>
                 <Button asChild variant="outline" size="sm">
