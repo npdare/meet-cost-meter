@@ -93,7 +93,7 @@ export const CalendarIntegration = () => {
   const connectGoogleCalendar = async () => {
     setConnecting(true)
     try {
-      const redirectUri = `${window.location.origin}/auth`
+      const redirectUri = `${window.location.origin}/`
       
       const { data, error } = await supabase.functions.invoke('calendar-oauth', {
         body: {
@@ -115,6 +115,7 @@ export const CalendarIntegration = () => {
         description: "Failed to connect to Google Calendar",
         variant: "destructive",
       })
+      console.error('Calendar connection error:', error)
     } finally {
       setConnecting(false)
     }
@@ -122,7 +123,7 @@ export const CalendarIntegration = () => {
 
   const handleOAuthCallback = async (code: string) => {
     try {
-      const redirectUri = `${window.location.origin}/auth`
+      const redirectUri = `${window.location.origin}/`
       
       const { data, error } = await supabase.functions.invoke('calendar-oauth', {
         body: {
@@ -152,6 +153,7 @@ export const CalendarIntegration = () => {
         description: "Failed to complete calendar connection",
         variant: "destructive",
       })
+      console.error('OAuth callback error:', error)
     }
   }
 
