@@ -107,7 +107,44 @@ export const CalendarIntegration = () => {
       if (data.authorization_url) {
         // Store the current page URL to return after auth
         localStorage.setItem('calendar_auth_return_url', window.location.href)
-        window.location.href = data.authorization_url
+        
+        // Use window.open with proper COOP handling
+        const popup = window.open(
+          data.authorization_url, 
+          'google-auth', 
+          'width=500,height=600,scrollbars=yes,resizable=yes'
+        )
+        
+        if (!popup) {
+          // Fallback to full redirect if popup is blocked
+          window.location.href = data.authorization_url
+          return
+        }
+
+        // Monitor the popup for completion
+        const checkClosed = setInterval(() => {
+          try {
+            if (popup.closed) {
+              clearInterval(checkClosed)
+              // Refresh to check for new connections
+              setTimeout(() => {
+                fetchConnections()
+                fetchUpcomingEvents()
+              }, 1000)
+            }
+          } catch (e) {
+            // Handle COOP errors silently
+            clearInterval(checkClosed)
+          }
+        }, 1000)
+
+        // Cleanup after 5 minutes
+        setTimeout(() => {
+          clearInterval(checkClosed)
+          if (popup && !popup.closed) {
+            popup.close()
+          }
+        }, 300000)
       }
     } catch (error: any) {
       toast({
