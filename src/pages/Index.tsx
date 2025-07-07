@@ -5,7 +5,8 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
-import { Play, Pause, Square, Plus, X, Users, DollarSign, Clock, Timer, TrendingUp } from "lucide-react"
+import { Play, Pause, Square, Plus, X, Users, DollarSign, Clock, Timer, TrendingUp, Settings } from "lucide-react"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { MilestoneTicker } from "@/components/MilestoneTicker"
 import { MeetingReportCard } from "@/components/MeetingReportCard"
@@ -163,32 +164,52 @@ const Index = () => {
           </div>
               <div className="flex items-center gap-3">
                 {user ? (
-                  <div className="flex items-center gap-2">
+                  <>
                     <span className="text-sm text-muted-foreground">Welcome, {profile?.display_name || user.email}</span>
                     {isPremium && (
-                      <>
-                        <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full">Premium</span>
-                        <Button asChild variant="outline" size="sm">
-                          <Link to="/history">History</Link>
-                        </Button>
-                      </>
+                      <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full">Premium</span>
                     )}
-                    <Button 
-                      onClick={signOut} 
-                      variant="outline" 
-                      size="sm"
-                      className="ml-2"
-                    >
-                      Sign Out
-                    </Button>
-                  </div>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="sm" className="gap-2">
+                          <Settings className="w-4 h-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <div className="px-2 py-1.5 text-sm text-muted-foreground">
+                          Theme & Settings
+                        </div>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem asChild>
+                          <div className="flex items-center justify-between w-full cursor-pointer">
+                            <span>Theme</span>
+                            <ThemeToggle />
+                          </div>
+                        </DropdownMenuItem>
+                        {isPremium && (
+                          <DropdownMenuItem asChild>
+                            <Link to="/history" className="flex items-center gap-2 w-full">
+                              <Clock className="w-4 h-4" />
+                              <span>Meeting History</span>
+                            </Link>
+                          </DropdownMenuItem>
+                        )}
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem 
+                          onClick={signOut}
+                          className="text-destructive focus:text-destructive cursor-pointer"
+                        >
+                          <span>Sign Out</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </>
                 ) : (
                   <Button asChild variant="outline" size="sm">
                     <Link to="/auth">Sign In</Link>
                   </Button>
                 )}
                 <FeedbackDialog />
-                <ThemeToggle />
               </div>
         </div>
       </header>
