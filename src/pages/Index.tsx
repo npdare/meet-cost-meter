@@ -197,7 +197,7 @@ const Index = () => {
         <AdBanner adSlot="1234567890" adFormat="horizontal" className="text-center" />
 
         {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-8">
           {/* Left Column - Timer & Cost Summary */}
           <div className="space-y-6">
             {/* Sticky Timer Header */}
