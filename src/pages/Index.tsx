@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Switch } from "@/components/ui/switch"
 import { Play, Pause, Square, Plus, X, Users, DollarSign, Clock, Timer, TrendingUp } from "lucide-react"
 import { MilestoneTicker } from "@/components/MilestoneTicker"
 import { MeetingReportCard } from "@/components/MeetingReportCard"
@@ -13,16 +14,12 @@ import { PremiumGate } from "@/components/PremiumGate"
 import { MeetingHistory, saveMeeting } from "@/components/MeetingHistory"
 import { CalendarIntegration } from "@/components/CalendarIntegration"
 import { FeedbackDialog } from "@/components/FeedbackDialog"
+import { CostTicker } from "@/components/CostTicker"
 import { useAuth } from "@/hooks/useAuth"
 import { Link } from "react-router-dom"
 import { useToast } from "@/hooks/use-toast"
-
-interface Attendee {
-  id: string
-  name: string
-  role: string
-  hourlyRate: number
-}
+import { Attendee } from "@/types"
+import { calculateCost, validateAttendeeEmail } from "@/utils/costCalculations"
 
 const Index = () => {
   const [time, setTime] = useState(0) // time in seconds
@@ -31,6 +28,8 @@ const Index = () => {
   const [newAttendeeName, setNewAttendeeName] = useState("")
   const [newAttendeeRole, setNewAttendeeRole] = useState("")
   const [newAttendeeRate, setNewAttendeeRate] = useState("")
+  const [newAttendeeEmail, setNewAttendeeEmail] = useState("")
+  const [billByMinute, setBillByMinute] = useState(false)
   const [resetCounter, setResetCounter] = useState(0) // Add reset counter for milestones
   const [achievedMilestones, setAchievedMilestones] = useState<string[]>([])
   const { user, isPremium } = useAuth()
@@ -78,12 +77,8 @@ const Index = () => {
     return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
   }
 
-  // Calculate total cost
-  const calculateTotalCost = () => {
-    const totalHourlyRate = attendees.reduce((sum, attendee) => sum + attendee.hourlyRate, 0)
-    const hoursElapsed = time / 3600
-    return totalHourlyRate * hoursElapsed
-  }
+  // Calculate total cost using hardened calculation
+  const totalCost = calculateCost(attendees, time, { billByMinute })
 
   // Timer controls
   const startTimer = () => setIsRunning(true)
@@ -130,19 +125,40 @@ const Index = () => {
     }
   }
 
-  // Attendee management
+  // Attendee management with validation
   const addAttendee = () => {
     if (newAttendeeName.trim() && newAttendeeRole.trim() && newAttendeeRate.trim()) {
-      const newAttendee: Attendee = {
-        id: Date.now().toString(),
-        name: newAttendeeName.trim(),
-        role: newAttendeeRole.trim(),
-        hourlyRate: Number.parseFloat(newAttendeeRate),
+      try {
+        // Validate email uniqueness if provided
+        if (newAttendeeEmail.trim()) {
+          validateAttendeeEmail(attendees, newAttendeeEmail.trim())
+        }
+
+        const newAttendee: Attendee = {
+          id: Date.now().toString(),
+          name: newAttendeeName.trim(),
+          role: newAttendeeRole.trim(),
+          hourlyRate: Number.parseFloat(newAttendeeRate),
+          email: newAttendeeEmail.trim() || undefined,
+        }
+        
+        setAttendees([...attendees, newAttendee])
+        setNewAttendeeName("")
+        setNewAttendeeRole("")
+        setNewAttendeeRate("")
+        setNewAttendeeEmail("")
+        
+        toast({
+          title: "Attendee added",
+          description: `${newAttendee.name} has been added to the meeting`,
+        })
+      } catch (error: any) {
+        toast({
+          title: "Error adding attendee",
+          description: error.message,
+          variant: "destructive",
+        })
       }
-      setAttendees([...attendees, newAttendee])
-      setNewAttendeeName("")
-      setNewAttendeeRole("")
-      setNewAttendeeRate("")
     }
   }
 
@@ -150,7 +166,7 @@ const Index = () => {
     setAttendees(attendees.filter((attendee) => attendee.id !== id))
   }
 
-  const totalCost = calculateTotalCost()
+  
 
   return (
     <div className="min-h-screen bg-background transition-colors duration-300">
@@ -243,12 +259,11 @@ const Index = () => {
             </CardHeader>
             <CardContent className="flex-1 flex flex-col overflow-hidden">
               <div className="text-center space-y-3 mb-4">
-                <div className="cost-display text-primary animate-count-up">
-                  ${totalCost.toFixed(2)}
-                </div>
+                <CostTicker cost={totalCost} isRunning={isRunning} />
                 <div className="text-sm text-muted-foreground">
                   {attendees.length} attendee{attendees.length !== 1 ? "s" : ""} • $
                   {attendees.reduce((sum, a) => sum + a.hourlyRate, 0).toFixed(2)}/hour
+                  {billByMinute && <span className="text-xs"> • Billed by minute</span>}
                 </div>
               </div>
               
@@ -344,12 +359,41 @@ const Index = () => {
                       onKeyPress={(e) => e.key === "Enter" && addAttendee()}
                       className="h-8"
                     />
-                  </div>
-                </div>
-                <Button onClick={addAttendee} className="w-full gap-2 gradient-bg hover:opacity-90 h-8" size="sm">
-                  <Plus className="w-4 h-4" />
-                  Add Attendee
-                </Button>
+                   <div>
+                     <Label htmlFor="email" className="text-xs">
+                       Email (optional)
+                     </Label>
+                     <Input
+                       id="email"
+                       type="email"
+                       placeholder="attendee@example.com"
+                       value={newAttendeeEmail}
+                       onChange={(e) => setNewAttendeeEmail(e.target.value)}
+                       onKeyPress={(e) => e.key === "Enter" && addAttendee()}
+                       className="h-8"
+                     />
+                   </div>
+                 </div>
+                 
+                 {/* Bill by Minute Toggle */}
+                 <div className="flex items-center justify-between p-2 bg-secondary/20 rounded-lg">
+                   <div>
+                     <Label htmlFor="billByMinute" className="text-xs font-medium">
+                       Bill by Minute
+                     </Label>
+                     <p className="text-xs text-muted-foreground">Round up to next full minute</p>
+                   </div>
+                   <Switch
+                     id="billByMinute"
+                     checked={billByMinute}
+                     onCheckedChange={setBillByMinute}
+                   />
+                 </div>
+                 
+                 <Button onClick={addAttendee} className="w-full gap-2 gradient-bg hover:opacity-90 h-8" size="sm">
+                   <Plus className="w-4 h-4" />
+                   Add Attendee
+                 </Button>
               </div>
 
               {/* Attendees List - Flexible height with proper scrolling */}
