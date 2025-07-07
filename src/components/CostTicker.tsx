@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { DollarSign } from 'lucide-react'
 import { useCurrency } from '@/hooks/useCurrency'
 
 interface CostTickerProps {
@@ -46,16 +45,13 @@ export const CostTicker = ({ cost, isRunning = false, className = "" }: CostTick
   }
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
-      <DollarSign className={`w-5 h-5 ${getCostColor()} ${isRunning ? 'animate-pulse' : ''}`} />
-      <span 
-        className={`text-4xl font-mono font-bold tracking-wider transition-all duration-200 ${getCostColor()} ${
-          isAnimating ? 'scale-105' : ''
-        } ${isRunning ? 'animate-pulse-glow' : ''}`}
-        style={{ fontFamily: 'Courier New, monospace' }}
-      >
-        {formatCurrency(displayCost)}
-      </span>
-    </div>
+    <span 
+      className={`text-6xl font-mono font-bold tracking-wider transition-all duration-200 ${getCostColor()} ${
+        isAnimating ? 'scale-105' : ''
+      } ${isRunning ? 'animate-pulse-glow' : ''}`}
+      style={{ fontFamily: 'Courier New, monospace' }}
+    >
+      {formatCurrency(displayCost)}
+    </span>
   )
 }
