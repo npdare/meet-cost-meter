@@ -299,8 +299,8 @@ const Index = () => {
           </div>
 
           {/* Right Column - Attendees Management */}
-          <div className="space-y-6">
-            <Card className="h-96 bg-card/80 backdrop-blur-sm border shadow-sm">
+          <div className="space-y-6 flex flex-col">
+            <Card className="flex-1 bg-card/80 backdrop-blur-sm border shadow-sm">
               <div className="h-full p-6">
                 <FreeRoleQuantityList 
                   entries={roleEntries} 
