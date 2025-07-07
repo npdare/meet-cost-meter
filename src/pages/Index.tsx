@@ -39,38 +39,6 @@ const Index = () => {
   const { user, isPremium } = useAuth()
   const { toast } = useToast()
 
-  // Color scheme handler
-  const applyColorScheme = (scheme: string) => {
-    const root = document.documentElement
-    
-    if (scheme === 'ocean') {
-      root.style.setProperty('--primary', '217 91% 60%')
-      root.style.setProperty('--accent', '199 89% 48%')
-      root.style.setProperty('--secondary', '217 33% 17%')
-      root.style.setProperty('--ring', '217 91% 60%')
-    } else if (scheme === 'forest') {
-      root.style.setProperty('--primary', '142 76% 36%')
-      root.style.setProperty('--accent', '122 39% 49%')
-      root.style.setProperty('--secondary', '162 63% 41%')
-      root.style.setProperty('--ring', '142 76% 36%')
-    } else if (scheme === 'sunset') {
-      root.style.setProperty('--primary', '25 95% 53%')
-      root.style.setProperty('--accent', '45 93% 58%')
-      root.style.setProperty('--secondary', '15 86% 46%')
-      root.style.setProperty('--ring', '25 95% 53%')
-    } else if (scheme === 'mono') {
-      root.style.setProperty('--primary', '0 0% 9%')
-      root.style.setProperty('--accent', '0 0% 45%')
-      root.style.setProperty('--secondary', '0 0% 75%')
-      root.style.setProperty('--ring', '0 0% 9%')
-    } else if (scheme === 'original') {
-      root.style.setProperty('--primary', '262 88% 58%')
-      root.style.setProperty('--accent', '270 95% 75%')
-      root.style.setProperty('--secondary', '220 14% 96%')
-      root.style.setProperty('--ring', '262 88% 58%')
-    }
-  }
-
   // Role-based hourly rates
   const roleRates: Record<string, number> = {
     "CEO": 300,
@@ -218,107 +186,8 @@ const Index = () => {
       </header>
       
       <div className="max-w-6xl mx-auto p-4 space-y-6">
-        {/* Color Scheme Options */}
-        <div className="text-center space-y-8 animate-fade-in pt-6">
-          <h2 className="text-2xl font-mono font-light text-foreground tracking-wider border-b-2 border-primary">
-            Color Scheme Preview
-          </h2>
-          
-          {/* Current Purple Scheme */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-medium text-foreground">Current - Purple Tech</h3>
-            <div className="flex justify-center gap-4">
-              <div className="w-16 h-16 rounded-lg bg-primary"></div>
-              <div className="w-16 h-16 rounded-lg bg-accent"></div>
-              <div className="w-16 h-16 rounded-lg bg-secondary"></div>
-              <div className="w-16 h-16 rounded-lg bg-muted"></div>
-            </div>
-            <div className="space-y-2">
-              <div className="bg-card border p-4 rounded-lg">
-                <h4 className="font-mono font-light text-foreground tracking-wider border-b-2 border-primary inline-block">could_be_an_email</h4>
-                <p className="text-muted-foreground mt-2">Sample card content</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Ocean Blue */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-foreground">Ocean Blue</h3>
-              <div className="flex justify-center gap-2">
-                <div className="w-12 h-12 rounded-lg" style={{backgroundColor: 'hsl(217, 91%, 60%)'}}></div>
-                <div className="w-12 h-12 rounded-lg" style={{backgroundColor: 'hsl(199, 89%, 48%)'}}></div>
-                <div className="w-12 h-12 rounded-lg" style={{backgroundColor: 'hsl(217, 33%, 17%)'}}></div>
-              </div>
-              <button 
-                onClick={() => applyColorScheme('ocean')}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
-              >
-                Apply Ocean Blue
-              </button>
-            </div>
-
-            {/* Forest Green */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-foreground">Forest Green</h3>
-              <div className="flex justify-center gap-2">
-                <div className="w-12 h-12 rounded-lg" style={{backgroundColor: 'hsl(142, 76%, 36%)'}}></div>
-                <div className="w-12 h-12 rounded-lg" style={{backgroundColor: 'hsl(122, 39%, 49%)'}}></div>
-                <div className="w-12 h-12 rounded-lg" style={{backgroundColor: 'hsl(162, 63%, 41%)'}}></div>
-              </div>
-              <button 
-                onClick={() => applyColorScheme('forest')}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
-              >
-                Apply Forest Green
-              </button>
-            </div>
-
-            {/* Sunset Orange */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-foreground">Sunset Orange</h3>
-              <div className="flex justify-center gap-2">
-                <div className="w-12 h-12 rounded-lg" style={{backgroundColor: 'hsl(25, 95%, 53%)'}}></div>
-                <div className="w-12 h-12 rounded-lg" style={{backgroundColor: 'hsl(45, 93%, 58%)'}}></div>
-                <div className="w-12 h-12 rounded-lg" style={{backgroundColor: 'hsl(15, 86%, 46%)'}}></div>
-              </div>
-              <button 
-                onClick={() => applyColorScheme('sunset')}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
-              >
-                Apply Sunset Orange
-              </button>
-            </div>
-
-            {/* Monochrome */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium text-foreground">Monochrome</h3>
-              <div className="flex justify-center gap-2">
-                <div className="w-12 h-12 rounded-lg" style={{backgroundColor: 'hsl(0, 0%, 9%)'}}></div>
-                <div className="w-12 h-12 rounded-lg" style={{backgroundColor: 'hsl(0, 0%, 45%)'}}></div>
-                <div className="w-12 h-12 rounded-lg" style={{backgroundColor: 'hsl(0, 0%, 75%)'}}></div>
-              </div>
-              <button 
-                onClick={() => applyColorScheme('mono')}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:opacity-90 transition-opacity"
-              >
-                Apply Monochrome
-              </button>
-            </div>
-          </div>
-
-          <div className="pt-4">
-            <button 
-              onClick={() => applyColorScheme('original')}
-              className="px-6 py-3 bg-accent text-accent-foreground rounded-lg hover:opacity-90 transition-opacity font-medium"
-            >
-              Restore Original Purple
-            </button>
-          </div>
-        </div>
-
-        {/* Original Content */}
-        <div className="text-center space-y-3 animate-fade-in pt-12">
+        {/* Hero Section */}
+        <div className="text-center space-y-3 animate-fade-in pt-6">
           <h1 className="text-4xl font-mono font-light text-foreground leading-tight py-2 tracking-wider border-b-2 border-primary hover:border-accent transition-colors duration-300">
             could_be_an_email
           </h1>
