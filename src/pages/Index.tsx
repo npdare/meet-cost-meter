@@ -36,7 +36,7 @@ const Index = () => {
   const [billByMinute, setBillByMinute] = useState(false)
   const [resetCounter, setResetCounter] = useState(0) // Add reset counter for milestones
   const [achievedMilestones, setAchievedMilestones] = useState<string[]>([])
-  const { user, isPremium } = useAuth()
+  const { user, isPremium, profile } = useAuth()
   const { toast } = useToast()
 
   // Role-based hourly rates
@@ -164,7 +164,7 @@ const Index = () => {
               <div className="flex items-center gap-3">
                 {user ? (
                   <div className="flex items-center gap-2">
-                    <span className="text-sm text-muted-foreground">Welcome, {user.email}</span>
+                    <span className="text-sm text-muted-foreground">Welcome, {profile?.display_name || user.email}</span>
                     {isPremium && (
                       <>
                         <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full">Premium</span>
