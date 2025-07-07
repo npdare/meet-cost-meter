@@ -19,6 +19,7 @@ interface AuthContextType {
   loading: boolean
   signOut: () => Promise<void>
   isPremium: boolean
+  isAdmin: boolean
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -27,6 +28,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [profile, setProfile] = useState<Profile | null>(null)
+  const [isAdmin, setIsAdmin] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -37,7 +39,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setUser(session?.user ?? null)
         
         if (session?.user) {
-          // Fetch user profile
+          // Fetch user profile and admin status
           setTimeout(async () => {
             const { data: profileData } = await supabase
               .from('profiles')
@@ -45,10 +47,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
               .eq('user_id', session.user.id)
               .single()
             
+            const { data: adminCheck } = await supabase
+              .rpc('is_admin', { check_user_id: session.user.id })
+            
             setProfile(profileData as Profile)
+            setIsAdmin(adminCheck || false)
           }, 0)
         } else {
           setProfile(null)
+          setIsAdmin(false)
         }
         
         setLoading(false)
@@ -56,20 +63,23 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     )
 
     // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session)
       setUser(session?.user ?? null)
       
       if (session?.user) {
-        // Fetch user profile
-        supabase
-          .from('profiles')
-          .select('*')
-          .eq('user_id', session.user.id)
-          .single()
-          .then(({ data: profileData }) => {
-            setProfile(profileData as Profile)
-          })
+        // Fetch user profile and admin status
+        const [profileResult, adminResult] = await Promise.all([
+          supabase
+            .from('profiles')
+            .select('*')
+            .eq('user_id', session.user.id)
+            .single(),
+          supabase.rpc('is_admin', { check_user_id: session.user.id })
+        ])
+        
+        setProfile(profileResult.data as Profile)
+        setIsAdmin(adminResult.data || false)
       }
       
       setLoading(false)
@@ -83,6 +93,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null)
     setSession(null)
     setProfile(null)
+    setIsAdmin(false)
   }
 
   const isPremium = profile?.subscription_status === 'premium' && 
@@ -95,7 +106,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       profile,
       loading,
       signOut,
-      isPremium
+      isPremium,
+      isAdmin
     }}>
       {children}
     </AuthContext.Provider>

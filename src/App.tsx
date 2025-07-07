@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 
 // Lazy load the History page for better performance
 const History = lazy(() => import("./pages/History"));
+const AdminFeedback = lazy(() => import("./pages/AdminFeedback"));
 
 const queryClient = new QueryClient();
 
@@ -29,6 +30,14 @@ const App = () => (
               element={
                 <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>}>
                   <History />
+                </Suspense>
+              } 
+            />
+            <Route 
+              path="/admin/feedback" 
+              element={
+                <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center">Loading...</div>}>
+                  <AdminFeedback />
                 </Suspense>
               } 
             />

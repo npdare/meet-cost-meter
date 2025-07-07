@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { MessageSquare, Bug, Lightbulb } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
+import { supabase } from "@/integrations/supabase/client"
 
 export const FeedbackDialog = () => {
   const [open, setOpen] = useState(false)
@@ -28,9 +29,16 @@ export const FeedbackDialog = () => {
 
     setIsSubmitting(true)
     
-    // Simulate API call - replace with actual implementation
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000))
+      const { error } = await supabase
+        .from('feedback')
+        .insert({
+          user_email: 'anonymous', // Can be updated to use actual user email if logged in
+          category,
+          message: message.trim(),
+        })
+
+      if (error) throw error
       
       toast({
         title: "Feedback submitted!",
@@ -41,6 +49,7 @@ export const FeedbackDialog = () => {
       setCategory("")
       setMessage("")
     } catch (error) {
+      console.error('Feedback submission error:', error)
       toast({
         title: "Error",
         description: "Failed to submit feedback. Please try again.",

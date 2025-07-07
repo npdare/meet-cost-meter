@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Timer, Settings, Clock, Sun, Moon } from "lucide-react"
+import { Timer, Settings, Clock, Sun, Moon, MessageSquare } from "lucide-react"
 import { FeedbackDialog } from "@/components/FeedbackDialog"
 import { useAuth } from "@/hooks/useAuth"
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -13,7 +13,7 @@ interface AppHeaderProps {
 }
 
 export const AppHeader = ({ theme, onToggleTheme, onSignOut }: AppHeaderProps) => {
-  const { user, isPremium, profile } = useAuth()
+  const { user, isPremium, profile, isAdmin } = useAuth()
   const isMobile = useIsMobile()
 
   return (
@@ -70,6 +70,14 @@ export const AppHeader = ({ theme, onToggleTheme, onSignOut }: AppHeaderProps) =
                       <Link to="/history" className="flex items-center gap-2 w-full">
                         <Clock className="w-4 h-4" />
                         <span>Meeting History</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                  {isAdmin && (
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin/feedback" className="flex items-center gap-2 w-full">
+                        <MessageSquare className="w-4 h-4" />
+                        <span>Admin Feedback</span>
                       </Link>
                     </DropdownMenuItem>
                   )}
