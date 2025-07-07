@@ -5,13 +5,12 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
-import { Play, Pause, Square, Plus, X, Users, DollarSign, Clock, Timer, TrendingUp, Settings } from "lucide-react"
+import { Play, Pause, Square, Plus, X, Users, DollarSign, Clock, Timer, TrendingUp, Settings, Moon, Sun } from "lucide-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { MilestoneTicker } from "@/components/MilestoneTicker"
 import { MeetingReportCard } from "@/components/MeetingReportCard"
 import { AdBanner } from "@/components/AdBanner"
-import { ThemeToggle } from "@/components/ThemeToggle"
 import { PremiumGate } from "@/components/PremiumGate"
 import { MeetingHistory, saveMeeting } from "@/components/MeetingHistory"
 import { CalendarIntegration } from "@/components/CalendarIntegration"
@@ -37,8 +36,26 @@ const Index = () => {
   const [billByMinute, setBillByMinute] = useState(false)
   const [resetCounter, setResetCounter] = useState(0) // Add reset counter for milestones
   const [achievedMilestones, setAchievedMilestones] = useState<string[]>([])
+  const [theme, setTheme] = useState<"light" | "dark">("light")
   const { user, isPremium, profile, signOut } = useAuth()
   const { toast } = useToast()
+
+  // Theme effect
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme") as "light" | "dark" | null
+    const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"
+    const initialTheme = savedTheme || systemTheme
+    
+    setTheme(initialTheme)
+    document.documentElement.classList.toggle("dark", initialTheme === "dark")
+  }, [])
+
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light"
+    setTheme(newTheme)
+    localStorage.setItem("theme", newTheme)
+    document.documentElement.classList.toggle("dark", newTheme === "dark")
+  }
 
   // Role-based hourly rates
   const roleRates: Record<string, number> = {
@@ -180,10 +197,23 @@ const Index = () => {
                           Theme & Settings
                         </div>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem asChild>
-                          <div className="flex items-center justify-between w-full cursor-pointer">
-                            <span>Theme</span>
-                            <ThemeToggle />
+                        <DropdownMenuItem 
+                          onClick={toggleTheme}
+                          className="flex items-center justify-between w-full cursor-pointer"
+                        >
+                          <span>Theme</span>
+                          <div className="flex items-center gap-2">
+                            {theme === "light" ? (
+                              <>
+                                <Sun className="w-4 h-4" />
+                                <span className="text-xs text-muted-foreground">Light</span>
+                              </>
+                            ) : (
+                              <>
+                                <Moon className="w-4 h-4" />
+                                <span className="text-xs text-muted-foreground">Dark</span>
+                              </>
+                            )}
                           </div>
                         </DropdownMenuItem>
                         {isPremium && (
