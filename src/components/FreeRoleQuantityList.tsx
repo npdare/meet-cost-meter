@@ -232,12 +232,9 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
                           />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <Input
-                            value={entry.role}
-                            onChange={(e) => updateEntry(entry.id, { role: e.target.value })}
-                            onBlur={(e) => handleRoleBlur(entry.id, e.target.value)}
-                            className={`${isMobile ? 'h-8 text-xs' : 'h-8'} font-medium`}
-                          />
+                          <div className={`${isMobile ? 'h-8 text-xs' : 'h-8'} font-medium px-3 py-2 bg-muted/50 border border-input rounded-md flex items-center text-muted-foreground`}>
+                            {entry.role}
+                          </div>
                         </div>
                         <div className="flex items-center gap-1 flex-shrink-0">
                           {entry.isLoading ? (
@@ -245,11 +242,17 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
                               <Loader2 className="w-3 h-3 animate-spin" />
                               <span className="text-xs text-muted-foreground">...</span>
                             </div>
-                          ) : (
-                            <div className={`bg-secondary text-secondary-foreground px-1.5 py-0.5 rounded-md text-xs font-mono font-medium whitespace-nowrap`}>
-                              {formatCurrency(entry.rate)}/hr
-                            </div>
-                          )}
+                           ) : (
+                             <Input
+                               type="number"
+                               min="0"
+                               step="0.01"
+                               value={entry.rate}
+                               onChange={(e) => updateEntry(entry.id, { rate: parseFloat(e.target.value) || 0 })}
+                               className={`${isMobile ? 'h-8 w-16 text-xs' : 'h-8 w-20'} text-center font-mono font-medium`}
+                               placeholder="Rate"
+                             />
+                           )}
                           <Button
                             size="sm"
                             variant="ghost"
