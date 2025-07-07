@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { ScrollArea } from '@/components/ui/scroll-area'
 import { Users, Plus, X, Loader2 } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrency } from '@/hooks/useCurrency'
@@ -113,9 +114,9 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
   const totalRate = entries.reduce((sum, entry) => sum + (entry.count * entry.rate), 0)
 
   return (
-    <div className="space-y-6">
+    <div className="h-full flex flex-col space-y-4">
       {/* Header */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-shrink-0">
         <div className="p-2 bg-primary/10 rounded-lg">
           <Users className="w-5 h-5 text-primary" />
         </div>
@@ -123,14 +124,14 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
       </div>
 
       {/* Industry Selection & Saved Members */}
-      <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-4">
+      <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-3 flex-shrink-0">
         <div className="flex flex-col sm:flex-row gap-3 items-start">
           <div className="flex-1">
-            <label className="text-sm font-medium text-foreground mb-2 block">
+            <label className="text-sm font-medium text-foreground mb-1 block">
               Industry/Region
             </label>
             <Select value={industry} onValueChange={setIndustry}>
-              <SelectTrigger className="h-10">
+              <SelectTrigger className="h-9">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -149,7 +150,7 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
           </div>
           {isPremium && (
             <div className="flex flex-col">
-              <label className="text-sm font-medium text-foreground mb-2 block">
+              <label className="text-sm font-medium text-foreground mb-1 block">
                 Quick Add
               </label>
               <Button
@@ -159,10 +160,10 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
                     description: "Add saved members feature is coming soon",
                   })
                 }}
-                className="h-10 px-4 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                className="h-9 px-3 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
               >
                 <Plus className="w-4 h-4" />
-                Add Saved Members
+                Add Saved
               </Button>
             </div>
           )}
@@ -170,8 +171,8 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
       </div>
 
       {/* Add New Entry Form */}
-      <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-4">
-        <div className="flex flex-col sm:flex-row gap-3">
+      <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-3 flex-shrink-0">
+        <div className="flex flex-col sm:flex-row gap-2">
           <div className="flex-shrink-0">
             <Input
               type="number"
@@ -179,7 +180,7 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
               value={newCount}
               onChange={(e) => setNewCount(Math.max(1, parseInt(e.target.value) || 1))}
               placeholder="1"
-              className="h-11 w-20 text-center font-medium"
+              className="h-9 w-16 text-center font-medium"
             />
           </div>
           <div className="flex-1">
@@ -187,14 +188,14 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
               value={newRole}
               onChange={(e) => setNewRole(e.target.value)}
               placeholder="e.g. Senior Engineer"
-              className="h-11 font-medium"
+              className="h-9 font-medium"
               onKeyPress={(e) => e.key === 'Enter' && addNewEntry()}
             />
           </div>
           <Button 
             onClick={addNewEntry}
             disabled={!newRole.trim()}
-            className="h-11 px-6 bg-primary hover:bg-primary/90 text-primary-foreground font-medium gap-2"
+            className="h-9 px-4 bg-primary hover:bg-primary/90 text-primary-foreground font-medium gap-2"
           >
             <Plus className="w-4 h-4" />
             Add
@@ -202,77 +203,75 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
         </div>
       </div>
 
-      {/* Current Entries */}
-      {entries.length > 0 && (
-        <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h4 className="font-semibold text-foreground">Current Attendees ({entries.length} {entries.length === 1 ? 'entry' : 'entries'})</h4>
-            <div className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-semibold">
-              Total: {formatCurrency(totalRate)}/hour
+      {/* Scrollable Entries Area */}
+      <div className="flex-1 min-h-0">
+        {entries.length > 0 ? (
+          <div className="h-full flex flex-col">
+            <div className="flex items-center justify-between mb-3 flex-shrink-0">
+              <h4 className="font-semibold text-foreground">Current Attendees ({entries.length})</h4>
+              <div className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs font-semibold">
+                Total: {formatCurrency(totalRate)}/hour
+              </div>
             </div>
-          </div>
-          
-          <div className="space-y-3">
-            {entries.map((entry) => (
-              <div key={entry.id} className="bg-card/30 backdrop-blur-sm border border-border/50 rounded-lg p-4">
-                <div className="space-y-3">
-                  {/* Main Row */}
-                  <div className="flex items-center gap-4">
-                    <div className="flex-shrink-0">
-                      <Input
-                        type="number"
-                        min="1"
-                        value={entry.count}
-                        onChange={(e) => updateEntry(entry.id, { count: Math.max(1, parseInt(e.target.value) || 1) })}
-                        className="h-10 w-16 text-center font-medium"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <Input
-                        value={entry.role}
-                        onChange={(e) => updateEntry(entry.id, { role: e.target.value })}
-                        onBlur={(e) => handleRoleBlur(entry.id, e.target.value)}
-                        className="h-10 font-medium"
-                      />
-                    </div>
+            
+            <ScrollArea className="flex-1">
+              <div className="space-y-2 pr-3">
+                {entries.map((entry) => (
+                  <div key={entry.id} className="bg-card/30 backdrop-blur-sm border border-border/50 rounded-lg p-3">
                     <div className="flex items-center gap-3">
-                      {entry.isLoading ? (
-                        <div className="flex items-center gap-2 px-3 py-1 bg-muted rounded-md">
-                          <Loader2 className="w-3 h-3 animate-spin" />
-                          <span className="text-sm text-muted-foreground">Loading...</span>
-                        </div>
-                      ) : (
-                        <div className="bg-secondary text-secondary-foreground px-3 py-1 rounded-md text-sm font-mono font-medium">
-                          {formatCurrency(entry.rate)}/hr × {entry.count}
-                        </div>
-                      )}
-                      <div className="flex items-center gap-1 ml-2">
+                      <div className="flex-shrink-0">
+                        <Input
+                          type="number"
+                          min="1"
+                          value={entry.count}
+                          onChange={(e) => updateEntry(entry.id, { count: Math.max(1, parseInt(e.target.value) || 1) })}
+                          className="h-8 w-14 text-center font-medium"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <Input
+                          value={entry.role}
+                          onChange={(e) => updateEntry(entry.id, { role: e.target.value })}
+                          onBlur={(e) => handleRoleBlur(entry.id, e.target.value)}
+                          className="h-8 font-medium"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {entry.isLoading ? (
+                          <div className="flex items-center gap-1 px-2 py-1 bg-muted rounded-md">
+                            <Loader2 className="w-3 h-3 animate-spin" />
+                            <span className="text-xs text-muted-foreground">Loading...</span>
+                          </div>
+                        ) : (
+                          <div className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-xs font-mono font-medium">
+                            {formatCurrency(entry.rate)}/hr × {entry.count}
+                          </div>
+                        )}
                         <Button
                           size="sm"
                           variant="ghost"
                           onClick={() => removeEntry(entry.id)}
-                          className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                          className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                         >
-                          <X className="w-4 h-4" />
+                          <X className="w-3 h-3" />
                         </Button>
                       </div>
                     </div>
                   </div>
-
-                </div>
+                ))}
               </div>
-            ))}
+            </ScrollArea>
           </div>
-        </div>
-      )}
-
-      {entries.length === 0 && (
-        <div className="text-center py-12 text-muted-foreground bg-card/20 backdrop-blur-sm border border-border/30 rounded-lg">
-          <Users className="w-16 h-16 mx-auto mb-4 opacity-30" />
-          <p className="font-medium text-lg">No attendees added yet</p>
-          <p className="text-sm mt-2 opacity-70">Add attendees to start calculating meeting costs</p>
-        </div>
-      )}
+        ) : (
+          <div className="h-full flex items-center justify-center">
+            <div className="text-center text-muted-foreground">
+              <Users className="w-12 h-12 mx-auto mb-3 opacity-30" />
+              <p className="font-medium">No attendees added yet</p>
+              <p className="text-sm mt-1 opacity-70">Add attendees to start calculating meeting costs</p>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }

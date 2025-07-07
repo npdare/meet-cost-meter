@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Switch } from "@/components/ui/switch"
 import { Play, Pause, Square, Plus, X, Users, DollarSign, Clock, Timer, TrendingUp } from "lucide-react"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import { MilestoneTicker } from "@/components/MilestoneTicker"
 import { MeetingReportCard } from "@/components/MeetingReportCard"
 import { AdBanner } from "@/components/AdBanner"
@@ -242,17 +243,17 @@ const Index = () => {
             </div>
 
             {/* Cost Summary Card */}
-            <Card className="p-6 bg-card/80 backdrop-blur-sm border shadow-sm">
-              <div className="space-y-6">
-                <div className="flex items-center justify-center gap-2 text-foreground">
+            <Card className="h-96 bg-card/80 backdrop-blur-sm border shadow-sm flex flex-col">
+              <div className="p-6 pb-4 flex-shrink-0">
+                <div className="flex items-center justify-center gap-2 text-foreground mb-4">
                   <TrendingUp className="w-5 h-5 text-primary" />
                   <span className="text-xl font-semibold">Meeting Cost</span>
                 </div>
-                <div className="text-center">
-                  <div className="text-6xl font-mono font-bold tracking-wider text-foreground">
+                <div className="text-center mb-4">
+                  <div className="text-4xl font-mono font-bold tracking-wider text-foreground">
                     <CostTicker cost={totalCost} isRunning={isRunning} />
                   </div>
-                  <div className="text-sm text-muted-foreground mt-3">
+                  <div className="text-sm text-muted-foreground mt-2">
                     {roleEntries.reduce((sum, entry) => sum + entry.count, 0)} attendee{roleEntries.reduce((sum, entry) => sum + entry.count, 0) !== 1 ? "s" : ""} • $
                     {roleEntries.reduce((sum, entry) => sum + (entry.count * entry.rate), 0).toFixed(2)}/hour
                     {billByMinute && <span className="text-xs"> • Billed by minute</span>}
@@ -260,44 +261,46 @@ const Index = () => {
                 </div>
                 
                 {/* Cost Breakdown */}
-                <div className="grid grid-cols-3 gap-3">
-                  <div className="bg-secondary/50 p-3 rounded-lg text-center backdrop-blur-sm">
+                <div className="grid grid-cols-3 gap-2">
+                  <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
                     <div className="text-sm font-semibold text-foreground">${roleEntries.reduce((sum, entry) => sum + (entry.count * entry.rate), 0).toFixed(0)}</div>
                     <div className="text-xs text-muted-foreground">per hour</div>
                   </div>
-                  <div className="bg-secondary/50 p-3 rounded-lg text-center backdrop-blur-sm">
+                  <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
                     <div className="text-sm font-semibold text-foreground">${(totalCost / Math.max(time / 60, 1)).toFixed(2)}</div>
                     <div className="text-xs text-muted-foreground">per minute</div>
                   </div>
-                  <div className="bg-secondary/50 p-3 rounded-lg text-center backdrop-blur-sm">
+                  <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
                     <div className="text-sm font-semibold text-foreground">{roleEntries.reduce((sum, entry) => sum + entry.count, 0)}</div>
                     <div className="text-xs text-muted-foreground">attendees</div>
                   </div>
                 </div>
-                
-                {/* Milestones Section */}
-                {achievedMilestones.length > 0 && (
-                  <div className="border-t border-border pt-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-2 h-2 bg-warning rounded-full animate-pulse"></div>
-                      <span className="text-sm font-medium text-foreground">Cost Milestones</span>
-                    </div>
-                    <div className="max-h-32 overflow-y-auto">
+              </div>
+              
+              {/* Milestones Section with ScrollArea */}
+              {achievedMilestones.length > 0 && (
+                <div className="flex-1 border-t border-border px-6 py-4 min-h-0">
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-2 h-2 bg-warning rounded-full animate-pulse"></div>
+                    <span className="text-sm font-medium text-foreground">Cost Milestones</span>
+                  </div>
+                  <ScrollArea className="h-full">
+                    <div className="space-y-2">
                       {achievedMilestones.map((milestone, index) => (
-                        <div key={index} className="p-2 border-b border-border last:border-b-0">
-                          <div className="text-sm text-foreground">{milestone}</div>
+                        <div key={index} className="p-2 bg-secondary/30 rounded text-sm text-foreground">
+                          {milestone}
                         </div>
                       ))}
                     </div>
-                  </div>
-                )}
-              </div>
+                  </ScrollArea>
+                </div>
+              )}
             </Card>
           </div>
 
           {/* Right Column - Attendees Management */}
           <div className="space-y-6">
-            <Card className="p-6 bg-card/80 backdrop-blur-sm border shadow-sm">
+            <Card className="h-96 p-6 bg-card/80 backdrop-blur-sm border shadow-sm flex flex-col">
               <FreeRoleQuantityList 
                 entries={roleEntries} 
                 onEntriesChange={setRoleEntries} 
