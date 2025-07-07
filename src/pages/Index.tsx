@@ -17,6 +17,7 @@ import { CalendarIntegration } from "@/components/CalendarIntegration"
 import { FeedbackDialog } from "@/components/FeedbackDialog"
 import { CostTicker } from "@/components/CostTicker"
 import { useAuth } from "@/hooks/useAuth"
+import { useIsMobile } from "@/hooks/use-mobile"
 import { Link } from "react-router-dom"
 import { useToast } from "@/hooks/use-toast"
 import { FreeRoleQuantityList, RoleQuantityEntry } from "@/components/FreeRoleQuantityList"
@@ -39,6 +40,7 @@ const Index = () => {
   const [theme, setTheme] = useState<"light" | "dark">("light")
   const { user, isPremium, profile, signOut } = useAuth()
   const { toast } = useToast()
+  const isMobile = useIsMobile()
 
   // Theme effect
   useEffect(() => {
@@ -182,24 +184,27 @@ const Index = () => {
     <div className="min-h-screen bg-background transition-colors duration-300">
       {/* Header */}
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-3 sm:px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
-              <Timer className="w-6 h-6 text-primary" />
-              <span className="font-mono font-light text-xl text-foreground tracking-wider">could_be_an_email</span>
+              <Timer className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'} text-primary`} />
+              <span className={`font-mono font-light ${isMobile ? 'text-lg' : 'text-xl'} text-foreground tracking-wider`}>
+                {isMobile ? 'could_be_an_email' : 'could_be_an_email'}
+              </span>
             </div>
           </div>
-              <div className="flex items-center gap-3">
+              <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'}`}>
                 {user ? (
                   <>
-                    <span className="text-sm text-muted-foreground">Welcome, {profile?.display_name || user.email}</span>
+                    {!isMobile && <span className="text-sm text-muted-foreground">Welcome, {profile?.display_name || user.email}</span>}
                     {isPremium && (
                       <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full">Premium</span>
                     )}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm" className="gap-2">
+                        <Button variant="outline" size={isMobile ? "default" : "sm"} className={`${isMobile ? 'gap-1 min-h-[44px] min-w-[44px]' : 'gap-2'}`}>
                           <Settings className="w-4 h-4" />
+                          {isMobile && <span className="sr-only">Settings</span>}
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end" className="w-48">
@@ -245,7 +250,7 @@ const Index = () => {
                     </DropdownMenu>
                   </>
                 ) : (
-                  <Button asChild variant="outline" size="sm">
+                  <Button asChild variant="outline" size={isMobile ? "default" : "sm"} className={isMobile ? 'min-h-[44px]' : ''}>
                     <Link to="/auth">Sign In</Link>
                   </Button>
                 )}
@@ -254,55 +259,73 @@ const Index = () => {
         </div>
       </header>
       
-      <div className="max-w-6xl mx-auto p-4 space-y-6">
+      <div className="max-w-6xl mx-auto p-3 sm:p-4 space-y-4 sm:space-y-6">
         {/* Hero Section */}
-        <div className="text-center space-y-3 animate-fade-in pt-6">
-          <h1 className="text-4xl font-mono font-light text-foreground leading-tight py-2 tracking-wider border-b-2 border-primary hover:border-accent transition-colors duration-300">
+        <div className="text-center space-y-3 animate-fade-in pt-4 sm:pt-6">
+          <h1 className={`${isMobile ? 'text-2xl' : 'text-4xl'} font-mono font-light text-foreground leading-tight py-2 tracking-wider border-b-2 border-primary hover:border-accent transition-colors duration-300`}>
             could_be_an_email
           </h1>
-          <p className="text-muted-foreground text-lg">See your meeting in minutes—and dollars.</p>
+          <p className={`text-muted-foreground ${isMobile ? 'text-base' : 'text-lg'}`}>See your meeting in minutes—and dollars.</p>
         </div>
 
         {/* Top Banner Ad */}
         <AdBanner adSlot="1234567890" adFormat="horizontal" className="text-center" />
 
         {/* Main Grid Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-8">
+        <div className={`grid grid-cols-1 ${isMobile ? 'gap-4' : 'lg:grid-cols-[2fr_3fr] gap-8'}`}>
           {/* Left Column - Timer & Cost Summary */}
-          <div className="space-y-6">
+          <div className={`${isMobile ? 'space-y-4' : 'space-y-6'}`}>
             {/* Timer Header */}
             <div className="">
-              <Card className="p-6 bg-card/95 backdrop-blur-sm border shadow-lg">
-                <div className="space-y-6">
+              <Card className={`${isMobile ? 'p-4' : 'p-6'} bg-card/95 backdrop-blur-sm border shadow-lg`}>
+                <div className={`${isMobile ? 'space-y-4' : 'space-y-6'}`}>
                   <div className="flex items-center justify-center gap-2 text-foreground">
                     <Clock className="w-5 h-5" />
                     <span className="text-xl font-semibold">Meeting Duration</span>
                   </div>
                   <div className="text-center">
-                    <div className={`text-6xl font-mono font-bold tracking-wider text-foreground ${isRunning ? 'animate-pulse-glow' : ''}`}>
+                    <div className={`${isMobile ? 'text-4xl' : 'text-6xl'} font-mono font-bold tracking-wider text-foreground ${isRunning ? 'animate-pulse-glow' : ''}`}>
                       {formatTime(time)}
                     </div>
                   </div>
-                  <div className="flex justify-center gap-4">
+                  <div className={`flex justify-center ${isMobile ? 'flex-col gap-3' : 'gap-4'}`}>
                     {!isRunning ? (
-                      <Button onClick={startTimer} size="lg" className="gap-2 gradient-bg hover:opacity-90 transition-all duration-300 shadow-lg w-40">
+                      <Button 
+                        onClick={startTimer} 
+                        size="lg" 
+                        className={`gap-2 gradient-bg hover:opacity-90 transition-all duration-300 shadow-lg ${isMobile ? 'w-full min-h-[48px]' : 'w-40'}`}
+                      >
                         <Play className="w-4 h-4" />
                         Start Meeting
                       </Button>
                     ) : (
-                      <Button onClick={pauseTimer} size="lg" className="gap-2 bg-warning text-warning-foreground hover:bg-warning/90 transition-all duration-300 w-40">
+                      <Button 
+                        onClick={pauseTimer} 
+                        size="lg" 
+                        className={`gap-2 bg-warning text-warning-foreground hover:bg-warning/90 transition-all duration-300 ${isMobile ? 'w-full min-h-[48px]' : 'w-40'}`}
+                      >
                         <Pause className="w-4 h-4" />
                         Pause
                       </Button>
                     )}
-                    <Button onClick={resetTimer} size="lg" variant="outline" className="gap-2 border-2 hover:bg-accent/50 w-24">
-                      <Square className="w-4 h-4" />
-                      Reset
-                    </Button>
-                    <div className="w-36">
+                    <div className={`${isMobile ? 'flex gap-3' : 'flex gap-4'}`}>
+                      <Button 
+                        onClick={resetTimer} 
+                        size="lg" 
+                        variant="outline" 
+                        className={`gap-2 border-2 hover:bg-accent/50 ${isMobile ? 'flex-1 min-h-[48px]' : 'w-24'}`}
+                      >
+                        <Square className="w-4 h-4" />
+                        {!isMobile && "Reset"}
+                      </Button>
                       {time > 0 && isPremium && (
-                        <Button onClick={saveMeetingData} size="lg" variant="outline" className="gap-2 border-2 hover:bg-accent/50 w-full">
-                          Save Meeting
+                        <Button 
+                          onClick={saveMeetingData} 
+                          size="lg" 
+                          variant="outline" 
+                          className={`gap-2 border-2 hover:bg-accent/50 ${isMobile ? 'flex-1 min-h-[48px]' : 'w-36'}`}
+                        >
+                          {isMobile ? "Save" : "Save Meeting"}
                         </Button>
                       )}
                     </div>
@@ -312,14 +335,14 @@ const Index = () => {
             </div>
 
             {/* Cost Summary Card */}
-            <Card className="h-96 bg-card/80 backdrop-blur-sm border shadow-sm">
-              <div className="p-6 space-y-6">
+            <Card className={`${isMobile ? 'h-auto' : 'h-96'} bg-card/80 backdrop-blur-sm border shadow-sm`}>
+              <div className={`${isMobile ? 'p-4 space-y-4' : 'p-6 space-y-6'}`}>
                 <div className="flex items-center justify-center gap-2 text-foreground">
                   <TrendingUp className="w-5 h-5 text-primary" />
                   <span className="text-xl font-semibold">Meeting Cost</span>
                 </div>
                 <div className="text-center">
-                  <div className="text-4xl font-mono font-bold tracking-wider text-foreground">
+                  <div className={`${isMobile ? 'text-3xl' : 'text-4xl'} font-mono font-bold tracking-wider text-foreground`}>
                     <CostTicker cost={totalCost} isRunning={isRunning} />
                   </div>
                   <div className="text-sm text-muted-foreground mt-2">
@@ -330,7 +353,7 @@ const Index = () => {
                 </div>
                 
                 {/* Cost Breakdown */}
-                <div className="grid grid-cols-3 gap-2">
+                <div className={`grid grid-cols-3 ${isMobile ? 'gap-1' : 'gap-2'}`}>
                   <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
                     <div className="text-sm font-semibold text-foreground">${roleEntries.reduce((sum, entry) => sum + (entry.count * entry.rate), 0).toFixed(0)}</div>
                     <div className="text-xs text-muted-foreground">per hour</div>
@@ -368,9 +391,9 @@ const Index = () => {
           </div>
 
           {/* Right Column - Attendees Management */}
-          <div className="space-y-6 flex flex-col">
+          <div className={`${isMobile ? 'space-y-4' : 'space-y-6'} flex flex-col`}>
             <Card className="flex-1 bg-card/80 backdrop-blur-sm border shadow-sm">
-              <div className="h-full p-6">
+              <div className={`h-full ${isMobile ? 'p-4' : 'p-6'}`}>
                 <FreeRoleQuantityList 
                   entries={roleEntries} 
                   onEntriesChange={setRoleEntries} 

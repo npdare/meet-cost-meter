@@ -101,6 +101,25 @@
   .cost-display {
     @apply text-4xl font-bold;
   }
+  
+  /* Mobile-specific touch optimizations */
+  .mobile-touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+  
+  .mobile-button {
+    @apply active:scale-95 transition-transform duration-150;
+  }
+  
+  .mobile-input {
+    @apply focus:ring-2 focus:ring-primary/20 focus:border-primary;
+  }
+  
+  /* Improved mobile scrolling */
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
 }
 
 /* Animations */
@@ -114,6 +133,13 @@
   100% { background-position: calc(200px + 100%) 0; }
 }
 
+/* Mobile-specific animations */
+@keyframes touch-feedback {
+  0% { transform: scale(1); }
+  50% { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
@@ -122,4 +148,31 @@
   animation: shimmer 2s linear infinite;
   background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
   background-size: 200px 100%;
+}
+
+.animate-touch {
+  animation: touch-feedback 0.15s ease-out;
+}
+
+/* Mobile viewport optimizations */
+@media (max-width: 768px) {
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+  }
+  
+  /* Prevent zoom on input focus */
+  input[type="text"], 
+  input[type="number"], 
+  select, 
+  textarea {
+    font-size: 16px;
+  }
+  
+  /* Improved touch targets */
+  button, 
+  .interactive-element {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }

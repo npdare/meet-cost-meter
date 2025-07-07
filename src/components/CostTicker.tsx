@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useCurrency } from '@/hooks/useCurrency'
+import { useIsMobile } from '@/hooks/use-mobile'
 
 interface CostTickerProps {
   cost: number
@@ -11,6 +12,7 @@ export const CostTicker = ({ cost, isRunning = false, className = "" }: CostTick
   const { formatCurrency } = useCurrency()
   const [displayCost, setDisplayCost] = useState(cost)
   const [isAnimating, setIsAnimating] = useState(false)
+  const isMobile = useIsMobile()
 
   useEffect(() => {
     if (cost !== displayCost) {
@@ -46,7 +48,7 @@ export const CostTicker = ({ cost, isRunning = false, className = "" }: CostTick
 
   return (
     <span 
-      className={`text-6xl font-mono font-bold tracking-wider transition-all duration-200 ${getCostColor()} ${
+      className={`${isMobile ? 'text-3xl' : 'text-6xl'} font-mono font-bold tracking-wider transition-all duration-200 ${getCostColor()} ${
         isAnimating ? 'scale-105' : ''
       } ${isRunning ? 'animate-pulse-glow' : ''}`}
       style={{ fontFamily: 'Courier New, monospace' }}
