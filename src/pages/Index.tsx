@@ -36,7 +36,7 @@ const Index = () => {
   const [billByMinute, setBillByMinute] = useState(false)
   const [resetCounter, setResetCounter] = useState(0) // Add reset counter for milestones
   const [achievedMilestones, setAchievedMilestones] = useState<string[]>([])
-  const { user, isPremium, profile } = useAuth()
+  const { user, isPremium, profile, signOut } = useAuth()
   const { toast } = useToast()
 
   // Role-based hourly rates
@@ -173,6 +173,14 @@ const Index = () => {
                         </Button>
                       </>
                     )}
+                    <Button 
+                      onClick={signOut} 
+                      variant="outline" 
+                      size="sm"
+                      className="ml-2"
+                    >
+                      Sign Out
+                    </Button>
                   </div>
                 ) : (
                   <Button asChild variant="outline" size="sm">
