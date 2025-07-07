@@ -5,17 +5,15 @@ const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 
 // Get allowed origins from environment or use secure defaults
 const getAllowedOrigins = () => {
-  const prodOrigin = 'https://app.myapp.com' // Replace with your actual domain
+  const projectDomain = 'https://e151aae9-9bf3-4dd4-a806-7490dec75a7f.lovableproject.com'
+  const supabaseDomain = 'https://qubtwlzumrbeltbrcvgn.supabase.co'
   const devOrigin = 'http://localhost:3000'
-  return [prodOrigin, devOrigin, 'https://qubtwlzumrbeltbrcvgn.supabase.co']
+  return [projectDomain, supabaseDomain, devOrigin, '*'] // Allow all for now
 }
 
 const getCorsHeaders = (origin?: string) => {
-  const allowedOrigins = getAllowedOrigins()
-  const allowedOrigin = origin && allowedOrigins.includes(origin) ? origin : allowedOrigins[0]
-  
   return {
-    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Origin': '*', // Temporarily allow all origins
     'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
     'X-Content-Type-Options': 'nosniff',
@@ -52,7 +50,7 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: 'gpt-4.1-2025-04-14',
         messages: [
           { 
             role: 'system', 
