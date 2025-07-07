@@ -284,7 +284,7 @@ const Index = () => {
                       <span className="text-sm font-medium text-foreground">Cost Milestones</span>
                     </div>
                     <ScrollArea className="h-24">
-                      <div className="space-y-2">
+                      <div className="space-y-2 pb-2">
                         {achievedMilestones.map((milestone, index) => (
                           <div key={index} className="p-2 bg-secondary/30 rounded text-sm text-foreground">
                             {milestone}
