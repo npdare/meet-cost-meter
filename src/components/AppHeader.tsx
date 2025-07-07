@@ -22,7 +22,7 @@ export const AppHeader = ({ theme, onToggleTheme, onSignOut }: AppHeaderProps) =
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <Timer className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'} text-primary`} />
-            <span className={`font-mono font-light ${isMobile ? 'text-lg' : 'text-xl'} text-foreground tracking-wider`}>
+            <span className={`font-mono font-light ${isMobile ? 'text-sm' : 'text-xl'} text-foreground tracking-wider`}>
               {isMobile ? 'could_be_an_email' : 'could_be_an_email'}
             </span>
           </div>
