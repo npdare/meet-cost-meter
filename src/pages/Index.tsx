@@ -1,39 +1,26 @@
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
-import { Play, Pause, Square, Plus, X, Users, DollarSign, Clock, Timer, TrendingUp, Settings, Moon, Sun } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { ScrollArea } from "@/components/ui/scroll-area"
+import { Card } from "@/components/ui/card"
 import { MilestoneTicker } from "@/components/MilestoneTicker"
 import { MeetingReportCard } from "@/components/MeetingReportCard"
 import { AdBanner } from "@/components/AdBanner"
 import { PremiumGate } from "@/components/PremiumGate"
 import { MeetingHistory, saveMeeting } from "@/components/MeetingHistory"
 import { CalendarIntegration } from "@/components/CalendarIntegration"
-import { FeedbackDialog } from "@/components/FeedbackDialog"
-import { CostTicker } from "@/components/CostTicker"
+import { AppHeader } from "@/components/AppHeader"
+import { HeroSection } from "@/components/HeroSection"
+import { TimerCard } from "@/components/TimerCard"
+import { CostSummaryCard } from "@/components/CostSummaryCard"
 import { useAuth } from "@/hooks/useAuth"
 import { useIsMobile } from "@/hooks/use-mobile"
-import { Link } from "react-router-dom"
 import { useToast } from "@/hooks/use-toast"
 import { FreeRoleQuantityList, RoleQuantityEntry } from "@/components/FreeRoleQuantityList"
 import { calculateQuantityCost } from "@/utils/quantityCostCalculations"
 import { Attendee } from "@/types"
-import { calculateCost, validateAttendeeEmail } from "@/utils/costCalculations"
 
 const Index = () => {
   const [time, setTime] = useState(0) // time in seconds
   const [isRunning, setIsRunning] = useState(false)
   const [roleEntries, setRoleEntries] = useState<RoleQuantityEntry[]>([])
-  const [attendees] = useState<Attendee[]>([]) // Keep for legacy components
-  const [newAttendeeName, setNewAttendeeName] = useState("")
-  const [newAttendeeRole, setNewAttendeeRole] = useState("")
-  const [newAttendeeRate, setNewAttendeeRate] = useState("")
-  const [newAttendeeEmail, setNewAttendeeEmail] = useState("")
   const [billByMinute, setBillByMinute] = useState(false)
   const [resetCounter, setResetCounter] = useState(0) // Add reset counter for milestones
   const [achievedMilestones, setAchievedMilestones] = useState<string[]>([])
@@ -161,112 +148,18 @@ const Index = () => {
     }
   }
 
-  // Handle role change and auto-populate rate
-  const handleRoleChange = (role: string) => {
-    setNewAttendeeRole(role)
-    if (roleRates[role]) {
-      setNewAttendeeRate(roleRates[role].toString())
-    }
-  }
-
-  // Legacy functions - no longer needed
-  const addAttendee = () => {
-    // This function is deprecated - use FreeRoleQuantityList instead
-  }
-
-  const removeAttendee = (id: string) => {
-    // This function is deprecated - use FreeRoleQuantityList instead
-  }
-
   
 
   return (
     <div className="min-h-screen bg-background transition-colors duration-300">
-      {/* Header */}
-      <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-50">
-        <div className="max-w-4xl mx-auto px-3 sm:px-4 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2">
-              <Timer className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'} text-primary`} />
-              <span className={`font-mono font-light ${isMobile ? 'text-lg' : 'text-xl'} text-foreground tracking-wider`}>
-                {isMobile ? 'could_be_an_email' : 'could_be_an_email'}
-              </span>
-            </div>
-          </div>
-              <div className={`flex items-center ${isMobile ? 'gap-2' : 'gap-3'}`}>
-                {user ? (
-                  <>
-                    {!isMobile && <span className="text-sm text-muted-foreground">Welcome, {profile?.display_name || user.email}</span>}
-                    {isPremium && (
-                      <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded-full">Premium</span>
-                    )}
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size={isMobile ? "default" : "sm"} className={`${isMobile ? 'gap-1 min-h-[44px] min-w-[44px]' : 'gap-2'}`}>
-                          <Settings className="w-4 h-4" />
-                          {isMobile && <span className="sr-only">Settings</span>}
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48">
-                        <div className="px-2 py-1.5 text-sm text-muted-foreground">
-                          Theme & Settings
-                        </div>
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem 
-                          onClick={toggleTheme}
-                          className="flex items-center justify-between w-full cursor-pointer"
-                        >
-                          <span>Theme</span>
-                          <div className="flex items-center gap-2">
-                            {theme === "light" ? (
-                              <>
-                                <Sun className="w-4 h-4" />
-                                <span className="text-xs text-muted-foreground">Light</span>
-                              </>
-                            ) : (
-                              <>
-                                <Moon className="w-4 h-4" />
-                                <span className="text-xs text-muted-foreground">Dark</span>
-                              </>
-                            )}
-                          </div>
-                        </DropdownMenuItem>
-                        {isPremium && (
-                          <DropdownMenuItem asChild>
-                            <Link to="/history" className="flex items-center gap-2 w-full">
-                              <Clock className="w-4 h-4" />
-                              <span>Meeting History</span>
-                            </Link>
-                          </DropdownMenuItem>
-                        )}
-                        <DropdownMenuSeparator />
-                        <DropdownMenuItem 
-                          onClick={handleSignOut}
-                          className="text-destructive focus:text-destructive cursor-pointer"
-                        >
-                          <span>Sign Out</span>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </>
-                ) : (
-                  <Button asChild variant="outline" size={isMobile ? "default" : "sm"} className={isMobile ? 'min-h-[44px]' : ''}>
-                    <Link to="/auth">Sign In</Link>
-                  </Button>
-                )}
-                <FeedbackDialog />
-              </div>
-        </div>
-      </header>
+      <AppHeader 
+        theme={theme} 
+        onToggleTheme={toggleTheme} 
+        onSignOut={handleSignOut} 
+      />
       
       <div className="max-w-6xl mx-auto p-3 sm:p-4 space-y-4 sm:space-y-6">
-        {/* Hero Section */}
-        <div className={`text-center ${isMobile ? 'space-y-2 animate-fade-in pt-2' : 'space-y-3 animate-fade-in pt-4 sm:pt-6'}`}>
-          <h1 className={`${isMobile ? 'text-2xl' : 'text-4xl'} font-mono font-light text-foreground leading-tight py-2 tracking-wider border-b-2 border-primary hover:border-accent transition-colors duration-300`}>
-            could_be_an_email
-          </h1>
-          <p className={`text-muted-foreground ${isMobile ? 'text-base' : 'text-lg'}`}>See your meeting in minutes—and dollars.</p>
-        </div>
+        <HeroSection />
 
         {/* Top Banner Ad */}
         {!isMobile && <AdBanner adSlot="1234567890" adFormat="horizontal" className="text-center" />}
@@ -275,119 +168,25 @@ const Index = () => {
         <div className={`grid grid-cols-1 ${isMobile ? 'gap-4' : 'lg:grid-cols-[2fr_3fr] gap-8'}`}>
           {/* Left Column - Timer & Cost Summary */}
           <div className={`${isMobile ? 'space-y-2' : 'space-y-6'}`}>
-            {/* Timer Header */}
-            <div className="">
-              <Card className={`${isMobile ? 'p-4' : 'p-6'} bg-card/95 backdrop-blur-sm border shadow-lg`}>
-                <div className={`${isMobile ? 'space-y-3' : 'space-y-6'}`}>
-                  <div className="flex items-center justify-center gap-2 text-foreground">
-                    <Clock className="w-5 h-5" />
-                    <span className="text-xl font-semibold">Meeting Duration</span>
-                  </div>
-                  <div className="text-center">
-                    <div className={`${isMobile ? 'text-4xl' : 'text-6xl'} font-mono font-bold tracking-wider text-foreground ${isRunning ? 'animate-pulse-glow' : ''}`}>
-                      {formatTime(time)}
-                    </div>
-                  </div>
-                  <div className={`flex justify-center ${isMobile ? 'flex-col gap-3' : 'gap-4'}`}>
-                    {!isRunning ? (
-                      <Button 
-                        onClick={startTimer} 
-                        size="lg" 
-                        className={`gap-2 gradient-bg hover:opacity-90 transition-all duration-300 shadow-lg ${isMobile ? 'w-full min-h-[48px]' : 'w-40'}`}
-                      >
-                        <Play className="w-4 h-4" />
-                        Start Meeting
-                      </Button>
-                    ) : (
-                      <Button 
-                        onClick={pauseTimer} 
-                        size="lg" 
-                        className={`gap-2 bg-warning text-warning-foreground hover:bg-warning/90 transition-all duration-300 ${isMobile ? 'w-full min-h-[48px]' : 'w-40'}`}
-                      >
-                        <Pause className="w-4 h-4" />
-                        Pause
-                      </Button>
-                    )}
-                    <div className={`${isMobile ? 'flex gap-3' : 'flex gap-4'}`}>
-                      <Button 
-                        onClick={resetTimer} 
-                        size="lg" 
-                        variant="outline" 
-                        className={`gap-2 border-2 hover:bg-accent/50 ${isMobile ? 'flex-1 min-h-[48px]' : 'w-24'}`}
-                      >
-                        <Square className="w-4 h-4" />
-                        {!isMobile && "Reset"}
-                      </Button>
-                      {time > 0 && isPremium && (
-                        <Button 
-                          onClick={saveMeetingData} 
-                          size="lg" 
-                          variant="outline" 
-                          className={`gap-2 border-2 hover:bg-accent/50 ${isMobile ? 'flex-1 min-h-[48px]' : 'w-36'}`}
-                        >
-                          {isMobile ? "Save" : "Save Meeting"}
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </Card>
-            </div>
+            <TimerCard
+              time={time}
+              isRunning={isRunning}
+              onStart={startTimer}
+              onPause={pauseTimer}
+              onReset={resetTimer}
+              onSave={saveMeetingData}
+              canSave={isPremium}
+              formatTime={formatTime}
+            />
 
-            {/* Cost Summary Card */}
-            <Card className={`${isMobile ? 'h-auto' : 'h-96'} bg-card/80 backdrop-blur-sm border shadow-sm`}>
-              <div className={`${isMobile ? 'p-4 space-y-4' : 'p-6 space-y-6'}`}>
-                <div className="flex items-center justify-center gap-2 text-foreground">
-                  <TrendingUp className="w-5 h-5 text-primary" />
-                  <span className="text-xl font-semibold">Meeting Cost</span>
-                </div>
-                <div className="text-center">
-                  <div className={`${isMobile ? 'text-3xl' : 'text-4xl'} font-mono font-bold tracking-wider text-foreground`}>
-                    <CostTicker cost={totalCost} isRunning={isRunning} />
-                  </div>
-                  <div className="text-sm text-muted-foreground mt-2">
-                    {roleEntries.reduce((sum, entry) => sum + entry.count, 0)} attendee{roleEntries.reduce((sum, entry) => sum + entry.count, 0) !== 1 ? "s" : ""} • $
-                    {roleEntries.reduce((sum, entry) => sum + (entry.count * entry.rate), 0).toFixed(2)}/hour
-                    {billByMinute && <span className="text-xs"> • Billed by minute</span>}
-                  </div>
-                </div>
-                
-                {/* Cost Breakdown */}
-                <div className={`grid grid-cols-3 ${isMobile ? 'gap-1' : 'gap-2'}`}>
-                  <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
-                    <div className="text-sm font-semibold text-foreground">${roleEntries.reduce((sum, entry) => sum + (entry.count * entry.rate), 0).toFixed(0)}</div>
-                    <div className="text-xs text-muted-foreground">per hour</div>
-                  </div>
-                  <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
-                    <div className="text-sm font-semibold text-foreground">${(totalCost / Math.max(time / 60, 1)).toFixed(2)}</div>
-                    <div className="text-xs text-muted-foreground">per minute</div>
-                  </div>
-                  <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
-                    <div className="text-sm font-semibold text-foreground">{roleEntries.reduce((sum, entry) => sum + entry.count, 0)}</div>
-                    <div className="text-xs text-muted-foreground">attendees</div>
-                  </div>
-                </div>
-                
-                {/* Milestones Section */}
-                {achievedMilestones.length > 0 && (
-                  <div className="border-t border-border pt-4">
-                    <div className="flex items-center gap-2 mb-3">
-                      <div className="w-2 h-2 bg-warning rounded-full animate-pulse"></div>
-                      <span className="text-sm font-medium text-foreground">Cost Milestones</span>
-                    </div>
-                    <ScrollArea className="h-24">
-                      <div className="space-y-2 pb-2">
-                        {achievedMilestones.map((milestone, index) => (
-                          <div key={index} className="p-2 bg-secondary/30 rounded text-sm text-foreground">
-                            {milestone}
-                          </div>
-                        ))}
-                      </div>
-                    </ScrollArea>
-                  </div>
-                )}
-              </div>
-            </Card>
+            <CostSummaryCard
+              totalCost={totalCost}
+              isRunning={isRunning}
+              roleEntries={roleEntries}
+              time={time}
+              billByMinute={billByMinute}
+              achievedMilestones={achievedMilestones}
+            />
           </div>
 
           {/* Right Column - Attendees Management */}
