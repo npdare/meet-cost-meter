@@ -1,3 +1,5 @@
+import { supabase } from '@/integrations/supabase/client'
+
 interface RateCache {
   [key: string]: {
     rate: number
@@ -21,22 +23,17 @@ export const fetchRateForRole = async (role: string, region: string = 'North Ame
   }
 
   try {
-    const response = await fetch('https://qubtwlzumrbeltbrcvgn.supabase.co/functions/v1/openai-rate-lookup', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    const { data, error } = await supabase.functions.invoke('openai-rate-lookup', {
+      body: {
         role,
         region
-      }),
+      }
     })
 
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
+    if (error) {
+      throw new Error(`Supabase function error: ${error.message}`)
     }
 
-    const data = await response.json()
     const rate = parseFloat(data.rate)
     
     if (isNaN(rate) || rate <= 0) {
