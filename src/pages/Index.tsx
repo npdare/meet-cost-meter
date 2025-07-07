@@ -241,18 +241,16 @@ const Index = () => {
 
             {/* Cost Summary Card */}
             <Card className="p-6 bg-card/80 backdrop-blur-sm border shadow-sm">
-              <CardHeader className="p-0 pb-4">
-                <CardTitle className="flex items-center gap-2 text-foreground">
-                  <TrendingUp className="w-5 h-5 text-primary" />
-                  Meeting Cost
-                </CardTitle>
-              </CardHeader>
               <div className="space-y-6">
-                <div className="text-center space-y-3">
-                  <div className="text-3xl font-bold text-foreground">
+                <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                  <TrendingUp className="w-5 h-5 text-primary" />
+                  <span className="text-sm font-medium">Meeting Cost</span>
+                </div>
+                <div className="text-center">
+                  <div className="text-6xl font-mono font-bold tracking-wider text-foreground">
                     <CostTicker cost={totalCost} isRunning={isRunning} />
                   </div>
-                  <div className="text-sm text-muted-foreground">
+                  <div className="text-sm text-muted-foreground mt-3">
                     {roleEntries.reduce((sum, entry) => sum + entry.count, 0)} attendee{roleEntries.reduce((sum, entry) => sum + entry.count, 0) !== 1 ? "s" : ""} • $
                     {roleEntries.reduce((sum, entry) => sum + (entry.count * entry.rate), 0).toFixed(2)}/hour
                     {billByMinute && <span className="text-xs"> • Billed by minute</span>}
