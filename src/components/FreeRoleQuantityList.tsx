@@ -123,100 +123,99 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
         <h3 className="text-xl font-semibold text-foreground">Meeting Attendees</h3>
       </div>
 
-      {/* Industry Selection & Add Form - Scrollable when needed */}
-      <ScrollArea className="flex-1 min-h-0">
-        <div className="space-y-4 pr-3">
-          {/* Industry Selection & Saved Members */}
-          <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-3">
-            <div className="flex flex-col sm:flex-row gap-3 items-start">
-              <div className="flex-1">
-                <label className="text-sm font-medium text-foreground mb-1 block">
-                  Industry/Region
-                </label>
-                <Select value={industry} onValueChange={setIndustry}>
-                  <SelectTrigger className="h-9">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Technology">Technology</SelectItem>
-                    <SelectItem value="Finance">Finance</SelectItem>
-                    <SelectItem value="Healthcare">Healthcare</SelectItem>
-                    <SelectItem value="Consulting">Consulting</SelectItem>
-                    <SelectItem value="Manufacturing">Manufacturing</SelectItem>
-                    <SelectItem value="Retail">Retail</SelectItem>
-                    <SelectItem value="Education">Education</SelectItem>
-                    <SelectItem value="Government">Government</SelectItem>
-                    <SelectItem value="Non-Profit">Non-Profit</SelectItem>
-                    <SelectItem value="Other">Other</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              {isPremium && (
-                <div className="flex flex-col">
-                  <label className="text-sm font-medium text-foreground mb-1 block">
-                    Quick Add
-                  </label>
-                  <Button
-                    onClick={() => {
-                      toast({
-                        title: "Coming soon",
-                        description: "Add saved members feature is coming soon",
-                      })
-                    }}
-                    className="h-9 px-3 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
-                  >
-                    <Plus className="w-4 h-4" />
-                    Add Saved
-                  </Button>
-                </div>
-              )}
-            </div>
+      {/* Industry Selection & Saved Members */}
+      <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-3 flex-shrink-0">
+        <div className="flex flex-col sm:flex-row gap-3 items-start">
+          <div className="flex-1">
+            <label className="text-sm font-medium text-foreground mb-1 block">
+              Industry/Region
+            </label>
+            <Select value={industry} onValueChange={setIndustry}>
+              <SelectTrigger className="h-9">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Technology">Technology</SelectItem>
+                <SelectItem value="Finance">Finance</SelectItem>
+                <SelectItem value="Healthcare">Healthcare</SelectItem>
+                <SelectItem value="Consulting">Consulting</SelectItem>
+                <SelectItem value="Manufacturing">Manufacturing</SelectItem>
+                <SelectItem value="Retail">Retail</SelectItem>
+                <SelectItem value="Education">Education</SelectItem>
+                <SelectItem value="Government">Government</SelectItem>
+                <SelectItem value="Non-Profit">Non-Profit</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
-
-          {/* Add New Entry Form */}
-          <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-3">
-            <div className="flex flex-col sm:flex-row gap-2">
-              <div className="flex-shrink-0">
-                <Input
-                  type="number"
-                  min="1"
-                  value={newCount}
-                  onChange={(e) => setNewCount(Math.max(1, parseInt(e.target.value) || 1))}
-                  placeholder="1"
-                  className="h-9 w-16 text-center font-medium"
-                />
-              </div>
-              <div className="flex-1">
-                <Input
-                  value={newRole}
-                  onChange={(e) => setNewRole(e.target.value)}
-                  placeholder="e.g. Senior Engineer"
-                  className="h-9 font-medium"
-                  onKeyPress={(e) => e.key === 'Enter' && addNewEntry()}
-                />
-              </div>
-              <Button 
-                onClick={addNewEntry}
-                disabled={!newRole.trim()}
-                className="h-9 px-4 bg-primary hover:bg-primary/90 text-primary-foreground font-medium gap-2"
+          {isPremium && (
+            <div className="flex flex-col">
+              <label className="text-sm font-medium text-foreground mb-1 block">
+                Quick Add
+              </label>
+              <Button
+                onClick={() => {
+                  toast({
+                    title: "Coming soon",
+                    description: "Add saved members feature is coming soon",
+                  })
+                }}
+                className="h-9 px-3 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
               >
                 <Plus className="w-4 h-4" />
-                Add
+                Add Saved
               </Button>
             </div>
-          </div>
+          )}
+        </div>
+      </div>
 
-          {/* Attendees List */}
-          {entries.length > 0 ? (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <h4 className="font-semibold text-foreground">Current Attendees ({entries.length})</h4>
-                <div className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs font-semibold">
-                  Total: {formatCurrency(totalRate)}/hour
-                </div>
+      {/* Add New Entry Form */}
+      <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-3 flex-shrink-0">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <div className="flex-shrink-0">
+            <Input
+              type="number"
+              min="1"
+              value={newCount}
+              onChange={(e) => setNewCount(Math.max(1, parseInt(e.target.value) || 1))}
+              placeholder="1"
+              className="h-9 w-16 text-center font-medium"
+            />
+          </div>
+          <div className="flex-1">
+            <Input
+              value={newRole}
+              onChange={(e) => setNewRole(e.target.value)}
+              placeholder="e.g. Senior Engineer"
+              className="h-9 font-medium"
+              onKeyPress={(e) => e.key === 'Enter' && addNewEntry()}
+            />
+          </div>
+          <Button 
+            onClick={addNewEntry}
+            disabled={!newRole.trim()}
+            className="h-9 px-4 bg-primary hover:bg-primary/90 text-primary-foreground font-medium gap-2"
+          >
+            <Plus className="w-4 h-4" />
+            Add
+          </Button>
+        </div>
+      </div>
+
+      {/* Scrollable Entries Area */}
+      <div className="flex-1 min-h-0">
+        {entries.length > 0 ? (
+          <div className="h-full flex flex-col">
+            <div className="flex items-center justify-between mb-3 flex-shrink-0">
+              <h4 className="font-semibold text-foreground">Current Attendees ({entries.length})</h4>
+              <div className="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs font-semibold">
+                Total: {formatCurrency(totalRate)}/hour
               </div>
-              
-              <div className="space-y-2">
+            </div>
+            
+            <ScrollArea className="flex-1">
+              <div className="space-y-2 pr-3">
                 {entries.map((entry) => (
                   <div key={entry.id} className="bg-card/30 backdrop-blur-sm border border-border/50 rounded-lg p-3">
                     <div className="flex items-center gap-3">
@@ -261,16 +260,18 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
                   </div>
                 ))}
               </div>
-            </div>
-          ) : (
-            <div className="text-center py-8 text-muted-foreground">
+            </ScrollArea>
+          </div>
+        ) : (
+          <div className="h-full flex items-center justify-center">
+            <div className="text-center text-muted-foreground">
               <Users className="w-12 h-12 mx-auto mb-3 opacity-30" />
               <p className="font-medium">No attendees added yet</p>
               <p className="text-sm mt-1 opacity-70">Add attendees to start calculating meeting costs</p>
             </div>
-          )}
-        </div>
-      </ScrollArea>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
