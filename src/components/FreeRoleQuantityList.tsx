@@ -159,182 +159,190 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
   const totalRate = entries.reduce((sum, entry) => sum + (entry.count * entry.rate), 0)
 
   return (
-    <Card className="glass-card">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <div className="p-2 bg-primary/10 rounded-lg">
           <Users className="w-5 h-5 text-primary" />
-          Meeting Attendees
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-6">
-        {/* Add New Entry Form */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
-          <Input
-            type="number"
-            min="1"
-            value={newCount}
-            onChange={(e) => setNewCount(Math.max(1, parseInt(e.target.value) || 1))}
-            placeholder="Count"
-            className="h-10"
-          />
-          <Input
-            value={newRole}
-            onChange={(e) => setNewRole(e.target.value)}
-            placeholder="e.g. Senior Engineer"
-            className="h-10 md:col-span-2"
-            onKeyPress={(e) => e.key === 'Enter' && addNewEntry()}
-          />
+        </div>
+        <h3 className="text-xl font-semibold text-foreground">Meeting Attendees</h3>
+      </div>
+
+      {/* Add New Entry Form */}
+      <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex-shrink-0">
+            <Input
+              type="number"
+              min="1"
+              value={newCount}
+              onChange={(e) => setNewCount(Math.max(1, parseInt(e.target.value) || 1))}
+              placeholder="1"
+              className="h-11 w-20 text-center font-medium"
+            />
+          </div>
+          <div className="flex-1">
+            <Input
+              value={newRole}
+              onChange={(e) => setNewRole(e.target.value)}
+              placeholder="e.g. Senior Engineer"
+              className="h-11 font-medium"
+              onKeyPress={(e) => e.key === 'Enter' && addNewEntry()}
+            />
+          </div>
           <Button 
             onClick={addNewEntry}
             disabled={!newRole.trim()}
-            className="gap-2 gradient-bg hover:opacity-90 h-10"
+            className="h-11 px-6 bg-primary hover:bg-primary/90 text-primary-foreground font-medium gap-2"
           >
             <Plus className="w-4 h-4" />
             Add
           </Button>
         </div>
+      </div>
 
-        {/* Current Entries */}
-        {entries.length > 0 && (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between">
-              <h4 className="font-semibold text-foreground">Current Attendees ({entries.length} entries)</h4>
-              <Badge variant="secondary" className="font-semibold">
-                Total: {formatCurrency(totalRate)}/hour
-              </Badge>
+      {/* Current Entries */}
+      {entries.length > 0 && (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h4 className="font-semibold text-foreground">Current Attendees ({entries.length} {entries.length === 1 ? 'entry' : 'entries'})</h4>
+            <div className="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-semibold">
+              Total: {formatCurrency(totalRate)}/hour
             </div>
-            
-            <div className="space-y-3">
-              {entries.map((entry) => (
-                <Card key={entry.id} className="border border-border">
-                  <CardContent className="p-4">
-                    <div className="space-y-3">
-                      {/* Main Row */}
-                      <div className="grid grid-cols-1 md:grid-cols-5 gap-3 items-center">
-                        <Input
-                          type="number"
-                          min="1"
-                          value={entry.count}
-                          onChange={(e) => updateEntry(entry.id, { count: Math.max(1, parseInt(e.target.value) || 1) })}
-                          className="h-8"
-                        />
-                        <Input
-                          value={entry.role}
-                          onChange={(e) => updateEntry(entry.id, { role: e.target.value })}
-                          onBlur={(e) => handleRoleBlur(entry.id, e.target.value)}
-                          className="h-8 md:col-span-2"
-                        />
-                        <div className="flex items-center gap-2">
-                          {entry.isLoading ? (
-                            <div className="flex items-center gap-2">
-                              <Loader2 className="w-3 h-3 animate-spin" />
-                              <span className="text-sm text-muted-foreground">Loading...</span>
-                            </div>
-                          ) : (
-                            <Badge variant="outline" className="font-mono">
-                              {formatCurrency(entry.rate)}/hr × {entry.count}
-                            </Badge>
-                          )}
+          </div>
+          
+          <div className="space-y-3">
+            {entries.map((entry) => (
+              <div key={entry.id} className="bg-card/30 backdrop-blur-sm border border-border/50 rounded-lg p-4">
+                <div className="space-y-3">
+                  {/* Main Row */}
+                  <div className="flex items-center gap-4">
+                    <div className="flex-shrink-0">
+                      <Input
+                        type="number"
+                        min="1"
+                        value={entry.count}
+                        onChange={(e) => updateEntry(entry.id, { count: Math.max(1, parseInt(e.target.value) || 1) })}
+                        className="h-10 w-16 text-center font-medium"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <Input
+                        value={entry.role}
+                        onChange={(e) => updateEntry(entry.id, { role: e.target.value })}
+                        onBlur={(e) => handleRoleBlur(entry.id, e.target.value)}
+                        className="h-10 font-medium"
+                      />
+                    </div>
+                    <div className="flex items-center gap-3">
+                      {entry.isLoading ? (
+                        <div className="flex items-center gap-2 px-3 py-1 bg-muted rounded-md">
+                          <Loader2 className="w-3 h-3 animate-spin" />
+                          <span className="text-sm text-muted-foreground">Loading...</span>
                         </div>
-                        <div className="flex items-center gap-2">
-                          {isPremium && (
-                            <Button
-                              size="sm"
-                              variant="ghost"
-                              onClick={() => toggleAdvanced(entry.id)}
-                              className="h-8 gap-1 text-xs"
-                            >
-                              Advanced
-                              <ChevronDown className={`w-3 h-3 transition-transform ${expandedAdvanced[entry.id] ? 'rotate-180' : ''}`} />
-                            </Button>
-                          )}
+                      ) : (
+                        <div className="bg-secondary text-secondary-foreground px-3 py-1 rounded-md text-sm font-mono font-medium">
+                          {formatCurrency(entry.rate)}/hr × {entry.count}
+                        </div>
+                      )}
+                      <div className="flex items-center gap-1 ml-2">
+                        {isPremium && (
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => removeEntry(entry.id)}
-                            className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+                            onClick={() => toggleAdvanced(entry.id)}
+                            className="h-8 px-2 gap-1 text-xs hover:bg-accent"
                           >
-                            <X className="w-3 h-3" />
+                            Advanced
+                            <ChevronDown className={`w-3 h-3 transition-transform ${expandedAdvanced[entry.id] ? 'rotate-180' : ''}`} />
                           </Button>
-                        </div>
+                        )}
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => removeEntry(entry.id)}
+                          className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
                       </div>
-
-                      {/* Advanced Panel (Pro Only) */}
-                      {isPremium && (
-                        <Collapsible open={expandedAdvanced[entry.id]}>
-                          <CollapsibleContent className="space-y-3">
-                            <div className="border-t border-border pt-3">
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                <div>
-                                  <label className="text-xs font-medium text-muted-foreground">Name</label>
-                                  <Input
-                                    value={entry.name || ''}
-                                    onChange={(e) => updateEntry(entry.id, { name: e.target.value })}
-                                    placeholder="John Doe"
-                                    className="h-8 mt-1"
-                                  />
-                                </div>
-                                <div>
-                                  <label className="text-xs font-medium text-muted-foreground">Email</label>
-                                  <Input
-                                    type="email"
-                                    value={entry.email || ''}
-                                    onChange={(e) => updateEntry(entry.id, { email: e.target.value })}
-                                    placeholder="john@company.com"
-                                    className="h-8 mt-1"
-                                  />
-                                </div>
-                                <div>
-                                  <label className="text-xs font-medium text-muted-foreground">Role</label>
-                                  <Input
-                                    value={entry.role}
-                                    onChange={(e) => updateEntry(entry.id, { role: e.target.value })}
-                                    className="h-8 mt-1"
-                                  />
-                                </div>
-                                <div>
-                                  <label className="text-xs font-medium text-muted-foreground">Rate ($/hr)</label>
-                                  <Input
-                                    type="number"
-                                    min="0"
-                                    step="0.01"
-                                    value={entry.rate}
-                                    onChange={(e) => updateEntry(entry.id, { rate: parseFloat(e.target.value) || 0 })}
-                                    className="h-8 mt-1"
-                                  />
-                                </div>
-                              </div>
-                              <div className="flex justify-end mt-3">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => saveFavoriteAttendee(entry)}
-                                  className="gap-2 text-xs"
-                                >
-                                  <Star className="w-3 h-3" />
-                                  Save as Favorite
-                                </Button>
-                              </div>
-                            </div>
-                          </CollapsibleContent>
-                        </Collapsible>
-                      )}
                     </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </div>
-        )}
+                  </div>
 
-        {entries.length === 0 && (
-          <div className="text-center py-12 text-muted-foreground">
-            <Users className="w-16 h-16 mx-auto mb-4 opacity-50" />
-            <p className="font-medium">No attendees added yet</p>
-            <p className="text-sm mt-1">Add attendees to start calculating meeting costs</p>
+                  {/* Advanced Panel (Pro Only) */}
+                  {isPremium && (
+                    <Collapsible open={expandedAdvanced[entry.id]}>
+                      <CollapsibleContent className="space-y-3">
+                        <div className="border-t border-border/50 pt-4 mt-3">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Name</label>
+                              <Input
+                                value={entry.name || ''}
+                                onChange={(e) => updateEntry(entry.id, { name: e.target.value })}
+                                placeholder="John Doe"
+                                className="h-9 mt-2"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Email</label>
+                              <Input
+                                type="email"
+                                value={entry.email || ''}
+                                onChange={(e) => updateEntry(entry.id, { email: e.target.value })}
+                                placeholder="john@company.com"
+                                className="h-9 mt-2"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Role</label>
+                              <Input
+                                value={entry.role}
+                                onChange={(e) => updateEntry(entry.id, { role: e.target.value })}
+                                className="h-9 mt-2"
+                              />
+                            </div>
+                            <div>
+                              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Rate ($/hr)</label>
+                              <Input
+                                type="number"
+                                min="0"
+                                step="0.01"
+                                value={entry.rate}
+                                onChange={(e) => updateEntry(entry.id, { rate: parseFloat(e.target.value) || 0 })}
+                                className="h-9 mt-2"
+                              />
+                            </div>
+                          </div>
+                          <div className="flex justify-end mt-4">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => saveFavoriteAttendee(entry)}
+                              className="gap-2 text-xs hover:bg-accent"
+                            >
+                              <Star className="w-3 h-3" />
+                              Save as Favorite
+                            </Button>
+                          </div>
+                        </div>
+                      </CollapsibleContent>
+                    </Collapsible>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </div>
+      )}
+
+      {entries.length === 0 && (
+        <div className="text-center py-12 text-muted-foreground bg-card/20 backdrop-blur-sm border border-border/30 rounded-lg">
+          <Users className="w-16 h-16 mx-auto mb-4 opacity-30" />
+          <p className="font-medium text-lg">No attendees added yet</p>
+          <p className="text-sm mt-2 opacity-70">Add attendees to start calculating meeting costs</p>
+        </div>
+      )}
+    </div>
   )
 }
