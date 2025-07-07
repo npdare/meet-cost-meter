@@ -204,7 +204,7 @@ const Index = () => {
             <div className="sticky top-4 z-10">
               <Card className="p-6 bg-card/95 backdrop-blur-sm border shadow-lg">
                 <div className="space-y-6">
-                  <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                  <div className="flex items-center justify-center gap-2 text-foreground">
                     <Clock className="w-5 h-5" />
                     <span className="text-xl font-semibold">Meeting Duration</span>
                   </div>
@@ -242,7 +242,7 @@ const Index = () => {
             {/* Cost Summary Card */}
             <Card className="p-6 bg-card/80 backdrop-blur-sm border shadow-sm">
               <div className="space-y-6">
-                <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                <div className="flex items-center justify-center gap-2 text-foreground">
                   <TrendingUp className="w-5 h-5 text-primary" />
                   <span className="text-xl font-semibold">Meeting Cost</span>
                 </div>
