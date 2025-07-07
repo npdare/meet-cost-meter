@@ -1,6 +1,7 @@
 import { useState, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Users, Plus, X, Loader2 } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrency } from '@/hooks/useCurrency'
@@ -26,6 +27,7 @@ interface FreeRoleQuantityListProps {
 export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuantityListProps) => {
   const [newCount, setNewCount] = useState(1)
   const [newRole, setNewRole] = useState('')
+  const [industry, setIndustry] = useState('Technology')
   const { user, isPremium, profile } = useAuth()
   const { formatCurrency } = useCurrency()
   const { toast } = useToast()
@@ -41,7 +43,7 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
     )
 
     try {
-      const rate = await fetchRateForRole(role.trim(), profile?.subscription_status || 'North America')
+      const rate = await fetchRateForRole(role.trim(), industry)
       
       onEntriesChange(
         entries.map(entry =>
@@ -58,7 +60,7 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
         )
       )
     }
-  }, [entries, onEntriesChange, profile])
+  }, [entries, onEntriesChange, industry])
 
   const addNewEntry = async () => {
     if (!newRole.trim()) return
@@ -76,7 +78,7 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
 
     // Fetch rate for new entry
     try {
-      const rate = await fetchRateForRole(newRole.trim(), 'North America')
+      const rate = await fetchRateForRole(newRole.trim(), industry)
       onEntriesChange(
         updatedEntries.map(entry =>
           entry.id === newEntry.id ? { ...entry, rate, isLoading: false } : entry
@@ -118,6 +120,53 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
           <Users className="w-5 h-5 text-primary" />
         </div>
         <h3 className="text-xl font-semibold text-foreground">Meeting Attendees</h3>
+      </div>
+
+      {/* Industry Selection & Saved Members */}
+      <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-4">
+        <div className="flex flex-col sm:flex-row gap-3 items-start">
+          <div className="flex-1">
+            <label className="text-sm font-medium text-foreground mb-2 block">
+              Industry/Region
+            </label>
+            <Select value={industry} onValueChange={setIndustry}>
+              <SelectTrigger className="h-10">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Technology">Technology</SelectItem>
+                <SelectItem value="Finance">Finance</SelectItem>
+                <SelectItem value="Healthcare">Healthcare</SelectItem>
+                <SelectItem value="Consulting">Consulting</SelectItem>
+                <SelectItem value="Manufacturing">Manufacturing</SelectItem>
+                <SelectItem value="Retail">Retail</SelectItem>
+                <SelectItem value="Education">Education</SelectItem>
+                <SelectItem value="Government">Government</SelectItem>
+                <SelectItem value="Non-Profit">Non-Profit</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+          {isPremium && (
+            <div className="flex flex-col">
+              <label className="text-sm font-medium text-foreground mb-2 block">
+                Quick Add
+              </label>
+              <Button
+                onClick={() => {
+                  toast({
+                    title: "Coming soon",
+                    description: "Add saved members feature is coming soon",
+                  })
+                }}
+                className="h-10 px-4 gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+              >
+                <Plus className="w-4 h-4" />
+                Add Saved Members
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Add New Entry Form */}
@@ -198,22 +247,6 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
                         </div>
                       )}
                       <div className="flex items-center gap-1 ml-2">
-                        {isPremium && (
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            onClick={() => {
-                              toast({
-                                title: "Coming soon",
-                                description: "Add saved members feature is coming soon",
-                              })
-                            }}
-                            className="h-8 px-2 gap-1 text-xs hover:bg-accent"
-                          >
-                            <Plus className="w-3 h-3" />
-                            Add Saved Members
-                          </Button>
-                        )}
                         <Button
                           size="sm"
                           variant="ghost"
