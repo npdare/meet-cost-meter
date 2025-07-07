@@ -215,9 +215,9 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
             </div>
             
             <div className="flex-1 min-h-0">
-              <ScrollArea className="h-full">
-                <div className="space-y-2 pr-3 min-h-full">
-                  {entries.map((entry) => (
+            <ScrollArea className="h-full max-h-64">
+              <div className="space-y-2 pr-3">
+                {entries.map((entry) => (
                     <div key={entry.id} className="bg-card/30 backdrop-blur-sm border border-border/50 rounded-lg p-3">
                       <div className="flex items-center gap-3">
                         <div className="flex-shrink-0">
