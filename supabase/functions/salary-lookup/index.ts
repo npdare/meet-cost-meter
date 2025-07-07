@@ -2,9 +2,26 @@ import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+// Get allowed origins from environment or use secure defaults
+const getAllowedOrigins = () => {
+  const prodOrigin = 'https://app.myapp.com' // Replace with your actual domain
+  const devOrigin = 'http://localhost:3000'
+  return [prodOrigin, devOrigin, 'https://qubtwlzumrbeltbrcvgn.supabase.co']
+}
+
+const getCorsHeaders = (origin?: string) => {
+  const allowedOrigins = getAllowedOrigins()
+  const allowedOrigin = origin && allowedOrigins.includes(origin) ? origin : allowedOrigins[0]
+  
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'X-XSS-Protection': '1; mode=block',
+    'Referrer-Policy': 'strict-origin-when-cross-origin'
+  }
 }
 
 interface SalaryRequest {
@@ -13,6 +30,9 @@ interface SalaryRequest {
 }
 
 serve(async (req) => {
+  const origin = req.headers.get('origin')
+  const corsHeaders = getCorsHeaders(origin)
+  
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }
@@ -114,10 +134,20 @@ serve(async (req) => {
     )
 
   } catch (error) {
-    console.error('Salary lookup error:', error)
+    console.error('Salary lookup error:', {
+      error: error.message,
+      timestamp: new Date().toISOString(),
+      user_id: 'unknown'
+    })
+    
+    // Sanitize error message for client
+    const clientError = error.message.includes('API') || error.message.includes('OpenAI') 
+      ? 'Service temporarily unavailable. Please try again.' 
+      : 'An unexpected error occurred. Please try again.';
+    
     return new Response(
       JSON.stringify({ 
-        error: error.message,
+        error: clientError,
         success: false 
       }),
       {

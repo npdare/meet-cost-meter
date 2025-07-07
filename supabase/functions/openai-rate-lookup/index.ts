@@ -3,12 +3,32 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
 
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
+// Get allowed origins from environment or use secure defaults
+const getAllowedOrigins = () => {
+  const prodOrigin = 'https://app.myapp.com' // Replace with your actual domain
+  const devOrigin = 'http://localhost:3000'
+  return [prodOrigin, devOrigin, 'https://qubtwlzumrbeltbrcvgn.supabase.co']
+}
+
+const getCorsHeaders = (origin?: string) => {
+  const allowedOrigins = getAllowedOrigins()
+  const allowedOrigin = origin && allowedOrigins.includes(origin) ? origin : allowedOrigins[0]
+  
+  return {
+    'Access-Control-Allow-Origin': allowedOrigin,
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'X-XSS-Protection': '1; mode=block',
+    'Referrer-Policy': 'strict-origin-when-cross-origin'
+  }
+}
 
 serve(async (req) => {
+  const origin = req.headers.get('origin')
+  const corsHeaders = getCorsHeaders(origin)
+  
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
@@ -78,9 +98,18 @@ Factor in industry standards, regional variations, and role responsibility level
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
   } catch (error) {
-    console.error('Error in openai-rate-lookup function:', error);
-    return new Response(JSON.stringify({ 
+    console.error('OpenAI rate lookup error:', {
       error: error.message,
+      timestamp: new Date().toISOString()
+    });
+    
+    // Sanitize error message for client
+    const clientError = error.message.includes('API') || error.message.includes('rate') 
+      ? 'Service temporarily unavailable. Please try again.' 
+      : 'An unexpected error occurred.';
+    
+    return new Response(JSON.stringify({ 
+      error: clientError,
       rate: 75 // fallback rate
     }), {
       status: 500,
