@@ -18,13 +18,16 @@ import { CostTicker } from "@/components/CostTicker"
 import { useAuth } from "@/hooks/useAuth"
 import { Link } from "react-router-dom"
 import { useToast } from "@/hooks/use-toast"
+import { FreeRoleQuantityList, RoleQuantityEntry } from "@/components/FreeRoleQuantityList"
+import { calculateQuantityCost } from "@/utils/quantityCostCalculations"
 import { Attendee } from "@/types"
 import { calculateCost, validateAttendeeEmail } from "@/utils/costCalculations"
 
 const Index = () => {
   const [time, setTime] = useState(0) // time in seconds
   const [isRunning, setIsRunning] = useState(false)
-  const [attendees, setAttendees] = useState<Attendee[]>([])
+  const [roleEntries, setRoleEntries] = useState<RoleQuantityEntry[]>([])
+  const [attendees] = useState<Attendee[]>([]) // Keep for legacy components
   const [newAttendeeName, setNewAttendeeName] = useState("")
   const [newAttendeeRole, setNewAttendeeRole] = useState("")
   const [newAttendeeRate, setNewAttendeeRate] = useState("")
@@ -77,8 +80,8 @@ const Index = () => {
     return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
   }
 
-  // Calculate total cost using hardened calculation
-  const totalCost = calculateCost(attendees, time, { billByMinute })
+  // Calculate total cost using quantity-based calculation
+  const totalCost = calculateQuantityCost(roleEntries, time)
 
   // Timer controls
   const startTimer = () => setIsRunning(true)
@@ -101,7 +104,17 @@ const Index = () => {
     }
 
     const meetingTitle = `Meeting ${new Date().toLocaleDateString()}`
-    const result = await saveMeeting(meetingTitle, time, totalCost, attendees, achievedMilestones)
+    // Convert roleEntries to legacy attendees format for saving
+    const legacyAttendees: Attendee[] = roleEntries.flatMap(entry => 
+      Array.from({ length: entry.count }, (_, i) => ({
+        id: `${entry.id}-${i}`,
+        name: entry.name || `${entry.role} ${i + 1}`,
+        role: entry.role,
+        hourlyRate: entry.rate,
+        email: entry.email
+      }))
+    )
+    const result = await saveMeeting(meetingTitle, time, totalCost, legacyAttendees, achievedMilestones)
     
     if (result.success) {
       toast({
@@ -125,45 +138,13 @@ const Index = () => {
     }
   }
 
-  // Attendee management with validation
+  // Legacy functions - no longer needed
   const addAttendee = () => {
-    if (newAttendeeName.trim() && newAttendeeRole.trim() && newAttendeeRate.trim()) {
-      try {
-        // Validate email uniqueness if provided
-        if (newAttendeeEmail.trim()) {
-          validateAttendeeEmail(attendees, newAttendeeEmail.trim())
-        }
-
-        const newAttendee: Attendee = {
-          id: Date.now().toString(),
-          name: newAttendeeName.trim(),
-          role: newAttendeeRole.trim(),
-          hourlyRate: Number.parseFloat(newAttendeeRate),
-          email: newAttendeeEmail.trim() || undefined,
-        }
-        
-        setAttendees([...attendees, newAttendee])
-        setNewAttendeeName("")
-        setNewAttendeeRole("")
-        setNewAttendeeRate("")
-        setNewAttendeeEmail("")
-        
-        toast({
-          title: "Attendee added",
-          description: `${newAttendee.name} has been added to the meeting`,
-        })
-      } catch (error: any) {
-        toast({
-          title: "Error adding attendee",
-          description: error.message,
-          variant: "destructive",
-        })
-      }
-    }
+    // This function is deprecated - use FreeRoleQuantityList instead
   }
 
   const removeAttendee = (id: string) => {
-    setAttendees(attendees.filter((attendee) => attendee.id !== id))
+    // This function is deprecated - use FreeRoleQuantityList instead
   }
 
   
@@ -266,8 +247,8 @@ const Index = () => {
               <div className="text-center space-y-3 mb-4">
                 <CostTicker cost={totalCost} isRunning={isRunning} />
                 <div className="text-sm text-muted-foreground">
-                  {attendees.length} attendee{attendees.length !== 1 ? "s" : ""} • $
-                  {attendees.reduce((sum, a) => sum + a.hourlyRate, 0).toFixed(2)}/hour
+                  {roleEntries.reduce((sum, entry) => sum + entry.count, 0)} attendee{roleEntries.reduce((sum, entry) => sum + entry.count, 0) !== 1 ? "s" : ""} • $
+                  {roleEntries.reduce((sum, entry) => sum + (entry.count * entry.rate), 0).toFixed(2)}/hour
                   {billByMinute && <span className="text-xs"> • Billed by minute</span>}
                 </div>
               </div>
@@ -275,7 +256,7 @@ const Index = () => {
               {/* Enhanced Cost Breakdown */}
               <div className="grid grid-cols-3 gap-2 mb-4">
                 <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
-                  <div className="text-xs font-medium text-foreground">${attendees.reduce((sum, a) => sum + a.hourlyRate, 0).toFixed(0)}</div>
+                  <div className="text-xs font-medium text-foreground">${roleEntries.reduce((sum, entry) => sum + (entry.count * entry.rate), 0).toFixed(0)}</div>
                   <div className="text-xs text-muted-foreground">per hour</div>
                 </div>
                 <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
@@ -283,7 +264,7 @@ const Index = () => {
                   <div className="text-xs text-muted-foreground">per minute</div>
                 </div>
                 <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
-                  <div className="text-xs font-medium text-foreground">{attendees.length}</div>
+                  <div className="text-xs font-medium text-foreground">{roleEntries.reduce((sum, entry) => sum + entry.count, 0)}</div>
                   <div className="text-xs text-muted-foreground">attendees</div>
                 </div>
               </div>
@@ -309,135 +290,11 @@ const Index = () => {
             </CardContent>
           </Card>
 
-          {/* Attendees Management */}
-          <Card className="h-[400px] flex flex-col meeting-card glass-card">
-            <CardHeader className="flex-shrink-0 pb-3">
-              <CardTitle className="flex items-center gap-2 text-foreground">
-                <Users className="w-5 h-5 text-primary" />
-                Attendees
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1 flex flex-col overflow-hidden">
-              {/* Add Attendee Form */}
-              <div className="flex-shrink-0 space-y-3 mb-4">
-                <div className="grid grid-cols-1 gap-2">
-                  <div>
-                    <Label htmlFor="name" className="text-xs">
-                      Name
-                    </Label>
-                    <Input
-                      id="name"
-                      placeholder="Enter name"
-                      value={newAttendeeName}
-                      onChange={(e) => setNewAttendeeName(e.target.value)}
-                      onKeyPress={(e) => e.key === "Enter" && addAttendee()}
-                      className="h-8"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="role" className="text-xs">
-                      Role
-                    </Label>
-                    <Select value={newAttendeeRole} onValueChange={handleRoleChange}>
-                      <SelectTrigger className="h-8">
-                        <SelectValue placeholder="Select role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {Object.keys(roleRates).map((role) => (
-                          <SelectItem key={role} value={role}>
-                            {role} (${roleRates[role]}/hr)
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label htmlFor="rate" className="text-xs">
-                      Rate ($)
-                    </Label>
-                    <Input
-                      id="rate"
-                      type="number"
-                      placeholder="Auto-filled"
-                      value={newAttendeeRate}
-                      onChange={(e) => setNewAttendeeRate(e.target.value)}
-                      onKeyPress={(e) => e.key === "Enter" && addAttendee()}
-                      className="h-8"
-                    />
-                   </div>
-                   <div>
-                     <Label htmlFor="email" className="text-xs">
-                       Email (optional)
-                     </Label>
-                     <Input
-                       id="email"
-                       type="email"
-                       placeholder="attendee@example.com"
-                       value={newAttendeeEmail}
-                       onChange={(e) => setNewAttendeeEmail(e.target.value)}
-                       onKeyPress={(e) => e.key === "Enter" && addAttendee()}
-                       className="h-8"
-                     />
-                   </div>
-                 </div>
-                 
-                 {/* Bill by Minute Toggle */}
-                 <div className="flex items-center justify-between p-2 bg-secondary/20 rounded-lg">
-                   <div>
-                     <Label htmlFor="billByMinute" className="text-xs font-medium">
-                       Bill by Minute
-                     </Label>
-                     <p className="text-xs text-muted-foreground">Round up to next full minute</p>
-                   </div>
-                   <Switch
-                     id="billByMinute"
-                     checked={billByMinute}
-                     onCheckedChange={setBillByMinute}
-                   />
-                 </div>
-                 
-                 <Button onClick={addAttendee} className="w-full gap-2 gradient-bg hover:opacity-90 h-8" size="sm">
-                   <Plus className="w-4 h-4" />
-                   Add Attendee
-                 </Button>
-              </div>
-
-              {/* Attendees List - Flexible height with proper scrolling */}
-              <div className="flex-1 overflow-hidden">
-                <div className="h-full overflow-y-auto">
-                  {attendees.length === 0 ? (
-                    <div className="flex items-center justify-center h-32 text-muted-foreground">
-                      <div className="text-center">
-                        <Users className="w-8 h-8 mx-auto mb-3 opacity-50" />
-                        <p className="text-sm font-medium mb-1">No attendees yet</p>
-                        <p className="text-xs">Add people to start tracking meeting costs</p>
-                      </div>
-                    </div>
-                  ) : (
-                    attendees.map((attendee) => (
-                      <div key={attendee.id} className="p-2 border-b border-border last:border-b-0 hover:bg-accent/20 transition-colors">
-                        <div className="flex items-center justify-between">
-                          <div className="flex-1 min-w-0">
-                            <div className="font-medium text-sm truncate text-foreground">{attendee.name}</div>
-                            <div className="text-muted-foreground text-xs truncate">{attendee.role}</div>
-                            <div className="text-primary text-xs font-medium">${attendee.hourlyRate}/hr</div>
-                          </div>
-                          <Button
-                            onClick={() => removeAttendee(attendee.id)}
-                            size="sm"
-                            variant="ghost"
-                            className="h-6 w-6 p-0 text-muted-foreground hover:text-destructive flex-shrink-0"
-                          >
-                            <X className="w-3 h-3" />
-                          </Button>
-                        </div>
-                      </div>
-                    ))
-                  )}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          {/* New Role Quantity List */}
+          <FreeRoleQuantityList 
+            entries={roleEntries} 
+            onEntriesChange={setRoleEntries} 
+          />
         </div>
 
         
@@ -447,17 +304,33 @@ const Index = () => {
         <MilestoneTicker
           totalCost={totalCost} 
           resetTrigger={resetCounter}
-          attendees={attendees}
+          attendees={roleEntries.flatMap(entry => 
+            Array.from({ length: entry.count }, (_, i) => ({
+              id: `${entry.id}-${i}`,
+              name: entry.name || `${entry.role} ${i + 1}`,
+              role: entry.role,
+              hourlyRate: entry.rate,
+              email: entry.email
+            }))
+          )}
           onMilestoneAchieved={(milestone) => setAchievedMilestones(prev => [milestone, ...prev])}
         />
         
-        {time > 0 && (
+        {roleEntries.length > 0 && (
           <MeetingReportCard 
             totalCost={totalCost}
             duration={time}
-            attendeeCount={attendees.length}
+            attendeeCount={roleEntries.reduce((sum, entry) => sum + entry.count, 0)}
             milestones={achievedMilestones}
-            attendees={attendees}
+            attendees={roleEntries.flatMap(entry => 
+              Array.from({ length: entry.count }, (_, i) => ({
+                id: `${entry.id}-${i}`,
+                name: entry.name || `${entry.role} ${i + 1}`,
+                role: entry.role,
+                hourlyRate: entry.rate,
+                email: entry.email
+              }))
+            )}
           />
         )}
 
