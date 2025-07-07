@@ -1,15 +1,11 @@
 import { useState, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible'
-import { Badge } from '@/components/ui/badge'
-import { Users, Plus, X, ChevronDown, Loader2, Star } from 'lucide-react'
+import { Users, Plus, X, Loader2 } from 'lucide-react'
 import { useAuth } from '@/hooks/useAuth'
 import { useCurrency } from '@/hooks/useCurrency'
 import { useToast } from '@/hooks/use-toast'
 import { fetchRateForRole } from '@/integrations/gpt'
-import { supabase } from '@/integrations/supabase/client'
 
 export interface RoleQuantityEntry {
   id: string
@@ -30,7 +26,6 @@ interface FreeRoleQuantityListProps {
 export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuantityListProps) => {
   const [newCount, setNewCount] = useState(1)
   const [newRole, setNewRole] = useState('')
-  const [expandedAdvanced, setExpandedAdvanced] = useState<Record<string, boolean>>({})
   const { user, isPremium, profile } = useAuth()
   const { formatCurrency } = useCurrency()
   const { toast } = useToast()
@@ -112,49 +107,6 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
     )
   }
 
-  const saveFavoriteAttendee = async (entry: RoleQuantityEntry) => {
-    if (!user || !isPremium) {
-      toast({
-        title: "Pro feature required",
-        description: "Saving favorite attendees requires a Pro subscription",
-        variant: "destructive",
-      })
-      return
-    }
-
-    try {
-      const { error } = await supabase
-        .from('favorite_attendees')
-        .insert({
-          user_id: user.id,
-          name: entry.name || entry.role,
-          role: entry.role,
-          rate: entry.rate,
-          email: entry.email
-        })
-
-      if (error) throw error
-
-      toast({
-        title: "Favorite saved!",
-        description: `${entry.name || entry.role} has been saved to your favorites`,
-      })
-    } catch (error) {
-      console.error('Error saving favorite:', error)
-      toast({
-        title: "Error saving favorite",
-        description: "Failed to save attendee to favorites",
-        variant: "destructive",
-      })
-    }
-  }
-
-  const toggleAdvanced = (id: string) => {
-    setExpandedAdvanced(prev => ({
-      ...prev,
-      [id]: !prev[id]
-    }))
-  }
 
   const totalRate = entries.reduce((sum, entry) => sum + (entry.count * entry.rate), 0)
 
@@ -250,11 +202,16 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
                           <Button
                             size="sm"
                             variant="ghost"
-                            onClick={() => toggleAdvanced(entry.id)}
+                            onClick={() => {
+                              toast({
+                                title: "Coming soon",
+                                description: "Add saved members feature is coming soon",
+                              })
+                            }}
                             className="h-8 px-2 gap-1 text-xs hover:bg-accent"
                           >
-                            Advanced
-                            <ChevronDown className={`w-3 h-3 transition-transform ${expandedAdvanced[entry.id] ? 'rotate-180' : ''}`} />
+                            <Plus className="w-3 h-3" />
+                            Add Saved Members
                           </Button>
                         )}
                         <Button
@@ -269,66 +226,6 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
                     </div>
                   </div>
 
-                  {/* Advanced Panel (Pro Only) */}
-                  {isPremium && (
-                    <Collapsible open={expandedAdvanced[entry.id]}>
-                      <CollapsibleContent className="space-y-3">
-                        <div className="border-t border-border/50 pt-4 mt-3">
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Name</label>
-                              <Input
-                                value={entry.name || ''}
-                                onChange={(e) => updateEntry(entry.id, { name: e.target.value })}
-                                placeholder="John Doe"
-                                className="h-9 mt-2"
-                              />
-                            </div>
-                            <div>
-                              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Email</label>
-                              <Input
-                                type="email"
-                                value={entry.email || ''}
-                                onChange={(e) => updateEntry(entry.id, { email: e.target.value })}
-                                placeholder="john@company.com"
-                                className="h-9 mt-2"
-                              />
-                            </div>
-                            <div>
-                              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Role</label>
-                              <Input
-                                value={entry.role}
-                                onChange={(e) => updateEntry(entry.id, { role: e.target.value })}
-                                className="h-9 mt-2"
-                              />
-                            </div>
-                            <div>
-                              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Rate ($/hr)</label>
-                              <Input
-                                type="number"
-                                min="0"
-                                step="0.01"
-                                value={entry.rate}
-                                onChange={(e) => updateEntry(entry.id, { rate: parseFloat(e.target.value) || 0 })}
-                                className="h-9 mt-2"
-                              />
-                            </div>
-                          </div>
-                          <div className="flex justify-end mt-4">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => saveFavoriteAttendee(entry)}
-                              className="gap-2 text-xs hover:bg-accent"
-                            >
-                              <Star className="w-3 h-3" />
-                              Save as Favorite
-                            </Button>
-                          </div>
-                        </div>
-                      </CollapsibleContent>
-                    </Collapsible>
-                  )}
                 </div>
               </div>
             ))}
