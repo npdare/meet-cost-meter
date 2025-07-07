@@ -158,6 +158,74 @@ export const CalendarIntegration = () => {
     }
   }
 
+  const connectMicrosoftCalendar = async () => {
+    setConnecting(true)
+    try {
+      const redirectUri = `${window.location.origin}/`
+      
+      const { data, error } = await supabase.functions.invoke('calendar-oauth', {
+        body: {
+          provider: 'microsoft',
+          redirect_uri: redirectUri
+        }
+      })
+
+      if (error) throw error
+
+      if (data.authorization_url) {
+        // Store the current page URL to return after auth
+        localStorage.setItem('calendar_auth_return_url', window.location.href)
+        
+        // Use window.open with proper COOP handling
+        const popup = window.open(
+          data.authorization_url, 
+          'microsoft-auth', 
+          'width=500,height=600,scrollbars=yes,resizable=yes'
+        )
+        
+        if (!popup) {
+          // Fallback to full redirect if popup is blocked
+          window.location.href = data.authorization_url
+          return
+        }
+
+        // Monitor the popup for completion
+        const checkClosed = setInterval(() => {
+          try {
+            if (popup.closed) {
+              clearInterval(checkClosed)
+              // Refresh to check for new connections
+              setTimeout(() => {
+                fetchConnections()
+                fetchUpcomingEvents()
+              }, 1000)
+            }
+          } catch (e) {
+            // Handle COOP errors silently
+            clearInterval(checkClosed)
+          }
+        }, 1000)
+
+        // Cleanup after 5 minutes
+        setTimeout(() => {
+          clearInterval(checkClosed)
+          if (popup && !popup.closed) {
+            popup.close()
+          }
+        }, 300000)
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: "Failed to connect to Microsoft Calendar",
+        variant: "destructive",
+      })
+      console.error('Microsoft calendar connection error:', error)
+    } finally {
+      setConnecting(false)
+    }
+  }
+
   const handleOAuthCallback = async (code: string) => {
     try {
       const redirectUri = `${window.location.origin}/`
@@ -306,18 +374,33 @@ export const CalendarIntegration = () => {
               <p className="text-sm text-muted-foreground mb-4">
                 Connect your calendar to automatically detect meetings and track costs
               </p>
-              <Button 
-                onClick={connectGoogleCalendar} 
-                disabled={connecting}
-                className="gradient-bg"
-              >
-                {connecting ? (
-                  <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <ExternalLink className="w-4 h-4 mr-2" />
-                )}
-                Connect Google Calendar
-              </Button>
+              <div className="space-y-3">
+                <Button 
+                  onClick={connectGoogleCalendar} 
+                  disabled={connecting}
+                  className="gradient-bg w-full"
+                >
+                  {connecting ? (
+                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                  )}
+                  Connect Google Calendar
+                </Button>
+                <Button 
+                  onClick={connectMicrosoftCalendar} 
+                  disabled={connecting}
+                  variant="outline"
+                  className="w-full"
+                >
+                  {connecting ? (
+                    <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                  ) : (
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                  )}
+                  Connect Microsoft Outlook
+                </Button>
+              </div>
             </div>
           ) : (
             <div className="space-y-3">

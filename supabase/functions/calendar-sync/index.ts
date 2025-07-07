@@ -69,38 +69,73 @@ serve(async (req) => {
 
         // Check if token needs refresh
         if (connection.expires_at && new Date(connection.expires_at) <= new Date()) {
-          if (connection.refresh_token && connection.provider === 'google') {
-            // Refresh Google token
-            const refreshResponse = await fetch('https://oauth2.googleapis.com/token', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-              body: new URLSearchParams({
-                client_id: Deno.env.get('GOOGLE_OAUTH_CLIENT_ID')!,
-                client_secret: Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET')!,
-                refresh_token: connection.refresh_token,
-                grant_type: 'refresh_token',
-              }),
-            })
+          if (connection.refresh_token) {
+            if (connection.provider === 'google') {
+              // Refresh Google token
+              const refreshResponse = await fetch('https://oauth2.googleapis.com/token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                  client_id: Deno.env.get('GOOGLE_OAUTH_CLIENT_ID')!,
+                  client_secret: Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET')!,
+                  refresh_token: connection.refresh_token,
+                  grant_type: 'refresh_token',
+                }),
+              })
 
-            if (refreshResponse.ok) {
-              const refreshData = await refreshResponse.json()
-              accessToken = refreshData.access_token
+              if (refreshResponse.ok) {
+                const refreshData = await refreshResponse.json()
+                accessToken = refreshData.access_token
 
-              const newExpiresAt = refreshData.expires_in 
-                ? new Date(Date.now() + refreshData.expires_in * 1000).toISOString()
-                : null
+                const newExpiresAt = refreshData.expires_in 
+                  ? new Date(Date.now() + refreshData.expires_in * 1000).toISOString()
+                  : null
 
-              // Update the connection with new token
-              await supabaseClient
-                .from('calendar_connections')
-                .update({
-                  access_token: accessToken,
-                  expires_at: newExpiresAt
-                })
-                .eq('id', connection.id)
-            } else {
-              console.error('Failed to refresh token for connection:', connection.id)
-              continue
+                // Update the connection with new token
+                await supabaseClient
+                  .from('calendar_connections')
+                  .update({
+                    access_token: accessToken,
+                    expires_at: newExpiresAt
+                  })
+                  .eq('id', connection.id)
+              } else {
+                console.error('Failed to refresh Google token for connection:', connection.id)
+                continue
+              }
+            } else if (connection.provider === 'microsoft') {
+              // Refresh Microsoft token
+              const refreshResponse = await fetch('https://login.microsoftonline.com/common/oauth2/v2.0/token', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams({
+                  client_id: Deno.env.get('MICROSOFT_OAUTH_CLIENT_ID')!,
+                  client_secret: Deno.env.get('MICROSOFT_OAUTH_CLIENT_SECRET')!,
+                  refresh_token: connection.refresh_token,
+                  grant_type: 'refresh_token',
+                }),
+              })
+
+              if (refreshResponse.ok) {
+                const refreshData = await refreshResponse.json()
+                accessToken = refreshData.access_token
+
+                const newExpiresAt = refreshData.expires_in 
+                  ? new Date(Date.now() + refreshData.expires_in * 1000).toISOString()
+                  : null
+
+                // Update the connection with new token
+                await supabaseClient
+                  .from('calendar_connections')
+                  .update({
+                    access_token: accessToken,
+                    expires_at: newExpiresAt
+                  })
+                  .eq('id', connection.id)
+              } else {
+                console.error('Failed to refresh Microsoft token for connection:', connection.id)
+                continue
+              }
             }
           } else {
             console.error('Token expired and no refresh token available:', connection.id)
@@ -185,6 +220,95 @@ serve(async (req) => {
 
             if (eventsError) {
               console.error('Error syncing events for connection:', connection.id, eventsError)
+            }
+          }
+
+          syncResults.push({
+            connection_id: connection.id,
+            provider: connection.provider,
+            email: connection.provider_email,
+            events_synced: syncedEvents.length,
+            meetings_found: syncedEvents.filter(e => e.is_meeting).length
+          })
+        } else if (connection.provider === 'microsoft') {
+          // Sync Microsoft Graph Calendar events
+          const timeMin = new Date().toISOString()
+          const timeMax = new Date(Date.now() + days_ahead * 24 * 60 * 60 * 1000).toISOString()
+
+          const eventsResponse = await fetch(
+            `https://graph.microsoft.com/v1.0/me/events?` +
+            `$filter=start/dateTime ge '${timeMin}' and end/dateTime le '${timeMax}'&` +
+            `$orderby=start/dateTime&$top=250&` +
+            `$select=id,subject,body,start,end,location,attendees,webLink,onlineMeeting`,
+            {
+              headers: { 
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+              },
+            }
+          )
+
+          if (!eventsResponse.ok) {
+            throw new Error(`Microsoft Graph API error: ${await eventsResponse.text()}`)
+          }
+
+          const eventsData = await eventsResponse.json()
+          const events = eventsData.value || []
+
+          const syncedEvents = []
+
+          for (const event of events) {
+            if (!event.start?.dateTime || !event.end?.dateTime) {
+              continue // Skip all-day events
+            }
+
+            // Check if this is likely a meeting (has attendees or online meeting)
+            const attendees = event.attendees || []
+            const isMeeting = attendees.length > 1 || 
+                             event.onlineMeeting?.joinUrl ||
+                             event.location?.displayName?.includes('Teams') ||
+                             event.location?.displayName?.includes('Zoom')
+
+            // Estimate cost based on attendees and duration
+            let estimatedCost = 0
+            if (isMeeting && attendees.length > 0) {
+              const durationHours = (new Date(event.end.dateTime).getTime() - new Date(event.start.dateTime).getTime()) / (1000 * 60 * 60)
+              // Rough estimate: $75/hour average per attendee
+              estimatedCost = Math.round(attendees.length * 75 * durationHours * 100) / 100
+            }
+
+            const eventData = {
+              user_id: user.id,
+              calendar_connection_id: connection.id,
+              provider_event_id: event.id,
+              title: event.subject || 'Untitled Event',
+              description: event.body?.content || null,
+              start_time: event.start.dateTime,
+              end_time: event.end.dateTime,
+              location: event.location?.displayName || null,
+              attendees: attendees.map((attendee: any) => ({
+                email: attendee.emailAddress?.address,
+                name: attendee.emailAddress?.name || attendee.emailAddress?.address,
+                status: attendee.status?.response
+              })),
+              meeting_url: event.onlineMeeting?.joinUrl || event.webLink || null,
+              is_meeting: isMeeting,
+              estimated_cost: estimatedCost > 0 ? estimatedCost : null,
+            }
+
+            syncedEvents.push(eventData)
+          }
+
+          // Upsert events
+          if (syncedEvents.length > 0) {
+            const { error: eventsError } = await supabaseClient
+              .from('calendar_events')
+              .upsert(syncedEvents, {
+                onConflict: 'calendar_connection_id,provider_event_id'
+              })
+
+            if (eventsError) {
+              console.error('Error syncing Microsoft events for connection:', connection.id, eventsError)
             }
           }
 

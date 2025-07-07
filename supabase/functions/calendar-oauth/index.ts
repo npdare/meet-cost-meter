@@ -134,6 +134,99 @@ serve(async (req) => {
           { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         )
       }
+    } else if (provider === 'microsoft') {
+      if (!code) {
+        // Step 1: Return Microsoft authorization URL
+        const clientId = Deno.env.get('MICROSOFT_OAUTH_CLIENT_ID')
+        const scopes = [
+          'https://graph.microsoft.com/Calendars.Read',
+          'https://graph.microsoft.com/User.Read'
+        ].join(' ')
+
+        const authUrl = new URL('https://login.microsoftonline.com/common/oauth2/v2.0/authorize')
+        authUrl.searchParams.set('client_id', clientId!)
+        authUrl.searchParams.set('redirect_uri', redirect_uri)
+        authUrl.searchParams.set('response_type', 'code')
+        authUrl.searchParams.set('scope', scopes)
+        authUrl.searchParams.set('response_mode', 'query')
+        authUrl.searchParams.set('state', user.id)
+
+        return new Response(
+          JSON.stringify({ authorization_url: authUrl.toString() }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      } else {
+        // Step 2: Exchange code for tokens
+        const clientId = Deno.env.get('MICROSOFT_OAUTH_CLIENT_ID')
+        const clientSecret = Deno.env.get('MICROSOFT_OAUTH_CLIENT_SECRET')
+
+        const tokenResponse = await fetch('https://login.microsoftonline.com/common/oauth2/v2.0/token', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+            client_id: clientId!,
+            client_secret: clientSecret!,
+            code,
+            grant_type: 'authorization_code',
+            redirect_uri,
+          }),
+        })
+
+        if (!tokenResponse.ok) {
+          throw new Error(`Microsoft token exchange failed: ${await tokenResponse.text()}`)
+        }
+
+        const tokenData = await tokenResponse.json()
+
+        // Get user info from Microsoft Graph
+        const userInfoResponse = await fetch('https://graph.microsoft.com/v1.0/me', {
+          headers: { Authorization: `Bearer ${tokenData.access_token}` },
+        })
+
+        const userInfo = await userInfoResponse.json()
+
+        // Calculate expiry time
+        const expiresAt = tokenData.expires_in 
+          ? new Date(Date.now() + tokenData.expires_in * 1000).toISOString()
+          : null
+
+        // Store calendar connection
+        const { data: connection, error: connectionError } = await supabaseClient
+          .from('calendar_connections')
+          .upsert({
+            user_id: user.id,
+            provider: 'microsoft',
+            provider_account_id: userInfo.id,
+            provider_email: userInfo.mail || userInfo.userPrincipalName,
+            access_token: tokenData.access_token,
+            refresh_token: tokenData.refresh_token,
+            expires_at: expiresAt,
+            scope: tokenData.scope,
+            is_active: true,
+          }, {
+            onConflict: 'user_id,provider,provider_account_id'
+          })
+          .select()
+          .single()
+
+        if (connectionError) {
+          console.error('Error storing Microsoft calendar connection:', connectionError)
+          throw new Error('Failed to store Microsoft calendar connection')
+        }
+
+        return new Response(
+          JSON.stringify({ 
+            success: true, 
+            connection: {
+              id: connection.id,
+              provider: connection.provider,
+              email: connection.provider_email,
+              connected_at: connection.created_at
+            }
+          }),
+          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        )
+      }
     }
 
     throw new Error('Unsupported provider')
