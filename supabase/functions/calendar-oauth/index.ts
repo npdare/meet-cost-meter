@@ -1,34 +1,9 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
-import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
-
-// Get allowed origins from environment or use secure defaults
-const getAllowedOrigins = () => {
-  const prodOrigin = 'https://app.myapp.com' // Replace with your actual domain
-  const devOrigin = 'http://localhost:3000'
-  return [prodOrigin, devOrigin, 'https://qubtwlzumrbeltbrcvgn.supabase.co']
-}
-
-const getCorsHeaders = (origin?: string) => {
-  const allowedOrigins = getAllowedOrigins()
-  const allowedOrigin = origin && allowedOrigins.includes(origin) ? origin : allowedOrigins[0]
-  
-  return {
-    'Access-Control-Allow-Origin': allowedOrigin,
-    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'X-Content-Type-Options': 'nosniff',
-    'X-Frame-Options': 'DENY',
-    'X-XSS-Protection': '1; mode=block',
-    'Referrer-Policy': 'strict-origin-when-cross-origin'
-  }
-}
-
-interface OAuthRequest {
-  provider: 'google' | 'microsoft'
-  code?: string
-  state?: string
-  redirect_uri: string
-}
+import { getCorsHeaders, sanitizeError } from './utils.ts'
+import { validateUser } from './auth.ts'
+import { handleGoogleAuth } from './google-oauth.ts'
+import { handleMicrosoftAuth } from './microsoft-oauth.ts'
+import type { OAuthRequest } from './types.ts'
 
 serve(async (req) => {
   const origin = req.headers.get('origin')
@@ -39,222 +14,13 @@ serve(async (req) => {
   }
 
   try {
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
-    )
-
-    // Get the user from the request
-    const authHeader = req.headers.get('Authorization')
-    if (!authHeader) {
-      throw new Error('No authorization header')
-    }
-
-    const token = authHeader.replace('Bearer ', '')
-    const { data: { user }, error: userError } = await supabaseClient.auth.getUser(token)
-    
-    if (userError || !user) {
-      throw new Error('Invalid user token')
-    }
-
+    const { user, supabaseClient } = await validateUser(req.headers.get('Authorization'))
     const { provider, code, redirect_uri }: OAuthRequest = await req.json()
 
     if (provider === 'google') {
-      if (!code) {
-        // Step 1: Return authorization URL
-        const clientId = Deno.env.get('GOOGLE_OAUTH_CLIENT_ID')
-        const scopes = [
-          'https://www.googleapis.com/auth/calendar.readonly',
-          'https://www.googleapis.com/auth/userinfo.email',
-          'https://www.googleapis.com/auth/userinfo.profile'
-        ].join(' ')
-
-        const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth')
-        authUrl.searchParams.set('client_id', clientId!)
-        authUrl.searchParams.set('redirect_uri', redirect_uri)
-        authUrl.searchParams.set('response_type', 'code')
-        authUrl.searchParams.set('scope', scopes)
-        authUrl.searchParams.set('access_type', 'offline')
-        authUrl.searchParams.set('prompt', 'consent')
-        authUrl.searchParams.set('state', user.id)
-
-        return new Response(
-          JSON.stringify({ authorization_url: authUrl.toString() }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
-      } else {
-        // Step 2: Exchange code for tokens
-        const clientId = Deno.env.get('GOOGLE_OAUTH_CLIENT_ID')
-        const clientSecret = Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET')
-
-        const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({
-            client_id: clientId!,
-            client_secret: clientSecret!,
-            code,
-            grant_type: 'authorization_code',
-            redirect_uri,
-          }),
-        })
-
-        if (!tokenResponse.ok) {
-          throw new Error(`Token exchange failed: ${await tokenResponse.text()}`)
-        }
-
-        const tokenData = await tokenResponse.json()
-
-        // Get user info from Google
-        const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
-          headers: { Authorization: `Bearer ${tokenData.access_token}` },
-        })
-
-        const userInfo = await userInfoResponse.json()
-
-        // Calculate expiry time
-        const expiresAt = tokenData.expires_in 
-          ? new Date(Date.now() + tokenData.expires_in * 1000).toISOString()
-          : null
-
-        // Store calendar connection
-        const { data: connection, error: connectionError } = await supabaseClient
-          .from('calendar_connections')
-          .upsert({
-            user_id: user.id,
-            provider: 'google',
-            provider_account_id: userInfo.id,
-            provider_email: userInfo.email,
-            access_token: tokenData.access_token,
-            refresh_token: tokenData.refresh_token,
-            expires_at: expiresAt,
-            scope: tokenData.scope,
-            is_active: true,
-          }, {
-            onConflict: 'user_id,provider,provider_account_id'
-          })
-          .select()
-          .single()
-
-        if (connectionError) {
-          console.error('Calendar connection error:', { 
-            error: connectionError.message,
-            user_id: user.id,
-            provider: 'google'
-          })
-          throw new Error('Authentication failed. Please try again.')
-        }
-
-        return new Response(
-          JSON.stringify({ 
-            success: true, 
-            connection: {
-              id: connection.id,
-              provider: connection.provider,
-              email: connection.provider_email,
-              connected_at: connection.created_at
-            }
-          }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
-      }
+      return await handleGoogleAuth(code, redirect_uri, user.id, supabaseClient, corsHeaders)
     } else if (provider === 'microsoft') {
-      if (!code) {
-        // Step 1: Return Microsoft authorization URL
-        const clientId = Deno.env.get('MICROSOFT_OAUTH_CLIENT_ID')
-        const scopes = [
-          'https://graph.microsoft.com/Calendars.Read',
-          'https://graph.microsoft.com/User.Read'
-        ].join(' ')
-
-        const authUrl = new URL('https://login.microsoftonline.com/common/oauth2/v2.0/authorize')
-        authUrl.searchParams.set('client_id', clientId!)
-        authUrl.searchParams.set('redirect_uri', redirect_uri)
-        authUrl.searchParams.set('response_type', 'code')
-        authUrl.searchParams.set('scope', scopes)
-        authUrl.searchParams.set('response_mode', 'query')
-        authUrl.searchParams.set('state', user.id)
-
-        return new Response(
-          JSON.stringify({ authorization_url: authUrl.toString() }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
-      } else {
-        // Step 2: Exchange code for tokens
-        const clientId = Deno.env.get('MICROSOFT_OAUTH_CLIENT_ID')
-        const clientSecret = Deno.env.get('MICROSOFT_OAUTH_CLIENT_SECRET')
-
-        const tokenResponse = await fetch('https://login.microsoftonline.com/common/oauth2/v2.0/token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({
-            client_id: clientId!,
-            client_secret: clientSecret!,
-            code,
-            grant_type: 'authorization_code',
-            redirect_uri,
-          }),
-        })
-
-        if (!tokenResponse.ok) {
-          throw new Error(`Microsoft token exchange failed: ${await tokenResponse.text()}`)
-        }
-
-        const tokenData = await tokenResponse.json()
-
-        // Get user info from Microsoft Graph
-        const userInfoResponse = await fetch('https://graph.microsoft.com/v1.0/me', {
-          headers: { Authorization: `Bearer ${tokenData.access_token}` },
-        })
-
-        const userInfo = await userInfoResponse.json()
-
-        // Calculate expiry time
-        const expiresAt = tokenData.expires_in 
-          ? new Date(Date.now() + tokenData.expires_in * 1000).toISOString()
-          : null
-
-        // Store calendar connection
-        const { data: connection, error: connectionError } = await supabaseClient
-          .from('calendar_connections')
-          .upsert({
-            user_id: user.id,
-            provider: 'microsoft',
-            provider_account_id: userInfo.id,
-            provider_email: userInfo.mail || userInfo.userPrincipalName,
-            access_token: tokenData.access_token,
-            refresh_token: tokenData.refresh_token,
-            expires_at: expiresAt,
-            scope: tokenData.scope,
-            is_active: true,
-          }, {
-            onConflict: 'user_id,provider,provider_account_id'
-          })
-          .select()
-          .single()
-
-        if (connectionError) {
-          console.error('Microsoft connection error:', { 
-            error: connectionError.message,
-            user_id: user.id,
-            provider: 'microsoft'
-          })
-          throw new Error('Authentication failed. Please try again.')
-        }
-
-        return new Response(
-          JSON.stringify({ 
-            success: true, 
-            connection: {
-              id: connection.id,
-              provider: connection.provider,
-              email: connection.provider_email,
-              connected_at: connection.created_at
-            }
-          }),
-          { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        )
-      }
+      return await handleMicrosoftAuth(code, redirect_uri, user.id, supabaseClient, corsHeaders)
     }
 
     throw new Error('Unsupported provider')
@@ -265,10 +31,7 @@ serve(async (req) => {
       timestamp: new Date().toISOString()
     })
     
-    // Sanitize error message for client
-    const clientError = error.message.includes('authentication') || error.message.includes('Authorization') 
-      ? error.message 
-      : 'An unexpected error occurred. Please try again.'
+    const clientError = sanitizeError(error)
     
     return new Response(
       JSON.stringify({ error: clientError }),
