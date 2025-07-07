@@ -158,7 +158,7 @@ const Index = () => {
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2">
               <Timer className="w-6 h-6 text-primary" />
-              <span className="font-poppins font-bold text-xl text-foreground">Could Be An Email</span>
+              <span className="font-mono font-light text-xl text-foreground tracking-wider">could_be_an_email</span>
             </div>
           </div>
               <div className="flex items-center gap-3">
@@ -186,48 +186,11 @@ const Index = () => {
       </header>
       
       <div className="max-w-6xl mx-auto p-4 space-y-6">
-        {/* Hero Section - Logo Style Examples */}
-        <div className="text-center space-y-8 animate-fade-in pt-6">
-          {/* Option 1: Modern Tech Logo Style */}
-          <div className="space-y-3">
-            <h2 className="text-sm font-medium text-muted-foreground mb-2">Modern Tech Style</h2>
-            <h1 className="text-4xl font-poppins font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500 bg-clip-text text-transparent leading-tight py-2 hover:scale-105 transition-transform duration-300 animate-pulse-glow">
-              Could Be An Email
-            </h1>
-          </div>
-
-          {/* Option 2: Bold Corporate Style */}
-          <div className="space-y-3">
-            <h2 className="text-sm font-medium text-muted-foreground mb-2">Bold Corporate Style</h2>
-            <h1 className="text-4xl font-poppins font-black text-foreground leading-tight py-2 drop-shadow-lg hover:drop-shadow-xl transition-all duration-300" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.3)'}}>
-              COULD BE AN EMAIL
-            </h1>
-          </div>
-
-          {/* Option 3: Playful Startup Style */}
-          <div className="space-y-3">
-            <h2 className="text-sm font-medium text-muted-foreground mb-2">Playful Startup Style</h2>
-            <h1 className="text-4xl font-poppins font-bold bg-gradient-to-r from-orange-400 via-red-500 to-pink-500 bg-clip-text text-transparent leading-tight py-2 hover:scale-110 hover:rotate-1 transition-all duration-300 animate-bounce">
-              Could Be An Email! 🚀
-            </h1>
-          </div>
-
-          {/* Option 4: Minimalist Professional */}
-          <div className="space-y-3">
-            <h2 className="text-sm font-medium text-muted-foreground mb-2">Minimalist Professional</h2>
-            <h1 className="text-4xl font-mono font-light text-foreground leading-tight py-2 tracking-wider border-b-2 border-primary hover:border-accent transition-colors duration-300">
-              could_be_an_email
-            </h1>
-          </div>
-
-          {/* Current Original */}
-          <div className="space-y-3">
-            <h2 className="text-sm font-medium text-muted-foreground mb-2">Current Style</h2>
-            <h1 className="text-4xl font-poppins font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent leading-tight py-2">
-              Could Be An Email
-            </h1>
-          </div>
-          
+        {/* Hero Section */}
+        <div className="text-center space-y-3 animate-fade-in pt-6">
+          <h1 className="text-4xl font-mono font-light text-foreground leading-tight py-2 tracking-wider border-b-2 border-primary hover:border-accent transition-colors duration-300">
+            could_be_an_email
+          </h1>
           <p className="text-muted-foreground text-lg">Track meeting costs and discover when your meeting could have been an email</p>
         </div>
 
