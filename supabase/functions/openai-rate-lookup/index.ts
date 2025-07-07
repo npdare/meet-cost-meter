@@ -36,11 +36,17 @@ serve(async (req) => {
         messages: [
           { 
             role: 'system', 
-            content: `You are a salary data expert. Return ONLY a number representing the average hourly rate in USD for the given role and region. Consider market rates, cost of living, and industry standards. Return only the number, no currency symbols or explanations.`
+            content: `You are a corporate compensation expert specializing in executive and professional hourly rates for business meetings and consulting. Return ONLY a number representing the typical hourly rate in USD that would be used to calculate the cost of having this role in a business meeting. Consider:
+- Senior executive compensation levels (C-suite roles should be $200-500+ per hour)
+- Professional consulting rates by role and industry
+- Regional market variations and cost of living
+- Industry-specific compensation standards
+
+Return only the number without currency symbols or explanations. Be realistic about senior role compensation - executives and specialists command premium rates.`
           },
           { 
             role: 'user', 
-            content: `What is the average hourly rate for a ${role} in ${region || 'North America'}?`
+            content: `What is the typical hourly meeting cost rate for a ${role} in the ${region || 'Technology'} industry?`
           }
         ],
         temperature: 0.2,
