@@ -359,6 +359,7 @@ const Index = () => {
                       onKeyPress={(e) => e.key === "Enter" && addAttendee()}
                       className="h-8"
                     />
+                   </div>
                    <div>
                      <Label htmlFor="email" className="text-xs">
                        Email (optional)
