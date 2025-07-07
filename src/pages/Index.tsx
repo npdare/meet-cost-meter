@@ -215,22 +215,22 @@ const Index = () => {
                   </div>
                   <div className="flex justify-center gap-4">
                     {!isRunning ? (
-                      <Button onClick={startTimer} size="lg" className="gap-2 gradient-bg hover:opacity-90 transition-all duration-300 shadow-lg">
+                      <Button onClick={startTimer} size="lg" className="gap-2 gradient-bg hover:opacity-90 transition-all duration-300 shadow-lg w-40">
                         <Play className="w-4 h-4" />
                         Start Meeting
                       </Button>
                     ) : (
-                      <Button onClick={pauseTimer} size="lg" className="gap-2 bg-warning text-warning-foreground hover:bg-warning/90 transition-all duration-300">
+                      <Button onClick={pauseTimer} size="lg" className="gap-2 bg-warning text-warning-foreground hover:bg-warning/90 transition-all duration-300 w-40">
                         <Pause className="w-4 h-4" />
                         Pause
                       </Button>
                     )}
-                    <Button onClick={resetTimer} size="lg" variant="outline" className="gap-2 border-2 hover:bg-accent/50">
+                    <Button onClick={resetTimer} size="lg" variant="outline" className="gap-2 border-2 hover:bg-accent/50 w-24">
                       <Square className="w-4 h-4" />
                       Reset
                     </Button>
                     {time > 0 && isPremium && (
-                      <Button onClick={saveMeetingData} size="lg" variant="outline" className="gap-2 border-2 hover:bg-accent/50">
+                      <Button onClick={saveMeetingData} size="lg" variant="outline" className="gap-2 border-2 hover:bg-accent/50 w-36">
                         Save Meeting
                       </Button>
                     )}
