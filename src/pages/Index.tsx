@@ -229,11 +229,13 @@ const Index = () => {
                       <Square className="w-4 h-4" />
                       Reset
                     </Button>
-                    {time > 0 && isPremium && (
-                      <Button onClick={saveMeetingData} size="lg" variant="outline" className="gap-2 border-2 hover:bg-accent/50 w-36">
-                        Save Meeting
-                      </Button>
-                    )}
+                    <div className="w-36">
+                      {time > 0 && isPremium && (
+                        <Button onClick={saveMeetingData} size="lg" variant="outline" className="gap-2 border-2 hover:bg-accent/50 w-full">
+                          Save Meeting
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </Card>
