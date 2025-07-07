@@ -191,7 +191,7 @@ const Index = () => {
           <h1 className="text-4xl font-mono font-light text-foreground leading-tight py-2 tracking-wider border-b-2 border-primary hover:border-accent transition-colors duration-300">
             could_be_an_email
           </h1>
-          <p className="text-muted-foreground text-lg">Track meeting costs and discover when your meeting could have been an email</p>
+          <p className="text-muted-foreground text-lg">See your meeting in minutes—and dollars.</p>
         </div>
 
         {/* Top Banner Ad */}
