@@ -204,7 +204,7 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
       </div>
 
       {/* Scrollable Entries Area */}
-      <div className="flex-1 min-h-0">
+      <div className="flex-1 min-h-0 max-h-64 overflow-hidden">
         {entries.length > 0 ? (
           <div className="h-full flex flex-col">
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
@@ -214,53 +214,55 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
               </div>
             </div>
             
-            <ScrollArea className="flex-1 overflow-auto">
-              <div className="space-y-2 pr-3">
-                {entries.map((entry) => (
-                  <div key={entry.id} className="bg-card/30 backdrop-blur-sm border border-border/50 rounded-lg p-3">
-                    <div className="flex items-center gap-3">
-                      <div className="flex-shrink-0">
-                        <Input
-                          type="number"
-                          min="1"
-                          value={entry.count}
-                          onChange={(e) => updateEntry(entry.id, { count: Math.max(1, parseInt(e.target.value) || 1) })}
-                          className="h-8 w-14 text-center font-medium"
-                        />
-                      </div>
-                      <div className="flex-1">
-                        <Input
-                          value={entry.role}
-                          onChange={(e) => updateEntry(entry.id, { role: e.target.value })}
-                          onBlur={(e) => handleRoleBlur(entry.id, e.target.value)}
-                          className="h-8 font-medium"
-                        />
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {entry.isLoading ? (
-                          <div className="flex items-center gap-1 px-2 py-1 bg-muted rounded-md">
-                            <Loader2 className="w-3 h-3 animate-spin" />
-                            <span className="text-xs text-muted-foreground">Loading...</span>
-                          </div>
-                        ) : (
-                          <div className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-xs font-mono font-medium">
-                            {formatCurrency(entry.rate)}/hr × {entry.count}
-                          </div>
-                        )}
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => removeEntry(entry.id)}
-                          className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                        >
-                          <X className="w-3 h-3" />
-                        </Button>
+            <div className="flex-1 min-h-0">
+              <ScrollArea className="h-full">
+                <div className="space-y-2 pr-3">
+                  {entries.map((entry) => (
+                    <div key={entry.id} className="bg-card/30 backdrop-blur-sm border border-border/50 rounded-lg p-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex-shrink-0">
+                          <Input
+                            type="number"
+                            min="1"
+                            value={entry.count}
+                            onChange={(e) => updateEntry(entry.id, { count: Math.max(1, parseInt(e.target.value) || 1) })}
+                            className="h-8 w-14 text-center font-medium"
+                          />
+                        </div>
+                        <div className="flex-1">
+                          <Input
+                            value={entry.role}
+                            onChange={(e) => updateEntry(entry.id, { role: e.target.value })}
+                            onBlur={(e) => handleRoleBlur(entry.id, e.target.value)}
+                            className="h-8 font-medium"
+                          />
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {entry.isLoading ? (
+                            <div className="flex items-center gap-1 px-2 py-1 bg-muted rounded-md">
+                              <Loader2 className="w-3 h-3 animate-spin" />
+                              <span className="text-xs text-muted-foreground">Loading...</span>
+                            </div>
+                          ) : (
+                            <div className="bg-secondary text-secondary-foreground px-2 py-1 rounded-md text-xs font-mono font-medium">
+                              {formatCurrency(entry.rate)}/hr × {entry.count}
+                            </div>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            onClick={() => removeEntry(entry.id)}
+                            className="h-7 w-7 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                          >
+                            <X className="w-3 h-3" />
+                          </Button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            </ScrollArea>
+                  ))}
+                </div>
+              </ScrollArea>
+            </div>
           </div>
         ) : (
           <div className="h-full flex items-center justify-center">
