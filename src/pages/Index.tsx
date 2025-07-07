@@ -184,7 +184,8 @@ const Index = () => {
         </div>
       </header>
       
-      <div className="max-w-4xl mx-auto p-4 space-y-8">
+      <div className="max-w-6xl mx-auto p-4 space-y-6">
+        {/* Hero Section */}
         <div className="text-center space-y-3 animate-fade-in pt-6">
           <h1 className="text-4xl font-poppins font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent leading-tight py-2">
             Could Be An Email
@@ -195,89 +196,93 @@ const Index = () => {
         {/* Top Banner Ad */}
         <AdBanner adSlot="1234567890" adFormat="horizontal" className="text-center" />
 
-        {/* Timer Display */}
-        <Card className="meeting-card bg-card/80 backdrop-blur-sm border">
-          <CardContent className="pt-8 pb-8">
-            <div className="space-y-6">
-              <div className="flex items-center justify-center gap-2 text-muted-foreground">
-                <Clock className="w-5 h-5" />
-                <span className="text-sm font-medium">Meeting Duration</span>
-              </div>
-              <div className="text-center">
-                <div className={`text-6xl font-mono font-bold tracking-wider text-foreground ${isRunning ? 'animate-pulse-glow' : ''}`}>
-                  {formatTime(time)}
-                </div>
-              </div>
-              <div className="flex justify-center gap-4">
-                {!isRunning ? (
-                  <Button onClick={startTimer} size="lg" className="gap-2 gradient-bg hover:opacity-90 transition-all duration-300 shadow-lg">
-                    <Play className="w-4 h-4" />
-                    Start Meeting
-                  </Button>
-                ) : (
-                  <Button onClick={pauseTimer} size="lg" className="gap-2 bg-warning text-warning-foreground hover:bg-warning/90 transition-all duration-300">
-                    <Pause className="w-4 h-4" />
-                    Pause
-                  </Button>
-                )}
-                <Button onClick={resetTimer} size="lg" variant="outline" className="gap-2 border-2 hover:bg-accent/50">
-                  <Square className="w-4 h-4" />
-                  Reset
-                </Button>
-                {time > 0 && isPremium && (
-                  <Button onClick={saveMeetingData} size="lg" variant="outline" className="gap-2 border-2 hover:bg-accent/50">
-                    Save Meeting
-                  </Button>
-                )}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          {/* Cost Display */}
-          <Card className="h-[400px] flex flex-col meeting-card glass-card">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-foreground">
-                <TrendingUp className="w-5 h-5 text-primary" />
-                Meeting Cost
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="flex-1 flex flex-col overflow-hidden">
-              <div className="text-center space-y-3 mb-4">
-                <CostTicker cost={totalCost} isRunning={isRunning} />
-                <div className="text-sm text-muted-foreground">
-                  {roleEntries.reduce((sum, entry) => sum + entry.count, 0)} attendee{roleEntries.reduce((sum, entry) => sum + entry.count, 0) !== 1 ? "s" : ""} • $
-                  {roleEntries.reduce((sum, entry) => sum + (entry.count * entry.rate), 0).toFixed(2)}/hour
-                  {billByMinute && <span className="text-xs"> • Billed by minute</span>}
-                </div>
-              </div>
-              
-              {/* Enhanced Cost Breakdown */}
-              <div className="grid grid-cols-3 gap-2 mb-4">
-                <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
-                  <div className="text-xs font-medium text-foreground">${roleEntries.reduce((sum, entry) => sum + (entry.count * entry.rate), 0).toFixed(0)}</div>
-                  <div className="text-xs text-muted-foreground">per hour</div>
-                </div>
-                <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
-                  <div className="text-xs font-medium text-foreground">${(totalCost / Math.max(time / 60, 1)).toFixed(2)}</div>
-                  <div className="text-xs text-muted-foreground">per minute</div>
-                </div>
-                <div className="bg-secondary/50 p-2 rounded-lg text-center backdrop-blur-sm">
-                  <div className="text-xs font-medium text-foreground">{roleEntries.reduce((sum, entry) => sum + entry.count, 0)}</div>
-                  <div className="text-xs text-muted-foreground">attendees</div>
-                </div>
-              </div>
-              
-              {/* Milestones Achieved - SCROLLABLE */}
-              {achievedMilestones.length > 0 && (
-                <div className="flex-1 overflow-hidden">
-                  <div className="border-t border-border pt-3">
-                    <div className="flex items-center gap-2 mb-2">
-                      <div className="w-2 h-2 bg-warning rounded-full animate-pulse"></div>
-                      <span className="text-xs font-medium text-foreground">Cost Milestones</span>
+        {/* Main Grid Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-[3fr_2fr] gap-8">
+          {/* Left Column - Timer & Cost Summary */}
+          <div className="space-y-6">
+            {/* Sticky Timer Header */}
+            <div className="sticky top-4 z-10">
+              <Card className="p-6 bg-card/95 backdrop-blur-sm border shadow-lg">
+                <div className="space-y-6">
+                  <div className="flex items-center justify-center gap-2 text-muted-foreground">
+                    <Clock className="w-5 h-5" />
+                    <span className="text-sm font-medium">Meeting Duration</span>
+                  </div>
+                  <div className="text-center">
+                    <div className={`text-6xl font-mono font-bold tracking-wider text-foreground ${isRunning ? 'animate-pulse-glow' : ''}`}>
+                      {formatTime(time)}
                     </div>
-                    <div className="max-h-24 overflow-y-auto">
+                  </div>
+                  <div className="flex justify-center gap-4">
+                    {!isRunning ? (
+                      <Button onClick={startTimer} size="lg" className="gap-2 gradient-bg hover:opacity-90 transition-all duration-300 shadow-lg">
+                        <Play className="w-4 h-4" />
+                        Start Meeting
+                      </Button>
+                    ) : (
+                      <Button onClick={pauseTimer} size="lg" className="gap-2 bg-warning text-warning-foreground hover:bg-warning/90 transition-all duration-300">
+                        <Pause className="w-4 h-4" />
+                        Pause
+                      </Button>
+                    )}
+                    <Button onClick={resetTimer} size="lg" variant="outline" className="gap-2 border-2 hover:bg-accent/50">
+                      <Square className="w-4 h-4" />
+                      Reset
+                    </Button>
+                    {time > 0 && isPremium && (
+                      <Button onClick={saveMeetingData} size="lg" variant="outline" className="gap-2 border-2 hover:bg-accent/50">
+                        Save Meeting
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </Card>
+            </div>
+
+            {/* Cost Summary Card */}
+            <Card className="p-6 bg-card/80 backdrop-blur-sm border shadow-sm">
+              <CardHeader className="p-0 pb-4">
+                <CardTitle className="flex items-center gap-2 text-foreground">
+                  <TrendingUp className="w-5 h-5 text-primary" />
+                  Meeting Cost
+                </CardTitle>
+              </CardHeader>
+              <div className="space-y-6">
+                <div className="text-center space-y-3">
+                  <div className="text-3xl font-bold text-foreground">
+                    <CostTicker cost={totalCost} isRunning={isRunning} />
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {roleEntries.reduce((sum, entry) => sum + entry.count, 0)} attendee{roleEntries.reduce((sum, entry) => sum + entry.count, 0) !== 1 ? "s" : ""} • $
+                    {roleEntries.reduce((sum, entry) => sum + (entry.count * entry.rate), 0).toFixed(2)}/hour
+                    {billByMinute && <span className="text-xs"> • Billed by minute</span>}
+                  </div>
+                </div>
+                
+                {/* Cost Breakdown */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="bg-secondary/50 p-3 rounded-lg text-center backdrop-blur-sm">
+                    <div className="text-sm font-semibold text-foreground">${roleEntries.reduce((sum, entry) => sum + (entry.count * entry.rate), 0).toFixed(0)}</div>
+                    <div className="text-xs text-muted-foreground">per hour</div>
+                  </div>
+                  <div className="bg-secondary/50 p-3 rounded-lg text-center backdrop-blur-sm">
+                    <div className="text-sm font-semibold text-foreground">${(totalCost / Math.max(time / 60, 1)).toFixed(2)}</div>
+                    <div className="text-xs text-muted-foreground">per minute</div>
+                  </div>
+                  <div className="bg-secondary/50 p-3 rounded-lg text-center backdrop-blur-sm">
+                    <div className="text-sm font-semibold text-foreground">{roleEntries.reduce((sum, entry) => sum + entry.count, 0)}</div>
+                    <div className="text-xs text-muted-foreground">attendees</div>
+                  </div>
+                </div>
+                
+                {/* Milestones Section */}
+                {achievedMilestones.length > 0 && (
+                  <div className="border-t border-border pt-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <div className="w-2 h-2 bg-warning rounded-full animate-pulse"></div>
+                      <span className="text-sm font-medium text-foreground">Cost Milestones</span>
+                    </div>
+                    <div className="max-h-32 overflow-y-auto">
                       {achievedMilestones.map((milestone, index) => (
                         <div key={index} className="p-2 border-b border-border last:border-b-0">
                           <div className="text-sm text-foreground">{milestone}</div>
@@ -285,16 +290,20 @@ const Index = () => {
                       ))}
                     </div>
                   </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+                )}
+              </div>
+            </Card>
+          </div>
 
-          {/* New Role Quantity List */}
-          <FreeRoleQuantityList 
-            entries={roleEntries} 
-            onEntriesChange={setRoleEntries} 
-          />
+          {/* Right Column - Attendees Management */}
+          <div className="space-y-6">
+            <Card className="p-6 bg-card/80 backdrop-blur-sm border shadow-sm">
+              <FreeRoleQuantityList 
+                entries={roleEntries} 
+                onEntriesChange={setRoleEntries} 
+              />
+            </Card>
+          </div>
         </div>
 
         
