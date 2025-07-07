@@ -300,11 +300,13 @@ const Index = () => {
 
           {/* Right Column - Attendees Management */}
           <div className="space-y-6">
-            <Card className="h-96 p-6 bg-card/80 backdrop-blur-sm border shadow-sm flex flex-col">
-              <FreeRoleQuantityList 
-                entries={roleEntries} 
-                onEntriesChange={setRoleEntries} 
-              />
+            <Card className="h-96 bg-card/80 backdrop-blur-sm border shadow-sm">
+              <div className="h-full p-6">
+                <FreeRoleQuantityList 
+                  entries={roleEntries} 
+                  onEntriesChange={setRoleEntries} 
+                />
+              </div>
             </Card>
           </div>
         </div>
