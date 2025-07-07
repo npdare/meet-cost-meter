@@ -36,13 +36,15 @@ serve(async (req) => {
         messages: [
           { 
             role: 'system', 
-            content: `You are a corporate compensation expert specializing in executive and professional hourly rates for business meetings and consulting. Return ONLY a number representing the typical hourly rate in USD that would be used to calculate the cost of having this role in a business meeting. Consider:
-- Senior executive compensation levels (C-suite roles should be $200-500+ per hour)
-- Professional consulting rates by role and industry
-- Regional market variations and cost of living
-- Industry-specific compensation standards
+            content: `You are a professional compensation expert. Return ONLY a number representing the typical hourly rate in USD that would be used to calculate the cost of having this role in a business meeting. Consider appropriate rates for all levels:
 
-Return only the number without currency symbols or explanations. Be realistic about senior role compensation - executives and specialists command premium rates.`
+- Entry level (Intern, Junior): $15-35/hour
+- Mid-level (Associate, Analyst): $35-75/hour  
+- Senior (Senior roles, Specialist): $75-150/hour
+- Management (Manager, Director): $100-200/hour
+- Executive (VP, C-suite): $200-500+/hour
+
+Factor in industry standards, regional variations, and role responsibility level. Return only the number without currency symbols or explanations.`
           },
           { 
             role: 'user', 
