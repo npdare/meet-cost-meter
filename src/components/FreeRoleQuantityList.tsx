@@ -204,7 +204,7 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
       </div>
 
       {/* Scrollable Entries Area */}
-      <div className="flex-1 min-h-0 max-h-64">
+      <div className="flex-1 min-h-0">
         {entries.length > 0 ? (
           <div className="h-full flex flex-col">
             <div className="flex items-center justify-between mb-3 flex-shrink-0">
