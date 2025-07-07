@@ -201,8 +201,8 @@ const Index = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-8">
           {/* Left Column - Timer & Cost Summary */}
           <div className="space-y-6">
-            {/* Sticky Timer Header */}
-            <div className="sticky top-4 z-10">
+            {/* Timer Header */}
+            <div className="">
               <Card className="p-6 bg-card/95 backdrop-blur-sm border shadow-lg">
                 <div className="space-y-6">
                   <div className="flex items-center justify-center gap-2 text-foreground">
