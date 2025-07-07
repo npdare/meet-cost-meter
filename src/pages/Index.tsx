@@ -261,7 +261,7 @@ const Index = () => {
       
       <div className="max-w-6xl mx-auto p-3 sm:p-4 space-y-4 sm:space-y-6">
         {/* Hero Section */}
-        <div className="text-center space-y-3 animate-fade-in pt-4 sm:pt-6">
+        <div className={`text-center ${isMobile ? 'space-y-2 animate-fade-in pt-2' : 'space-y-3 animate-fade-in pt-4 sm:pt-6'}`}>
           <h1 className={`${isMobile ? 'text-2xl' : 'text-4xl'} font-mono font-light text-foreground leading-tight py-2 tracking-wider border-b-2 border-primary hover:border-accent transition-colors duration-300`}>
             could_be_an_email
           </h1>
@@ -269,16 +269,16 @@ const Index = () => {
         </div>
 
         {/* Top Banner Ad */}
-        <AdBanner adSlot="1234567890" adFormat="horizontal" className="text-center" />
+        {!isMobile && <AdBanner adSlot="1234567890" adFormat="horizontal" className="text-center" />}
 
         {/* Main Grid Layout */}
         <div className={`grid grid-cols-1 ${isMobile ? 'gap-4' : 'lg:grid-cols-[2fr_3fr] gap-8'}`}>
           {/* Left Column - Timer & Cost Summary */}
-          <div className={`${isMobile ? 'space-y-4' : 'space-y-6'}`}>
+          <div className={`${isMobile ? 'space-y-2' : 'space-y-6'}`}>
             {/* Timer Header */}
             <div className="">
               <Card className={`${isMobile ? 'p-4' : 'p-6'} bg-card/95 backdrop-blur-sm border shadow-lg`}>
-                <div className={`${isMobile ? 'space-y-4' : 'space-y-6'}`}>
+                <div className={`${isMobile ? 'space-y-3' : 'space-y-6'}`}>
                   <div className="flex items-center justify-center gap-2 text-foreground">
                     <Clock className="w-5 h-5" />
                     <span className="text-xl font-semibold">Meeting Duration</span>
@@ -391,7 +391,7 @@ const Index = () => {
           </div>
 
           {/* Right Column - Attendees Management */}
-          <div className={`${isMobile ? 'space-y-4' : 'space-y-6'} flex flex-col`}>
+          <div className={`${isMobile ? 'space-y-2' : 'space-y-6'} flex flex-col`}>
             <Card className="flex-1 bg-card/80 backdrop-blur-sm border shadow-sm">
               <div className={`h-full ${isMobile ? 'p-4' : 'p-6'}`}>
                 <FreeRoleQuantityList 
@@ -405,7 +405,7 @@ const Index = () => {
 
         
         {/* Mid-page Ad */}
-        <AdBanner adSlot="0987654321" adFormat="rectangle" className="text-center" />
+        {!isMobile && <AdBanner adSlot="0987654321" adFormat="rectangle" className="text-center" />}
         
         <MilestoneTicker
           totalCost={totalCost} 
