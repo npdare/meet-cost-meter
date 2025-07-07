@@ -50,6 +50,16 @@ const Index = () => {
     document.documentElement.classList.toggle("dark", initialTheme === "dark")
   }, [])
 
+  const handleSignOut = async () => {
+    // Reset theme to light on sign out
+    setTheme("light")
+    localStorage.setItem("theme", "light")
+    document.documentElement.classList.remove("dark")
+    
+    // Sign out the user
+    await signOut()
+  }
+
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light"
     setTheme(newTheme)
@@ -226,7 +236,7 @@ const Index = () => {
                         )}
                         <DropdownMenuSeparator />
                         <DropdownMenuItem 
-                          onClick={signOut}
+                          onClick={handleSignOut}
                           className="text-destructive focus:text-destructive cursor-pointer"
                         >
                           <span>Sign Out</span>
