@@ -66,7 +66,7 @@ export const TimerCard = ({
               className={`gap-2 border-2 hover:bg-accent/50 ${isMobile ? 'flex-1 min-h-[48px]' : 'w-24'}`}
             >
               <Square className="w-4 h-4" />
-              {!isMobile && "Reset"}
+              Reset
             </Button>
             {time > 0 && canSave && onSave && (
               <Button 
