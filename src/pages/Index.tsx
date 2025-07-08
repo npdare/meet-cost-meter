@@ -6,6 +6,7 @@ import { AdBanner } from "@/components/AdBanner"
 import { PremiumGate } from "@/components/PremiumGate"
 import { MeetingHistory, saveMeeting } from "@/components/MeetingHistory"
 import { CalendarIntegration } from "@/components/CalendarIntegration"
+import { PremiumTestingPanel } from "@/components/PremiumTestingPanel"
 import { AppHeader } from "@/components/AppHeader"
 import { HeroSection } from "@/components/HeroSection"
 import { TimerCard } from "@/components/TimerCard"
@@ -246,6 +247,9 @@ const Index = () => {
             <MeetingHistory />
           </div>
         </PremiumGate>
+
+        {/* Premium Testing Panel - Admin Only */}
+        <PremiumTestingPanel />
       </div>
     </div>
   )

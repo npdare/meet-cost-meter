@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Timer, Settings, Clock, Sun, Moon, MessageSquare } from "lucide-react"
+import { Timer, Settings, Clock, Sun, Moon, MessageSquare, Crown } from "lucide-react"
 import { FeedbackDialog } from "@/components/FeedbackDialog"
 import { useAuth } from "@/hooks/useAuth"
 import { useIsMobile } from "@/hooks/use-mobile"
@@ -64,6 +64,12 @@ export const AppHeader = ({ theme, onToggleTheme, onSignOut }: AppHeaderProps) =
                         </>
                       )}
                     </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/premium" className="flex items-center gap-2 w-full">
+                      <Crown className="w-4 h-4" />
+                      <span>Premium Features</span>
+                    </Link>
                   </DropdownMenuItem>
                   {isPremium && (
                     <DropdownMenuItem asChild>
