@@ -9,6 +9,7 @@ import { useCurrency } from '@/hooks/useCurrency'
 import { useToast } from '@/hooks/use-toast'
 import { useIsMobile } from '@/hooks/use-mobile'
 import { fetchRateForRole } from '@/integrations/gpt'
+import { supabase } from '@/integrations/supabase/client'
 
 export interface RoleQuantityEntry {
   id: string
@@ -156,11 +157,45 @@ export const FreeRoleQuantityList = ({ entries, onEntriesChange }: FreeRoleQuant
                 Quick Add
               </label>
               <Button
-                onClick={() => {
-                  toast({
-                    title: "Coming soon",
-                    description: "Add saved members feature is coming soon",
-                  })
+                onClick={async () => {
+                  try {
+                    const { data, error } = await supabase
+                      .from('favorite_attendees')
+                      .select('*')
+                      .eq('user_id', user?.id)
+                    
+                    if (error) throw error
+                    
+                    if (data && data.length > 0) {
+                      // Add all saved attendees
+                      const newEntries: RoleQuantityEntry[] = data.map(attendee => ({
+                        id: Date.now().toString() + Math.random(),
+                        count: 1,
+                        role: attendee.role,
+                        rate: attendee.rate,
+                        name: attendee.name,
+                        email: attendee.email
+                      }))
+                      
+                      onEntriesChange([...entries, ...newEntries])
+                      
+                      toast({
+                        title: "Saved attendees added",
+                        description: `Added ${data.length} saved attendees to the meeting`,
+                      })
+                    } else {
+                      toast({
+                        title: "No saved attendees",
+                        description: "You haven't saved any attendees yet. Add some attendees and save them for future use.",
+                      })
+                    }
+                  } catch (error) {
+                    toast({
+                      title: "Error loading saved attendees",
+                      description: "Failed to load your saved attendees. Please try again.",
+                      variant: "destructive",
+                    })
+                  }
                 }}
                 className={`${isMobile ? 'h-10 px-4' : 'h-9 px-3'} gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-medium`}
               >
