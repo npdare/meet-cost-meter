@@ -176,7 +176,7 @@ const Index = () => {
               onPause={pauseTimer}
               onReset={resetTimer}
               onSave={saveMeetingData}
-              canSave={isPremium}
+              canSave={true}
               formatTime={formatTime}
             />
 
